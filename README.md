@@ -24,6 +24,7 @@ Please create a public GitLab repo and provide the following information for you
 | Name       | EID    | GitLab ID   |
 |------------|--------|-------------|
 | Odin Limaye | oal355 | OdinLimaye |
+| Francisco Vivas | fv3836 | dafrancc |
 
 ---
 
@@ -38,6 +39,7 @@ Please create a public GitLab repo and provide the following information for you
 | Member      | Estimated Hours | Actual Hours |
 |-------------|-----------------|--------------|
 | Odin Limaye | 11.5            |              |
+| Francisco Vivas | 11.5            |              |
 
 **Comments:**  
 
