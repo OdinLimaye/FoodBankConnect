@@ -30,9 +30,9 @@
   3. Sponsors/Donors  
 
 - **An estimate of the number of instances of each model:**  
-  - Food Banks / Pantries: ~200  
-  - Programs: ~700
-  - Sponsors / Donors: ~700  
+  - Food Banks and Food Pantries: ~200  
+  - Programs/Services: ~700
+  - Sponsors/Donors: ~700  
 
 - **Each model must have many attributes. Describe five of those attributes for each model that will be on the cards and that you can filter or sort by:**  
 
