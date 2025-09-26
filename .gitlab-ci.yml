@@ -1,0 +1,17 @@
+stages:
+  - deploy
+
+deploy_website:
+  stage: deploy
+  image: amazon/aws-cli:2.15.5
+  script:
+    # Sync local "public/" folder with S3 bucket
+    - aws s3 sync public/ s3://foodbankconnect.me --delete
+
+    # Invalidate CloudFront cache so new content shows immediately
+    - aws cloudfront create-invalidation \
+        --distribution-id E116FMVNVTQTZ7 \
+        --paths "/*"
+
+  only:
+    - main   # run this job only on pushes to the main branch
