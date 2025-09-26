@@ -5,9 +5,9 @@ deploy_website:
   stage: deploy
   image: amazon/aws-cli:2.15.5
   script:
-    # Sync local "public/" folder with S3 bucket
+    - aws --version
+    - aws sts get-caller-identity
     - aws s3 sync public/ "s3://$S3_BUCKET" --delete
-    # Invalidate CloudFront cache so new content shows immediately
     - aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DIST_ID" --paths "/*"
   only:
     - main
