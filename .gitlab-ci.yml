@@ -8,5 +8,5 @@ deploy_website:
     entrypoint: [""]
   script:
     - aws --version
-    - aws s3 sync public/ s3://$AWS_BUCKET_NAME --delete
+    - aws s3 sync public/ s3://$S3_BUCKET --delete
     - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DIST_ID --paths "/*"
