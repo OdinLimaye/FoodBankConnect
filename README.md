@@ -78,13 +78,13 @@
 ---  
 
 ## Members
-| Name            | EID    | GitLab ID   |  
-|-----------------|--------|-------------|  
-| Odin Limaye     | oal355 | OdinLimaye  |  
-| Francisco Vivas | fv3836 | dafrancc    |  
-| Christine Dominic |        |             |  
-| Mahika Dawar      |        |             |  
-| Jose Lopez        | jl82838 |  j-o-lopez  |  
+| Name             | EID    | GitLab ID        |  
+|----------------- |--------|------------------|  
+| Odin Limaye      | oal355 | OdinLimaye       |  
+| Francisco Vivas  | fv3836 | dafrancc         |  
+| Christine Dominic| cd37728| christinedominic |  
+| Mahika Dawar     |        |                  |  
+| Jose Lopez       | jl82838|  j-o-lopez       |  
 
 ---  
 
@@ -100,7 +100,7 @@
 |-------------------|-----------------|--------------|  
 | Odin Limaye       | 11.5            |              |  
 | Francisco Vivas   | 11.5            |              |  
-| Christine Dominic |                 |              |  
+| Christine Dominic | 12.0            |              |  
 | Mahika Dawar      |                 |              |  
 | Jose Lopez        | 12              |              |  
 
