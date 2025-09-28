@@ -8,7 +8,7 @@
     <h1>About the Site</h1>
 
     <h1>Meet the Team</h1>
-    <table id = "Team Members">
+    <table id = "TeamMembers">
         <tr>
             <th>
                 Name
@@ -45,10 +45,10 @@
             <td>
                 Coming soon 
             </td>
-            <td id = "Odin Commits">
+            <td id = "OdinCommits">
                 Loading...
             </td>
-            <td id = "Odin Issues">
+            <td id = "OdinIssues">
                 Loading...
             </td>
             <td>
@@ -68,10 +68,10 @@
             <td>
                 Coming soon 
             </td>
-            <td id = "Francisco Commits">
+            <td id = "FranciscoCommits">
                 Loading...
             </td>
-            <td id = "Francisco Issues">
+            <td id = "FranciscoIssues">
                 Loading...
             </td>
             <td>
@@ -91,10 +91,10 @@
             <td>
                 Coming soon 
             </td>
-            <td id = "Mahika Commits">
+            <td id = "MahikaCommits">
                 Loading...
             </td>
-            <td id = "Mahika Issues">
+            <td id = "MahikaIssues">
                 Loading...
             </td>
             <td>
@@ -114,10 +114,10 @@
             <td>
                 Coming soon 
             </td>
-            <td id = "Jose Commits">
+            <td id = "JoseCommits">
                 Loading...
             </td>
-            <td id = "Jose Issues">
+            <td id = "JoseIssues">
                 Loading...
             </td>
             <td>
@@ -137,10 +137,10 @@
             <td>
                 Coming soon 
             </td>
-            <td id = "Christine Commits">
+            <td id = "ChristineCommits">
                 Loading...
             </td>
-            <td id = "Christine Issues">
+            <td id = "ChristineIssues">
                 Loading...
             </td>
             <td>
@@ -173,28 +173,34 @@
                 const COMMITS = `https://gitlab.com/api/v4/projects/${PROJECT}/repository/commits?author_id=${USER}`;
                 const ISSUES = `https://gitlab.com/api/v4/projects/${PROJECT}/issues?author_id=${USER}`;
 
+                // Get the current member's commits
                 fetch(COMMITS)
                     .then(function(raw_http) {
                         return raw_http.json();
                     })
                     .then(function(json_commits) {
-                        document.getElementById(`${USER} Commits`).textContent = json_commits.length;
+                        // Update the corresponding entry in the table
+                        document.getElementById(`${USER}Commits`).textContent = json_commits.length;
                     })
                     .catch(function(error) {
+                        // Something went wrong
                         console.error("Error fetching commits: ", error);
-                        document.getElementById(`${USER} Commits`).textContent = "Error fetching commits; refresh the page to try again.";
+                        document.getElementById(`${USER}Commits`).textContent = "Error fetching commits; refresh the page to try again.";
                     })
 
+                // Get the current member's issues
                 fetch(ISSUES)
                     .then(function(raw_http) {
                         return raw_http.json();
                     })
                     .then(function(json_issues) {
-                        document.getElementById(`${USER} Issues`).textContent = json_issues.length;
+                        // Update the corresponding entry in the table
+                        document.getElementById(`${USER}Issues`).textContent = json_issues.length;
                     })
                     .catch(function(error) {
+                        // Something went wrong
                         console.error("Error fetching issues: ", error);
-                        document.getElementById(`${USER} Issues`).textContent = "Error fetching issues; refresh the page to try again.";
+                        document.getElementById(`${USER}Issues`).textContent = "Error fetching issues; refresh the page to try again.";
                     })
             })(team[i].user)
         }
