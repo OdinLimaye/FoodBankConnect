@@ -128,12 +128,12 @@
         var team = [
             {name: "Odin", user: "29883443"},
             {name: "Mahika", user: "30052392"},
-            {name: "Christine", user: ""},
             {name: "Jose", user: "29919402"},
+            {name: "Christine", user: ""},
             {name: "Francisco", user: ""},
         ];
 
-        for (var i = 0; i < team.length; i++) {
+        for (var i = 0; i < 3; i++) {
             (function(member) {
                 const COMMITS = `https://gitlab.com/api/v4/projects/${PROJECT}/repository/commits?author_id=${member.user}`;
                 const ISSUES = `https://gitlab.com/api/v4/projects/${PROJECT}/issues?author_id=${member.user}`;
