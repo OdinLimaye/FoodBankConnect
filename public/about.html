@@ -133,7 +133,7 @@
             {firstName: "Francisco", email: "ceo@dafrancc.com", userID: ""},
         ];
 
-        for (var i = 0; i < team.length; i++) {
+        for (let i = 0; i < 3; i++) {
             (function(member) {
                 const COMMITS = `https://gitlab.com/api/v4/projects/${PROJECT}/repository/commits?author_email=${encodeURIComponent(member.email)}`;
                 const ISSUES = `https://gitlab.com/api/v4/projects/${PROJECT}/issues?author_id=${member.userID}`;
