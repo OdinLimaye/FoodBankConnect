@@ -1,163 +1,234 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>About - FoodBankConnect</title>
+    <head>
+        <meta charset="UTF-8" />
+        <title>About - FoodBankConnect</title>
 
-    <!-- Bootstrap CSS -->
-    <link 
-      href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/simplex/bootstrap.min.css" 
-      rel="stylesheet">
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/simplex/bootstrap.min.css"
+            rel="stylesheet"
+        />
 
-    <!-- Custom CSS to scale team member photos automatically -->
-    <style>
-        #TeamMembers img {
-            display: block; /* keeps photos small */
-            height: auto;   /* keeps proportions */
-        }
-    </style>
-</head>
-<body class="bg-light">
-
-    <!-- Navbar (same style as index.html) -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">FoodBankConnect</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="about.html">About</a></li>
-                </ul>
+        <!-- Custom CSS to scale team member photos automatically -->
+        <style>
+            #TeamMembers img {
+                display: block; /* keeps photos small */
+                height: auto; /* keeps proportions */
+            }
+        </style>
+    </head>
+    <body class="bg-light">
+        <!-- Navbar (same style as index.html) -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">FoodBankConnect</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="about.html"
+                                >About</a
+                            >
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <!-- Main Content -->
-    <main class="container my-5">
+        <!-- Main Content -->
+        <main class="container my-5">
+            <h1 class="mb-4">About the Site</h1>
+            <p>
+                This site's purpose is to connect volunteers, donors, and food
+                banks in order to increase their ability to work with one
+                another to achieve the common goal of alleviating hunger in
+                impoverished communities. We want food banks to be able to
+                increase their visibility so that people in need of their
+                services know about them and what they offer. This site also
+                allows food banks to increase their volunteer and sponsor
+                numbers by displaying relevant information to those fields. We
+                want people looking to volunteer to be able to find a multitude
+                of programs and opportunities in which they can enroll. Lastly,
+                we want possible sponsors and donors to find organizations
+                towards which they can put funding and support. <br /><br />
+            </p>
 
-        <h1 class="mb-4">About the Site</h1>
-        <p>This site's purpose is to connect volunteers, donors, and food banks 
-            in order to increase their ability to work with one another to achieve
-            the common goal of alleviating hunger in impoverished communities. We want 
-            food banks to be able to increase their visibility
-            so that people in need of their services know about them and what they offer. 
-            This site also allows food banks to increase their volunteer and sponsor numbers 
-            by displaying relevant information to those fields. We want people looking to volunteer 
-            to be able to find a multitude of programs 
-            and opportunities in which they can enroll. Lastly, we want possible sponsors 
-            and donors to find organizations towards which they can put funding and support.
-            <br><br>
-        </p>
+            <h2 class="mb-4">Meet the Team</h2>
 
-        <h2 class="mb-4">Meet the Team</h2>
+            <div class="table-responsive">
+                <table
+                    id="TeamMembers"
+                    class="table table-striped table-bordered align-middle"
+                >
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Name</th>
+                            <th>Photo</th>
+                            <th>Bio</th>
+                            <th>Major Responsibilities</th>
+                            <th>Number of Commits</th>
+                            <th>Number of Issues Opened</th>
+                            <th>Number of Issues Closed</th>
+                            <th>Number of Unit Tests</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="Odin">
+                            <td>Odin Limaye</td>
+                            <td>
+                                <img
+                                    src="images/OdinPortrait.jpg"
+                                    alt="Odin Limaye"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>
+                                I'm a Junior at UT Austin, and I'm majoring in
+                                Math and Computer Science. In my free time, I
+                                like reading books, gardening, and hiking. You
+                                can find out more about me at my personal
+                                website:
+                                <a href="https://odinlimaye.com"
+                                    >odinlimaye.com</a
+                                >.
+                            </td>
+                            <td>
+                                So far, my main responsibilities have been
+                                handling our site's domain name and hosting it
+                                on Amazon Web Services, along with front-end web
+                                development involving the GitLab API.
+                            </td>
+                            <td id="OdinCommits">Loading...</td>
+                            <td id="OdinIssuesOpened">Loading...</td>
+                            <td id="OdinIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                        <tr id="Francisco">
+                            <td>Francisco Vivas</td>
+                            <td>
+                                <img
+                                    src="images/FranciscoPortrait.jpg"
+                                    alt="Francisco Vivas"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>
+                                I'm a junior at UT Austin, but I externally
+                                transferred from Lone Star College - Montomgery
+                                and I am majoring in Computer Science. I like to
+                                play video games, watch movies and TV shows,
+                                exercise, cook, and be with family.
+                            </td>
+                            <td>
+                                For the most part I worked on the Postman API,
+                                but I am also going to shift focus to frontend
+                                and eventually backend.
+                            </td>
+                            <td id="FranciscoCommits">Loading...</td>
+                            <td id="FranciscoIssuesOpened">Loading...</td>
+                            <td id="FranciscoIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                        <tr id="Mahika">
+                            <td>Mahika Dawar</td>
+                            <td>
+                                <img
+                                    src="images/placeholder.jpg"
+                                    alt="Mahika Dawar"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>Coming soon</td>
+                            <td>Coming soon</td>
+                            <td id="MahikaCommits">Loading...</td>
+                            <td id="MahikaIssuesOpened">Loading...</td>
+                            <td id="MahikaIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                        <tr id="Jose">
+                            <td>Jose Lopez</td>
+                            <td>
+                                <img
+                                    src="images/placeholder.jpg"
+                                    alt="Jose Lopez"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>Coming soon</td>
+                            <td>Coming soon</td>
+                            <td id="JoseCommits">Loading...</td>
+                            <td id="JoseIssuesOpened">Loading...</td>
+                            <td id="JoseIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                        <tr id="Christine">
+                            <td>Christine Dominic</td>
+                            <td>
+                                <img
+                                    src="images/placeholder.jpg"
+                                    alt="Christine Dominic"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>Coming soon</td>
+                            <td>Coming soon</td>
+                            <td id="ChristineCommits">Loading...</td>
+                            <td id="ChristineIssuesOpened">Loading...</td>
+                            <td id="ChristineIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <div class="table-responsive">
-            <table id="TeamMembers" class="table table-striped table-bordered align-middle">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Name</th>
-                        <th>Photo</th>
-                        <th>Bio</th>
-                        <th>Major Responsibilities</th>
-                        <th>Number of Commits</th>
-                        <th>Number of Issues Opened</th>
-                        <th>Number of Issues Closed</th>
-                        <th>Number of Unit Tests</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr id="Odin">
-                        <td>Odin Limaye</td>
-                        <td><img src="images/OdinPortrait.jpg" alt="Odin Limaye" class="img-fluid"></td>
-                        <td>I'm a Junior at UT Austin, and I'm majoring in Math and Computer Science.
-                            In my free time, I like reading books, gardening, and hiking. You can find 
-                            out more about me at my personal website: <a href="https://odinlimaye.com">odinlimaye.com</a>.
-                        </td>
-                        <td>So far, my main responsibilities have been handling our site's domain name and hosting 
-                            it on Amazon Web Services, along with front-end web development involving the GitLab API.
-                        </td>
-                        <td id="OdinCommits">Loading...</td>
-                        <td id="OdinIssuesOpened">Loading...</td>
-                        <td id="OdinIssuesClosed">Loading...</td>
-                        <td>0</td>
-                    </tr>
-                    <tr id="Francisco">
-                        <td>Francisco Vivas</td>
-                        <td><img src="images/placeholder.jpg" alt="Francisco Vivas" class="img-fluid"></td>
-                        <td>Coming soon</td>
-                        <td>Coming soon</td>
-                        <td id="FranciscoCommits">Loading...</td>
-                        <td id="FranciscoIssuesOpened">Loading...</td>
-                        <td id="FranciscoIssuesClosed">Loading...</td>
-                        <td>0</td>
-                    </tr>
-                    <tr id="Mahika">
-                        <td>Mahika Dawar</td>
-                        <td><img src="images/placeholder.jpg" alt="Mahika Dawar" class="img-fluid"></td>
-                        <td>Coming soon</td>
-                        <td>Coming soon</td>
-                        <td id="MahikaCommits">Loading...</td>
-                        <td id="MahikaIssuesOpened">Loading...</td>
-                        <td id="MahikaIssuesClosed">Loading...</td>
-                        <td>0</td>
-                    </tr>
-                    <tr id="Jose">
-                        <td>Jose Lopez</td>
-                        <td><img src="images/placeholder.jpg" alt="Jose Lopez" class="img-fluid"></td>
-                        <td>Coming soon</td>
-                        <td>Coming soon</td>
-                        <td id="JoseCommits">Loading...</td>
-                        <td id="JoseIssuesOpened">Loading...</td>
-                        <td id="JoseIssuesClosed">Loading...</td>
-                        <td>0</td>
-                    </tr>
-                    <tr id="Christine">
-                        <td>Christine Dominic</td>
-                        <td><img src="images/placeholder.jpg" alt="Christine Dominic" class="img-fluid"></td>
-                        <td>Coming soon</td>
-                        <td>Coming soon</td>
-                        <td id="ChristineCommits">Loading...</td>
-                        <td id="ChristineIssuesOpened">Loading...</td>
-                        <td id="ChristineIssuesClosed">Loading...</td>
-                        <td>0</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <h2 class="mt-5">Data Sources</h2>
+            <p>
+                <a href="https://fdc.nal.usda.gov/api-guide"
+                    >https://fdc.nal.usda.gov/api-guide</a
+                ><br />
+                <a href="https://mealconnect.docs.apiary.io/#"
+                    >https://mealconnect.docs.apiary.io/#</a
+                ><br />
+                <a href="https://www.centraltexasfoodbank.org/"
+                    >https://www.centraltexasfoodbank.org/</a
+                >
+            </p>
 
-        <h2 class="mt-5">Data Sources</h2>
-        <p>
-            <a href="https://fdc.nal.usda.gov/api-guide">https://fdc.nal.usda.gov/api-guide</a><br>
-            <a href="https://mealconnect.docs.apiary.io/#">https://mealconnect.docs.apiary.io/#</a><br>
-            <a href="https://www.centraltexasfoodbank.org/">https://www.centraltexasfoodbank.org/</a>
-        </p>
+            <h2 class="mt-4">Tools Used</h2>
+            <p>Coming soon</p>
 
-        <h2 class="mt-4">Tools Used</h2>
-        <p>Coming soon</p>
+            <h2 class="mt-4">Links</h2>
+            <p>
+                <a href="https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07"
+                    >GitLab Repository</a
+                ><br />
+                <a
+                    href="https://www.postman.com/downing-group-7/dafrancc-s-workspace/overview"
+                    >Postman API</a
+                >
+            </p>
+        </main>
 
-        <h2 class="mt-4">Links</h2>
-        <p>
-            <a href="https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07">GitLab Repository</a><br>
-            <a href="https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/wyq4lah/food-bank-api">Postman API</a>
-        </p>
+        <!-- Footer -->
+        <footer class="text-center py-3 bg-primary text-white">
+            &copy; 2025 FoodBankConnect
+        </footer>
 
-    </main>
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Footer -->
-    <footer class="text-center py-3 bg-primary text-white">
-        &copy; 2025 FoodBankConnect
-    </footer>
-
-    <!-- Bootstrap JS Bundle -->
-    <script 
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
-
-    <!-- Original JavaScript Logic -->
-    <script src="commitsAndIssues.js" defer></script>
-</body>
+        <!-- Original JavaScript Logic -->
+        <script src="commitsAndIssues.js" defer></script>
+    </body>
 </html>

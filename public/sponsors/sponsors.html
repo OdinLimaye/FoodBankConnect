@@ -1,66 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Sponsors & Donors - FoodBankConnect</title>
-	
-	<style>
-        .map-container {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            margin-top: 10px;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .map-container iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <title>Sponsors & Donors - FoodBankConnect</title>
 
-		.sponsor-img-container {
-			width: 100%;
-			height: 150px;         
-			display: flex;         
-			justify-content: center;
-			align-items: center;
-			background-color: #f8f9fa;  
-			border-bottom: 1px solid #dee2e6; 
-			overflow: hidden;
-			background-color: white;
-		}
+        <style>
+            .map-container {
+                position: relative;
+                width: 100%;
+                height: 200px;
+                margin-top: 10px;
+                border-radius: 6px;
+                overflow: hidden;
+            }
+            .map-container iframe {
+                width: 100%;
+                height: 100%;
+                border: 0;
+            }
 
-		.sponsor-img-container img {
-			max-width: 100%;
-			max-height: 100%;
-			object-fit: contain;   
-		}
+            .sponsor-img-container {
+                width: 100%;
+                height: 150px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #f8f9fa;
+                border-bottom: 1px solid #dee2e6;
+                overflow: hidden;
+                background-color: white;
+            }
 
-    </style>
+            .sponsor-img-container img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            }
+        </style>
 
-	<script defer>
-		class SponsorCard extends HTMLElement {
-			connectedCallback() {
-			this.innerHTML = `
+        <script defer>
+            class SponsorCard extends HTMLElement {
+                connectedCallback() {
+                    this.innerHTML = `
 					<div class="card h-100 shadow-sm">
 						<div class="sponsor-img-container">
-							<img src="${this.getAttribute('sponsor_img')}" alt="${this.getAttribute('sponsor_alt')}">
+							<img src="${this.getAttribute("sponsor_img")}" alt="${this.getAttribute("sponsor_alt")}">
 						</div>
 						<div class="card-body">
-							<h5 class="card-title">${this.getAttribute('sponsor')}</h5>
+							<h5 class="card-title">${this.getAttribute("sponsor")}</h5>
 							<p class="card-text">
-								Contribution Type: ${this.getAttribute('contr_type')}<br>
-								Contribution Amount: $${this.getAttribute('contr_amt')}<br>
-								Affiliation: ${this.getAttribute('affil')}<br>
-								Past Involvement: <a href="${this.getAttribute('past_inv_link')}">${this.getAttribute('past_inv')}</a>
+								Contribution Type: ${this.getAttribute("contr_type")}<br>
+								Contribution Amount: $${this.getAttribute("contr_amt")}<br>
+								Affiliation: ${this.getAttribute("affil")}<br>
+								Past Involvement: <a href="${this.getAttribute("past_inv_link")}">${this.getAttribute("past_inv")}</a>
 							</p>
-							<a href="${this.getAttribute('sponsor_site')}" class="btn btn-primary" target="_blank">More about the sponsor.</a>
+							<a href="${this.getAttribute("sponsor_site")}" class="btn btn-primary" target="_blank">More about the sponsor.</a>
 							<div class="map-container mt-3">
-								<iframe 
-									src="${this.getAttribute('map_link')}"
+								<iframe
+									src="${this.getAttribute("map_link")}"
 									allowfullscreen=""
 									loading="lazy"
 									referrerpolicy="no-referrer-when-downgrade">
@@ -68,92 +70,104 @@
 							</div>
 						</div>
 					</div>`;
-			}
-		}
-  		customElements.define('sponsor-card', SponsorCard);
-	</script>
-	
-</head>
-<body>
-	<!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="../index.html">FoodBankConnect</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="../about.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="foodbanks.html">Food Banks</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../programs/programs.html">Programs</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../sponsors/sponsors.html">Sponsors</a></li>
-                </ul>
+                }
+            }
+            customElements.define("sponsor-card", SponsorCard);
+        </script>
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../index.html">FoodBankConnect</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../about.html">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="../foodbanks/foodbanks.html"
+                                >Food Banks</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../programs/programs.html"
+                                >Programs</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active">Sponsors</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-	<!-- Header -->
-    <header class="py-5 text-center">
-        <div class="container">
-            <h1 class="display-5 fw-bold">Sponsors & Donors</h1>
-        </div>
-    </header>
+        <!-- Header -->
+        <header class="py-5 text-center">
+            <div class="container">
+                <h1 class="display-5 fw-bold">Sponsors & Donors</h1>
+            </div>
+        </header>
 
-	<!--Main container-->
-	<main class="container my-5">
-        <div class="row g-4">
+        <!--Main container-->
+        <main class="container my-5">
+            <div class="row g-4">
+                <!--Trader Joe's Card-->
+                <div class="col-md-4">
+                    <sponsor-card
+                        sponsor_img="../images/trader-joes.png"
+                        sponsor_alt="Trader Joe's Logo"
+                        sponsor="Trader Joe's"
+                        contr_type="Food Sourcing"
+                        contr_amt="5000"
+                        affil="Private Corporation"
+                        past_inv_link="https://hopefoodpantryaustin.org/"
+                        past_inv="Hope Food Pantry"
+                        sponsor_site="https://www.traderjoes.com/home/about-us"
+                        map_link="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d55151.98072994397!2d-97.84866115110522!3d30.237110846621135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sTrader%20Joe&#39;s!5e0!3m2!1sen!2sus!4v1759118728463!5m2!1sen!2sus"
+                    ></sponsor-card>
+                </div>
 
-			<!--Trader Joe's Card-->
-			<div class="col-md-4">
-				<sponsor-card 
-					sponsor_img="../images/trader-joes.png"
-					sponsor_alt="Trader Joe's Logo"
-					sponsor="Trader Joe's"
-					contr_type="Food Sourcing"
-					contr_amt="5000"
-					affil="Private Corporation"
-					past_inv_link="https://hopefoodpantryaustin.org/"
-					past_inv="Hope Food Pantry"
-					sponsor_site="https://www.traderjoes.com/home/about-us"
-					map_link="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d55151.98072994397!2d-97.84866115110522!3d30.237110846621135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sTrader%20Joe&#39;s!5e0!3m2!1sen!2sus!4v1759118728463!5m2!1sen!2sus"
-				></sponsor-card>
-			</div>
-			
-			<!--Dragon's Lair Card-->
-			<div class="col-md-4">
-				<sponsor-card 
-					sponsor_img="../images/d_lair.png"
-					sponsor_alt="Dragon's Lair Comics and Fantasy Logo"
-					sponsor="Dragon's Lair Comics and Fantasy"
-					contr_type="Food/Fund Drive Partners"
-					contr_amt="2500"
-					affil="Local Business"
-					past_inv_link="https://hopefoodpantryaustin.org/"
-					past_inv="Hope Food Pantry"
-					sponsor_site="https://www.dlair.net/austin/about/"
-					map_link="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3442.7507971841947!2d-97.73534872543222!3d30.358031503646735!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644cba542543a81%3A0x71d6a75b8593f74b!2sDragon&#39;s%20Lair%20Comics%20and%20Fantasy!5e0!3m2!1sen!2sus!4v1759120976221!5m2!1sen!2sus"
-				></sponsor-card>
-			</div>
+                <!--Dragon's Lair Card-->
+                <div class="col-md-4">
+                    <sponsor-card
+                        sponsor_img="../images/d_lair.png"
+                        sponsor_alt="Dragon's Lair Comics and Fantasy Logo"
+                        sponsor="Dragon's Lair Comics and Fantasy"
+                        contr_type="Food/Fund Drive Partners"
+                        contr_amt="2500"
+                        affil="Local Business"
+                        past_inv_link="https://hopefoodpantryaustin.org/"
+                        past_inv="Hope Food Pantry"
+                        sponsor_site="https://www.dlair.net/austin/about/"
+                        map_link="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3442.7507971841947!2d-97.73534872543222!3d30.358031503646735!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644cba542543a81%3A0x71d6a75b8593f74b!2sDragon&#39;s%20Lair%20Comics%20and%20Fantasy!5e0!3m2!1sen!2sus!4v1759120976221!5m2!1sen!2sus"
+                    ></sponsor-card>
+                </div>
 
-			<!--Trinity Church Card-->
-			<div class="col-md-4">
-				<sponsor-card 
-					sponsor_img="../images/trinity_church.jpeg"
-					sponsor_alt="Trinity Church of Austin Logo"
-					sponsor="Trinity Church of Austin"
-					contr_type="Housing Pantry"
-					contr_amt="0"
-					affil="Non Profit"
-					past_inv_link="https://hopefoodpantryaustin.org/"
-					past_inv="Hope Food Pantry"
-					sponsor_site="https://www.trinitychurchofaustin.org/about/"
-					map_link="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6889.361204326793!2d-97.73415362543467!3d30.303153106268617!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644ca79c5b19ad5%3A0xb8e828e4b25fb889!2sTrinity%20Church%20of%20Austin!5e0!3m2!1sen!2sus!4v1759121661517!5m2!1sen!2sus"
-				></sponsor-card>
-			</div>
-        </div>
-    </main>
+                <!--Trinity Church Card-->
+                <div class="col-md-4">
+                    <sponsor-card
+                        sponsor_img="../images/trinity_church.jpeg"
+                        sponsor_alt="Trinity Church of Austin Logo"
+                        sponsor="Trinity Church of Austin"
+                        contr_type="Housing Pantry"
+                        contr_amt="0"
+                        affil="Non Profit"
+                        past_inv_link="https://hopefoodpantryaustin.org/"
+                        past_inv="Hope Food Pantry"
+                        sponsor_site="https://www.trinitychurchofaustin.org/about/"
+                        map_link="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6889.361204326793!2d-97.73415362543467!3d30.303153106268617!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644ca79c5b19ad5%3A0xb8e828e4b25fb889!2sTrinity%20Church%20of%20Austin!5e0!3m2!1sen!2sus!4v1759121661517!5m2!1sen!2sus"
+                    ></sponsor-card>
+                </div>
+            </div>
+        </main>
 
-	<!--Footer-->
-	<footer class="text-center py-3 bg-primary text-white mt-5">
-        &copy; 2025 FoodBankConnect
-    </footer>
-</body>
+        <!--Footer-->
+        <footer class="text-center py-3 bg-primary text-white mt-5">
+            &copy; 2025 FoodBankConnect
+        </footer>
+    </body>
 </html>
