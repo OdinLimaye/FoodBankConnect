@@ -194,7 +194,8 @@ The about page runs a JavaScript file that dynamically retrieves the number of c
 
 ## 8. Hosting & Deployment
 
-We obtained our domain name from Namecheap.com, where we currently redirect our domain name and its www subdomain to our account on Amazon Web Services' CloudFront hosting service. On Namecheap, we also have records for each of the two domains (www and non-www) in order to validate our SSL certificate, which gives our URL HTTPS access instead of HTTP access. The hosting of our site occurs on Amazon Web Services where we have an S3 bucket set up for static website hosting, which is handled by CloudFront.
+We obtained our domain name from Namecheap.com, where we currently redirect our domain name and its www subdomain to our account on Amazon Web Services' CloudFront hosting service. On Namecheap, we also have records for each of the two domains (www and non-www) in order to validate our SSL certificate, which gives our URL HTTPS access instead of HTTP access. The hosting of our site occurs on Amazon Web Services where we have an S3 bucket set up for static website hosting, which is handled by CloudFront. CloudFront is also the platform we used to obtain our SSL
+certificate.
 
 We have a .yml file set up to automatically upload the public subdirectory of our repository upon pushes to the main branch of our GitLab repository. The mapping from our public folder to the S3 bucket is one-to-one; their contents are identical. To allow for this, we have GitLab listed as an IAM on our AWS account, and we have the relevant keys stored in our GitLab repo's environment variables. We also have a Makefile that performs basic operations relating to pushing and pulling from the repository. Our .gitignore currently just ignores instances of the Git log text file, but we foresee it being used on a larger scale in future phases.
 
