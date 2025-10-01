@@ -34,7 +34,7 @@
               <a class="nav-link" href="../about.html">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="foodbanks.html">Food Banks</a>
+              <a class="nav-link active" href="foodbank.html">Food Banks</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="../programs/programs.html">Programs</a>
@@ -54,49 +54,62 @@
       </div>
     </header>
 
-    <!-- Content -->
+    <!-- Main content -->
     <main class="container my-5">
       <div class="row">
-        <!-- Image -->
-        <div class="col-md-6">
-          <img
-            src="../images/central-austin-food-pantry.jpg"
-            alt="Central Texas Food Bank"
-            class="img-fluid rounded shadow-sm"
-          />
-        </div>
-        <!-- Attributes -->
-        <div class="col-md-6">
+        <div class="col-md-8">
           <h3>About</h3>
-          <ul class="list-group">
-            <li class="list-group-item">City: Austin</li>
-            <li class="list-group-item">ZIP: 78744</li>
-            <li class="list-group-item">Capacity: 50,000+ meals/week</li>
-            <li class="list-group-item">Urgency Level: Very High</li>
-            <li class="list-group-item">Open Hours:
-              <ul>
-                <li>Monday–Friday: 8:00 AM – 5:00 PM</li>
-                <li>Saturday: Closed</li>
-                <li>Sunday: Closed</li>
-              </ul>
-            </li>
+          <p>
+            The Central Texas Food Bank is the largest hunger-relief charity in
+            Central Texas, providing over 50,000 meals every week to families in
+            need. They distribute food through partner agencies and community
+            programs.
+          </p>
+
+          <h5>Details</h5>
+          <ul>
+            <li><strong>Location:</strong> 6500 Metropolis Dr, Austin, TX 78744</li>
+            <li><strong>Capacity:</strong> Over 50,000 meals/week</li>
+            <li><strong>Hours:</strong> Mon–Fri, 8am–5pm</li>
+            <li><strong>Urgency:</strong> Very High</li>
           </ul>
-          <a
-            href="https://www.centraltexasfoodbank.org/"
-            target="_blank"
-            class="btn btn-outline-primary mt-3"
-          >Official Website</a>
+
+          <div class="map-container mt-3">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3494.752241848126!2d-97.72812878492573!3d30.209804181828063!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644ca413aee7993%3A0xe8b2038e2cbb9fae!2sCentral%20Texas%20Food%20Bank!5e0!3m2!1sen!2sus!4v1695933088442"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
         </div>
       </div>
 
-      <!-- Map -->
-      <div class="map-container mt-5">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3494.752241848126!2d-97.72812878492573!3d30.209804181828063!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644ca413aee7993%3A0xe8b2038e2cbb9fae!2sCentral%20Texas%20Food%20Bank!5e0!3m2!1sen!2sus!4v1695933088442"
-          allowfullscreen=""
-          loading="lazy"
-        ></iframe>
-      </div>
+      <!-- Nearby Pantries -->
+      <section class="mt-5">
+        <h4>Nearby Pantries</h4>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Hope Food Pantry Austin</h5>
+                <p class="card-text">4001 Speedway, Austin, TX 78751</p>
+                <a href="hope.html" class="btn btn-outline-primary btn-sm">View Details</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">St. Ignatius Martyr Food Pantry</h5>
+                <p class="card-text">126 W Oltorf St, Austin, TX 78704</p>
+                <a href="st-ignatius.html" class="btn btn-outline-primary btn-sm">View Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <!-- Footer -->
