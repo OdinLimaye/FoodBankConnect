@@ -82,6 +82,7 @@
 
         <!--Main container-->
         <main class="container my-5">
+            <div id="entry-count" class="mb-4 text-muted"></div>
             <div class="row g-4">
                 <!--Trader Joe's Card-->
                 <div class="col-md-4">
@@ -131,5 +132,16 @@
         <footer class="text-center py-3 bg-primary text-white mt-5">
             &copy; 2025 FoodBankConnect
         </footer>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Count how many .card elements exist in the row
+                const cards = document.querySelectorAll(".row.g-4 .card");
+                const countDiv = document.getElementById("entry-count");
+
+                // Update the text with the count
+                countDiv.textContent = `Showing ${cards.length} Sponsors in Total`;
+            });
+        </script>
     </body>
 </html>
