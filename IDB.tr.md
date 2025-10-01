@@ -24,7 +24,7 @@ This site helps solve the problem that many low-income and underserved communiti
 ## 3. RESTful API Documentation
 
 - **Note:** Not implemented in phase one
-- **URL:** https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/wyq4lah/food-bank-api
+- **URL:** https://www.postman.com/downing-group-7/dafrancc-s-workspace/overview
 
 ### GET Examples
 

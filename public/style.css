@@ -151,6 +151,19 @@ td {
     text-decoration: none;
 }
 
+#about-btn {
+    background-color: #379eff;
+    margin: 0.5em;
+    border-radius: 0.25em;
+    box-shadow: 0 0 0.5em #00000067;
+    padding: 0.75em 1.5em 0.75em 1.5em;
+    font-size: 1em;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
 .filler {
     height: 1em;
 }

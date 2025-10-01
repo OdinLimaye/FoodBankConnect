@@ -1,64 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
     <title>FoodBankConnect</title>
-
-    <!-- Bootstrap CSS -->
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="style.css?v=3" />
+	<link rel="icon" href="favicon.png">
+	<meta http-equiv=Content-Type content=text/html; charset=utf-8 />
 </head>
-<body class="bg-light">
 
-    
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">FoodBankConnect</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                </ul>
+<body>
+	<div id="wrapper">
+	<div id="pictures">
+                <table id="bgtable">
+                    <tbody>
+                        <tr>
+                            <td id="bgtd0">
+                                <img
+                                    data-lazy="images/central-texas-food-bank.jpg"
+                                    class="fade-in"
+                                    src="images/central-texas-food-bank.jpg"
+                                />
+                            </td>
+                            <td id="bgtd1">
+                                <img
+                                    data-lazy="images/new-food-pantry.jpg"
+                                    class="fade-in"
+                                    src="images/new-food-pantry.jpg"
+                                />
+                            </td>
+                            <td id="bgtd2">
+                                <img
+                                    data-lazy="images/st-ignatius.jpg"
+                                    class="fade-in"
+                                    src="images/st-ignatius.jpg"
+                                />
+                            </td>
+                            <td id="bgtd3">
+                                <img
+                                    data-lazy="images/volunteer2.jpg"
+                                    class="fade-in"
+                                    src="images/volunteer2.jpg"
+                                />
+                            </td>
+                            <td id="bgtd4">
+                                <img
+                                    data-lazy="images/central-austin-food-pantry.jpg"
+                                    class="fade-in"
+                                    src="images/central-austin-food-pantry.jpg"
+                                />
+                            </td>
+                            <td id="bgtd5">
+                                <img
+                                    data-lazy="images/cooking-case.png"
+                                    class="fade-in"
+                                    src="images/cooking-case.png"
+                                />
+                            </td>
+                            <td id="bgtd6">
+                                <img
+                                    data-lazy="images/drive-thru.jpg"
+                                    class="fade-in"
+                                    src="images/drive-thru.jpg"
+                                />
+                            </td>
+                            <td id="bgtd7">
+                                <img
+                                    data-lazy="images/food-bank-delivery.jpg"
+                                    class="fade-in"
+                                    src="images/food-bank-delivery.jpg"
+                                />
+                            </td>
+                            <td id="bgtd8">
+                                <img
+                                    data-lazy="images/hope-food-pantry.jpg"
+                                    class="fade-in"
+                                    src="images/hope-food-pantry.jpg"
+                                />
+                            </td>
+                            <td id="bgtd9">
+                                <img
+                                    data-lazy="images/volunteer.jpg"
+                                    class="fade-in"
+                                    src="images/volunteer.jpg"
+                                />
+                            </td>
+                            <td id="bgtd10">
+                                <img
+                                    data-lazy="images/trader-joes.png"
+                                    class="fade-in"
+                                    src="images/trader-joes.png"
+                                />
+                            </td>
+                            <td id="bgtd11">
+                                <img
+                                    data-lazy="images/trinity_church.jpeg"
+                                    class="fade-in"
+                                    src="images/trinity_church.jpeg"
+                                />
+                            </td>
+                            <td id="bgtd12">
+                                <img
+                                    data-lazy="images/d_lair.png"
+                                    class="fade-in"
+                                    src="images/d_lair.png"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
-    </nav>
+		<div id="maintable">
+			<table class="center">
+				<tr>
+					<td>
+					    <div class="invert">
+    						<h1>Food Bank Connect</h1>
+    						<p id="info">Welcome, we are <strong>foodbankconnect.me</strong></p>
+						</div>
+						<table id="nav-buttons">
+							<tr id="select-tr">
+								<td>
+									<a id="food-banks-btn" href="./foodbanks/foodbanks.html">View Food Banks</a>
+								</td>
+								<td>
+									<a id="sponsors-btn" href="./sponsors/sponsors.html">View Sponsors</a>
+								</td>
+    							<td>
+    							    <a id="programs-btn" href="./programs/programs.html">View Programs</a>
+    							</td>
+                                <td>
+                                    <a id="about-btn" href="./about.html">About the Site</a>
+                                </td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr id="scroll-tr">
+					<td>
+						<div id="scrollbody"></div>
+						<div id="scrollthumb"></div>
+						<br>
+				        <p id="thumbtext">Shift+Scroll to Move</p>
+					</td>
+				</tr>
+			</table>
 
-    <!-- Hero Section -->
-    <header class="py-5 text-center bg-white">
-        <div class="container">
-            <h1 class="display-4 fw-bold">FoodBankConnect</h1>
-            <p class="lead text-muted">
-                This is <strong>foodbankconnect.me</strong> and is a work in progress!
-            </p>
-        </div>
-    </header>
-
-    <!-- Models 1-3 -->
-<main class="container my-5 text-center">
-    <div class="row justify-content-center">
-        <div class="col-md-3 mb-3">
-            <a href="foodbanks/foodbanks.html" class="btn btn-primary w-100">View Food Banks</a>
-        </div>
-        <div class="col-md-3 mb-3">
-            <a href="programs/programs.html" class="btn btn-primary w-100">Explore Programs</a>
-        </div>
-        <div class="col-md-3 mb-3">
-            <a href="sponsors/sponsors.html" class="btn btn-primary w-100">See Sponsors</a>
-        </div>
-        <div class="col-md-3 mb-3">
-            <a href="https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/wyq4lah/food-bank-api" class="btn btn-primary w-100">See Postman</a>
-        </div>
-    </div>
-</main>
-
-    <!-- Optional footer -->
-    <footer class="text-center py-3 bg-primary text-white mt-5">
-        &copy; 2025 FoodBankConnect
-    </footer>
-
-    <!-- Bootstrap JS Bundle -->
-    <script 
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
+		</div>
+	</div>
+	<script src="indexScript.js?v=3"></script>
 </body>
+
 </html>
