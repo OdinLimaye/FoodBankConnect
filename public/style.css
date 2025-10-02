@@ -51,6 +51,15 @@ body {
     text-shadow: 0.1em 0.1em 0.2em black;
 }
 
+#icon {
+    position: fixed;
+    width: 25em;
+    height: 25em;
+    margin-top: 1em;
+    left: 0;
+    right: 0;
+}
+
 #maintable {
     position: fixed;
     left: 50%;
@@ -208,7 +217,7 @@ p {
     text-shadow: 0 0 0.5em #00000067;
 }
 
-img {
+.bg-img {
     width: auto;
     height: 100vh;
     margin: 0;
