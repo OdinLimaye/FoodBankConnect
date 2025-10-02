@@ -13,11 +13,11 @@ This site helps solve the problem that many low-income and underserved communiti
 
 ## 2. User Stories
 
-- **Story 1:** Waiting on customer group to make posts
-- **Story 2:** Waiting on customer group to make posts
-- **Story 3:** Waiting on customer group to make posts
-- **Story 4:** Waiting on customer group to make posts
-- **Story 5:** Waiting on customer group to make posts
+- **Story 1:** Our customer groups never gave us any user stories
+- **Story 2:** Our customer groups never gave us any user stories
+- **Story 3:** Our customer groups never gave us any user stories
+- **Story 4:** Our customer groups never gave us any user stories
+- **Story 5:** Our customer groups never gave us any user stories
 
 ---
 
