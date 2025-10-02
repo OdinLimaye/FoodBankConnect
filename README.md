@@ -101,7 +101,7 @@
 |-------------------|-----------------|--------------|  
 | Odin Limaye       | 11.5            | 16           |  
 | Francisco Vivas   | 11.5            | 12           |  
-| Christine Dominic | 12.0            |              |  
+| Christine Dominic | 12.0            | 12.5         |  
 | Mahika Dawar      | 12              |              |  
 | Jose Lopez        | 12              | 14           |  
 
