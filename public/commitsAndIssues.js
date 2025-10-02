@@ -8,7 +8,7 @@ const team = [
     {firstName: "Mahika", email: "mahika.dawar@utexas.edu", userID: "30052392", commits: 0, issues_closed: 0},
     {firstName: "Jose", email: "jl82838@utexas.edu", userID: "29919402", commits: 0, issues_closed: 0},
     {firstName: "Christine", email: "cdominic@cs.utexas.edu", userID: "30022393", commits: 0, issues_closed: 0},
-    {firstName: "Francisco", email: "ceo@dafrancc.com", userID: "25760273", commits: 0, issues_closed: 0},
+    {firstName: "Francisco", email: "xenonaught@gmail.com", userID: "25760273", commits: 0, issues_closed: 0},
 ];
 
 // Handles displaying each member's number of issues opened
