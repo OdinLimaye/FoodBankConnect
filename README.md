@@ -91,12 +91,13 @@
 
 ## Phase One
 - **Git SHA:**
-6de7fadc5ae7c9c04bb97b601bfeee36d7d97065  
+cad9f1de582361c68041d7e6d196324f9591e143
 - **Project Leader: Odin Limaye**  
   - Responsibilities: Setting up the project repository, domain name, AWS hosting, and delegating tasks. 
 - **GitLab Pipelines:**
 https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07/-/pipelines  
-- **Website: https://foodbankconnect.me**  
+- **Website: **  
+https://foodbankconnect.me
 
 ### Time Tracking
 | Member            | Estimated Hours | Actual Hours |  
