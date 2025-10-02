@@ -230,3 +230,43 @@ p {
     opacity: 1;
     transition: opacity 2s;
 }
+
+/* Modern heading style like the screenshot (thicker, tighter spacing) */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: white;
+}
+
+/* Clean and readable paragraph style */
+p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    color: #cccccc;
+    max-width: 60ch;
+    margin: 1em auto;
+}
+
+/* Button style mimicking the "Get Started" pill button */
+button, .button, a.button,
+#about-btn, #sponsors-btn, #programs-btn, #food-banks-btn {
+    background-color: #000;
+    color: #fff;
+    font-size: 1em;
+    font-weight: 500;
+    padding: 0.75em 1.5em;
+    border-radius: 999px; /* pill shape */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover, .button:hover, a.button:hover,
+#about-btn:hover, #sponsors-btn:hover, #programs-btn:hover, #food-banks-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
