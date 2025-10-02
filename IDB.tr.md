@@ -13,11 +13,21 @@ This site helps solve the problem that many low-income and underserved communiti
 
 ## 2. User Stories
 
-- **Story 1:** Our customer groups never gave us any user stories
-- **Story 2:** Our customer groups never gave us any user stories
-- **Story 3:** Our customer groups never gave us any user stories
-- **Story 4:** Our customer groups never gave us any user stories
-- **Story 5:** Our customer groups never gave us any user stories
+- **Story 1:**  
+  Our customer group suggested replacing plain links on our website with more descriptive text so that customers know the purpose of the links before clicking them. We estimated this change would take around 5 minutes, and after implementation, we found that it did indeed take about that long since it was a minor adjustment.
+
+- **Story 2:**  
+  Our customer group suggested adding basic information about our programs to the programs model page so that people seeking volunteer opportunities can quickly find resources. We estimated this would take 10 minutes to implement, but it ended up taking around 15 minutes. We added all of the program attributes to the cards on the model page grid for quick, at-a-glance information.
+
+- **Story 3:**  
+  Our customer group recommended sorting programs by the skills they require and adding a filtering option to allow users to search for programs that match their specific skill sets. After a dialogue with the customer group, we concluded that this feature was out of scope for phase one, since filtering and sorting are not scheduled for implementation until phase two.
+
+- **Story 4:**  
+  Our customer group recommended sorting food banks by proximity to users, allowing them to search for nearby locations. After a dialogue with the customer group, we concluded that this feature was also out of scope for phase one, since search features are not scheduled for implementation until phase two.
+
+- **Story 5:**  
+  Our customer group suggested adding an option on the food banks model page to show only food banks that are currently open, so people in need of food can find help in a timely manner. We thought this was an especially good idea, but it falls out of scope for phase one since filtering features are not scheduled until phase two. However, we decided to save this user story for a future phase, as it adds significant value for users.
+
 
 ---
 
