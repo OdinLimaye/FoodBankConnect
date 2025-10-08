@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link 
+            href="./sponsors.css"
+            rel="stylesheet"
+        />
+        <title>Sponsors & Donors - FoodBankConnect</title>
+	<link rel="icon" href="../favicon_bg.svg">
+
+        <style>
+            .sponsor-img-container {
+                height: 150px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .sponsor-img-container img {
+                max-height: 100%;
+                max-width: 100%;
+                object-fit: contain;
+            }
+        </style>
+
+        <script defer>
+            class SponsorCard extends HTMLElement {
+                connectedCallback() {
+                    this.innerHTML = `
+					<div class="card h-100 shadow-sm">
+						<div class="sponsor-img-container">
+							<img src="${this.getAttribute("sponsor_img")}" alt="${this.getAttribute("sponsor_alt")}">
+						</div>
+						<div class="card-body">
+							<h5 class="card-title">${this.getAttribute("name")}</h5>
+							<p class="card-text">
+								Contribution: ${this.getAttribute("contribution")}<br>
+								Contribution Amount: ${this.getAttribute("contribution_amt")}<br>
+                                Contribution Unit: ${this.getAttribute("contribution_unit")}<br>
+								Affiliation: ${this.getAttribute("affiliation")}<br>
+								Past Involvement: ${this.getAttribute("past_inv")}
+							</p>
+							<a href="${this.getAttribute("sponsor_page")}" class="stretched-link"></a>
+						</div>
+					</div>`;
+                }
+            }
+            customElements.define("sponsor-card", SponsorCard);
+        </script>
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../index.html">
+                <img id="icon" src="../favicon.svg" alt="My SVG" height="50em" width="50em"> FoodBankConnect</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../about.html">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="../foodbanks/foodbanks.html"
+                                >Food Banks</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../programs/programs.html"
+                                >Programs</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active">Sponsors</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="py-5 text-center">
+            <div class="container">
+                <h1 class="display-5 fw-bold">Sponsors & Donors</h1>
+            </div>
+        </header>
+
+        <!--Main container-->
+        <main class="container my-5">
+            <div id="entry-count" class="mb-4 text-muted"></div>
+            <div class="row g-4">
+                <!--Trader Joe's Card-->
+                <div class="col-md-4">
+                    <sponsor-card
+                        sponsor_img="../images/trader-joes.png"
+                        sponsor_alt="Trader Joe's Logo"
+                        name="Trader Joe's"
+                        contribution="Food Sourcing"
+                        contribution_amt="180000"
+                        contribution_unit="Pounds"
+                        affiliation="Private Corporation"
+                        past_inv="Hope Food Pantry"
+                        sponsor_page="./trader_joes.html"
+                    ></sponsor-card>
+                </div>
+
+                <!--Dragon's Lair Card-->
+                <div class="col-md-4">
+                    <sponsor-card
+                        sponsor_img="../images/d_lair.png"
+                        sponsor_alt="Dragon's Lair Comics and Fantasy Logo"
+                        name="Dragon's Lair Comics and Fantasy"
+                        contribution="Food Drive Partners"
+                        contribution_amt="1200"
+                        contribution_unit="Pounds"
+                        affiliation="Local Business"
+                        past_inv="Hope Food Pantry"
+                        sponsor_page="./dlcf.html"
+                    ></sponsor-card>
+                </div>
+
+                <!--Trinity Church Card-->
+                <div class="col-md-4">
+                    <sponsor-card
+                        sponsor_img="../images/trinity_church.jpeg"
+                        sponsor_alt="Trinity Church of Austin Logo"
+                        name="Trinity Church of Austin"
+                        contribution="Housing Pantry"
+                        contribution_amt="N/A"
+                        contribution_unit="N/A"
+                        affiliation="Church"
+                        past_inv="Hope Food Pantry"
+                        sponsor_page="./trinity_church.html"
+                    ></sponsor-card>
+                </div>
+            </div>
+        </main>
+
+        <!--Footer-->
+        <footer class="text-center py-3 bg-primary text-white mt-5">
+            &copy; 2025 FoodBankConnect
+        </footer>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Count how many .card elements exist in the row
+                const cards = document.querySelectorAll(".row.g-4 .card");
+                const countDiv = document.getElementById("entry-count");
+
+                // Update the text with the count
+                countDiv.textContent = `Showing ${cards.length} Sponsors in Total`;
+            });
+        </script>
+    </body>
+</html>

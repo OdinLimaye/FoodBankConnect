@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Programs & Volunteer Opportunities - FoodBankConnect</title>
+        <!-- Simplex Theme -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+	<link rel="icon" href="../favicon_bg.svg">
+        <!-- Override Simplex red with Bootstrap blue -->
+        <style>
+            :root {
+                --bs-primary: #0d6efd;
+            }
+        </style>
+    </head>
+    <body class="bg-light">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../index.html">
+                <img id="icon" src="../favicon.svg" alt="My SVG" height="50em" width="50em"> FoodBankConnect</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../about.html">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="../foodbanks/foodbanks.html"
+                                >Food Banks</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active">Programs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../sponsors/sponsors.html"
+                                >Sponsors</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="py-5 text-center bg-white">
+            <div class="container">
+                <h1 class="display-5 fw-bold">
+                    Programs & Volunteer Opportunities
+                </h1>
+                <p class="lead text-muted">
+                    Explore how you can participate or benefit from local food
+                    programs.
+                </p>
+            </div>
+        </header>
+
+        <!-- Filter Buttons -->
+        <div class="container text-center mb-4">
+            <div class="btn-group">
+                <button
+                    class="btn btn-outline-primary active"
+                    onclick="filterCards('all')"
+                >
+                    All
+                </button>
+                <button
+                    class="btn btn-outline-primary"
+                    onclick="filterCards('Distribution')"
+                >
+                    Distribution
+                </button>
+                <button
+                    class="btn btn-outline-primary"
+                    onclick="filterCards('Volunteer')"
+                >
+                    Volunteer
+                </button>
+                <button
+                    class="btn btn-outline-primary"
+                    onclick="filterCards('Class')"
+                >
+                    Class
+                </button>
+                <button
+                    class="btn btn-outline-primary"
+                    onclick="filterCards('Service')"
+                >
+                    Service
+                </button>
+            </div>
+        </div>
+
+        <!-- Program Cards -->
+        <main class="container">
+            <div id="entry-count" class="mb-4 text-muted"></div>
+            <div class="row g-4" id="programCards">
+                <!-- Program 1 -->
+                <div
+                    class="col-md-6 col-lg-3 program-card"
+                    data-type="Distribution"
+                >
+                    <div class="card h-100 shadow-sm">
+                        <img
+                            src="../images/drive-thru.jpg"
+                            class="card-img-top"
+                            alt="Drive-thru food pantry"
+                        />
+                        <div class="card-body">
+                            <h5 class="card-title">Drive-Thru Food Pantry</h5>
+                            <p><strong>Type:</strong> Distribution</p>
+                            <p><strong>Eligibility:</strong> Open</p>
+                            <p><strong>Frequency:</strong> Weekly</p>
+                            <p><strong>Cost:</strong> Free</p>
+                            <p><strong>Host:</strong> Church</p>
+                            <a href="drive-thru-food-pantry.html" class="btn btn-primary w-100"
+                                >See Details</a
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Program 2 -->
+                <div class="col-md-6 col-lg-3 program-card" data-type="Class">
+                <div class="card h-100 shadow-sm">
+                    <img
+                    src="../images/cooking-case.png"
+                    class="card-img-top"
+                    alt="Culinary training program"
+                    />
+                    <div class="card-body">
+                    <h5 class="card-title">
+                        Culinary Training Program
+                    </h5>
+                    <p><strong>Type:</strong> Training</p>
+                    <p><strong>Eligibility:</strong> High School GED</p>
+                    <p><strong>Frequency:</strong> Yearly</p>
+                    <p>
+                        <strong>Cost:</strong>
+                        Free
+                    </p>
+                    <p><strong>Host:</strong> Food Bank</p>
+                    <a href="culinary-training.html" class="btn btn-primary w-100">See Details</a>
+                    </div>
+                </div>
+                </div>
+
+
+                <!-- Program 3 -->
+                <div class="col-md-6 col-lg-3 program-card" data-type="Service">
+                    <div class="card h-100 shadow-sm">
+                        <img
+                            src="../images/nutrition-education.png"
+                            class="card-img-top"
+                            alt="Food delivery box"
+                        />
+                        <div class="card-body">
+                            <h5 class="card-title">Nutrition Education Program</h5>
+                            <p><strong>Type:</strong> Class</p>
+                            <p><strong>Eligibility:</strong> Referral-based</p>
+                            <p><strong>Frequency:</strong> Ongoing Sessions</p>
+                            <p><strong>Cost:</strong> Free</p>
+                            <p><strong>Host:</strong> Food Bank</p>
+                            <a href="nutrition-class.html" class="btn btn-primary w-100">See Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center py-4 mt-5 bg-primary text-white">
+            &copy; 2025 FoodBankConnect
+        </footer>
+
+        <!-- Bootstrap Bundle + Tooltip -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Filter cards
+            function filterCards(type) {
+                const cards = document.querySelectorAll(".program-card");
+                cards.forEach((card) => {
+                    if (type === "all" || card.dataset.type === type) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+
+                // Highlight selected button
+                document
+                    .querySelectorAll(".btn-group .btn")
+                    .forEach((btn) => btn.classList.remove("active"));
+                event.target.classList.add("active");
+            }
+
+            // Tooltip for cost explanation
+            const tooltipTriggerList = document.querySelectorAll(
+                '[data-bs-toggle="tooltip"]',
+            );
+            tooltipTriggerList.forEach((t) => new bootstrap.Tooltip(t));
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Count how many .card elements exist in the row
+                const cards = document.querySelectorAll(".row.g-4 .card");
+                const countDiv = document.getElementById("entry-count");
+
+                // Update the text with the count
+                countDiv.textContent = `Showing ${cards.length} Programs in Total`;
+            });
+        </script>
+    </body>
+</html>

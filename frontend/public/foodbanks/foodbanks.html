@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Food Banks - FoodBankConnect</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            .map-container {
+                position: relative;
+                width: 100%;
+                height: 200px;
+                margin-top: 10px;
+                border-radius: 6px;
+                overflow: hidden;
+            }
+            .map-container iframe {
+                width: 100%;
+                height: 100%;
+                border: 0;
+            }
+        </style>
+	<link rel="icon" href="../favicon_bg.svg">
+    </head>
+    <body class="bg-light">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../index.html">
+                <img id="icon" src="../favicon.svg" alt="My SVG" height="50em" width="50em"> FoodBankConnect</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../about.html">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active">Food Banks</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../programs/programs.html"
+                                >Programs</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../sponsors/sponsors.html"
+                                >Sponsors</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="py-5 text-center bg-white">
+            <div class="container">
+                <h1 class="display-5 fw-bold">Food Banks & Pantries</h1>
+            </div>
+        </header>
+
+        <!-- Cards -->
+        <main class="container my-5">
+            <div id="entry-count" class="mb-4 text-muted"></div>
+            <div class="row g-4">
+                <!-- Central Texas Food Bank -->
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Central Texas Food Bank</h5>
+                            <p class="card-text">
+                                Address: 6500 Metropolis Dr<br />
+                                City: Austin, Texas<br />
+                                ZIP Code: 78744<br />
+                                Capacity: Over 50,000 meals/week<br />
+                                Hours: Mon–Fri, 8am–5pm<br />
+                                Urgency: Very High
+                            </p>
+                            <a
+                                href="austin-central.html"
+                                class="btn btn-primary"
+                                >View Details</a
+                            >
+                            <div class="map-container mt-3">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3494.752241848126!2d-97.72812878492573!3d30.209804181828063!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644ca413aee7993%3A0xe8b2038e2cbb9fae!2sCentral%20Texas%20Food%20Bank!5e0!3m2!1sen!2sus!4v1695933088442"
+                                    allowfullscreen=""
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                >
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hope Food Pantry -->
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Hope Food Pantry Austin</h5>
+                            <p class="card-text">
+                                Address: 4001 Speedway <br />
+                                City: Austin, Texas <br />
+                                ZIP Code: 78751<br />
+                                Capacity: ~800 meals/week<br />
+                                Hours: Fri, 9am–11:30am (by appt)<br />
+                                Urgency: Medium
+                            </p>
+                            <a
+                                href="hope.html"
+                                class="btn btn-primary"
+                                >View Details</a
+                            >
+                            <div class="map-container mt-3">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3447.5195233456173!2d-97.72799848488828!3d30.305228281783205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644cb5c57b99efb%3A0x60b7c530a47d3e77!2sHope%20Food%20Pantry%20Austin!5e0!3m2!1sen!2sus!4v1695933152636"
+                                    allowfullscreen=""
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                >
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- St. Ignatius Martyr -->
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                St. Ignatius Martyr Food Pantry
+                            </h5>
+                            <p class="card-text">
+                                Address: 126 W Oltorf St<br />
+                                City: Austin, Texas <br />
+                                ZIP Code: 78704<br />
+                                Capacity: ~1,000 meals/week<br />
+                                Hours: Mon–Wed 9am–1pm, Thu 9–11am<br />
+                                Urgency: High
+                            </p>
+                            <a
+                                href="st-ignatius.html"
+                                class="btn btn-primary"
+                                >View Details</a
+                            >
+                            <div class="map-container mt-3">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3449.379978503797!2d-97.7559276848897!3d30.24113988181356!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644b4dd0135d7e3%3A0x48f6d43c3b7e3540!2sSt.%20Ignatius%20Martyr%20Catholic%20Church!5e0!3m2!1sen!2sus!4v1695933190387"
+                                    allowfullscreen=""
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                >
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center py-3 bg-primary text-white mt-5">
+            &copy; 2025 FoodBankConnect
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Count how many .card elements exist in the row
+                const cards = document.querySelectorAll(".row.g-4 .card");
+                const countDiv = document.getElementById("entry-count");
+
+                // Update the text with the count
+                countDiv.textContent = `Showing ${cards.length} Food Banks in Total`;
+            });
+        </script>
+
+    </body>
+</html>

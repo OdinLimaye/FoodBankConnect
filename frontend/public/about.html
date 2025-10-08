@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>About - FoodBankConnect</title>
+
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/simplex/bootstrap.min.css"
+            rel="stylesheet"
+        />
+	<link rel="icon" href="favicon_bg.svg">
+
+        <!-- Custom CSS to scale team member photos automatically -->
+        <style>
+            #TeamMembers img {
+                display: block; /* keeps photos small */
+                height: auto; /* keeps proportions */
+            }
+        </style>
+    </head>
+    <body class="bg-light">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <img id="icon" src="favicon.svg" alt="My SVG" height="50em" width="50em"> FoodBankConnect</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="foodbanks/foodbanks.html">Food Banks</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="programs/programs.html">Programs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="sponsors/sponsors.html">Sponsors</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container my-5">
+            <h1 class="mb-4">About the Site</h1>
+            <p>
+                This site's purpose is to connect volunteers, donors, and food
+                banks in order to increase their ability to work with one
+                another to achieve the common goal of alleviating hunger in
+                impoverished communities. We want food banks to be able to
+                increase their visibility so that people in need of their
+                services know about them and what they offer. This site also
+                allows food banks to increase their volunteer and sponsor
+                numbers by displaying relevant information to those fields. We
+                want people looking to volunteer to be able to find a multitude
+                of programs and opportunities in which they can enroll. Lastly,
+                we want possible sponsors and donors to find organizations
+                towards which they can put funding and support. <br /><br />
+            </p>
+
+            <h2 class="mb-4">Meet the Team</h2>
+
+            <div class="table-responsive">
+                <table
+                    id="TeamMembers"
+                    class="table table-striped table-bordered align-middle"
+                >
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Name</th>
+                            <th>Photo</th>
+                            <th>Bio</th>
+                            <th>Major Responsibilities</th>
+                            <th>Number of Commits</th>
+                            <th>Number of Issues Opened</th>
+                            <th>Number of Issues Closed</th>
+                            <th>Number of Unit Tests</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="Odin">
+                            <td>Odin Limaye</td>
+                            <td>
+                                <img
+                                    src="images/portraits/OdinPortrait.jpg"
+                                    alt="Odin Limaye"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>
+                                I'm a Junior at UT Austin, and I'm majoring in
+                                Math and Computer Science. In my free time, I
+                                like reading books, gardening, and hiking. You
+                                can find out more about me at my personal
+                                website:
+                                <a href="https://odinlimaye.com"
+                                    >odinlimaye.com</a
+                                >
+                            </td>
+                            <td>
+                                So far, my main responsibilities have been
+                                handling our site's domain name and hosting it
+                                on Amazon Web Services, along with front-end web
+                                development involving the GitLab API.
+                            </td>
+                            <td id="OdinCommits">Loading...</td>
+                            <td id="OdinIssuesOpened">Loading...</td>
+                            <td id="OdinIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                        <tr id="Francisco">
+                            <td>Francisco Vivas</td>
+                            <td>
+                                <img
+                                    src="images/portraits/FranciscoPortrait.jpg"
+                                    alt="Francisco Vivas"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>
+                                I'm a junior at UT Austin, but I externally
+                                transferred from Lone Star College - Montomgery
+                                and I am majoring in Computer Science. I like to
+                                play video games, watch movies and TV shows,
+                                exercise, cook, and be with family.
+                            </td>
+                            <td>
+                                I worked on the Postman API, and I worked on the
+                                splash page, ensuring that it looks clean and
+                                modern. I worked on the HTML, CSS, and
+                                Javascript.
+                            </td>
+                            <td id="FranciscoCommits">Loading...</td>
+                            <td id="FranciscoIssuesOpened">Loading...</td>
+                            <td id="FranciscoIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                        <tr id="Mahika">
+                            <td>Mahika Dawar</td>
+                            <td>
+                                <img
+                                    src="images/portraits/MahikaPortrait.JPG"
+                                    alt="Mahika Dawar"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>
+                                I'm a Junior at UT Austin majoring in Computer
+                                Science, and minoring in Applied Statistica Modeling. I enjoy 
+                                trying new recipes, dancing, and playing pickleball outside of class!
+                            </td>
+                            <td>
+                                I worked on building the instance pages mostly, as well as tweaking the 
+                                CSS to clean up the website so it had a sleaker look. In this phase,
+                                I mostly worked on the front-end.
+                            </td>
+                            <td id="MahikaCommits">Loading...</td>
+                            <td id="MahikaIssuesOpened">Loading...</td>
+                            <td id="MahikaIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                        <tr id="Jose">
+                            <td>Jose Lopez</td>
+                            <td>
+                                <img
+                                    src="images/portraits/JosePortrait.jpeg"
+                                    alt="Jose Lopez"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>
+                                I'm a junior at UT Austin and I'm majoring in
+                                Computer Science. In my freetime, I enjoy
+                                watching shows or movies, listening to music,
+                                and play video games.
+                            </td>
+                            <td>
+                                My main responsibilities have been working in
+                                the front end on model and instance pages.
+                            </td>
+                            <td id="JoseCommits">Loading...</td>
+                            <td id="JoseIssuesOpened">Loading...</td>
+                            <td id="JoseIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                        <tr id="Christine">
+                            <td>Christine Dominic</td>
+                            <td>
+                                <img
+                                    src="images/portraits/ChristinePortrait.JPG"
+                                    alt="Christine Dominic"
+                                    class="img-fluid"
+                                />
+                            </td>
+                            <td>
+                                I'm a Junior at UT Austin studying Computer
+                                Science, Canfield Business, and Finance. Outside
+                                of class I enjoy trying out matcha spots,
+                                watching F1, and reading books.
+                            </td>
+                            <td>
+                                My main responsibilities included designing and
+                                styling the site using the Bootstrap CSS
+                                framework to ensure a clean, responsive layout
+                                across all devices. I have also contributed to
+                                building and refining the instance pages,
+                                focusing on user experience!
+                            </td>
+                            <td id="ChristineCommits">Loading...</td>
+                            <td id="ChristineIssuesOpened">Loading...</td>
+                            <td id="ChristineIssuesClosed">Loading...</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 class="mt-5">Data Sources</h2>
+            <p>
+                <a href="https://fdc.nal.usda.gov/api-guide">USDA</a><br />
+                <a href="https://mealconnect.docs.apiary.io/#">MealConnect</a
+                ><br />
+                <a href="https://www.centraltexasfoodbank.org/"
+                    >CentralTexasFoodbank</a
+                ><br />
+                <a href="https://www.findhelp.org/">FindHelp </a><br />
+                <a
+                    href="https://www.austintexas.gov/page/get-help-food-access-today"
+                >
+                    AustinTexasGetHelpFoodAccessToday</a
+                ><br />
+                <a href="https://projects.propublica.org/nonprofits/api">
+                    ProPublicaNonProfits</a
+                >
+            </p>
+
+            <h2 class="mt-4">Tools Used</h2>
+            <p>
+                GitLab:<br />
+                We used GitLab as our method of source control and collaborative
+                integration. We used GitLab's Continous Integration features to
+                manage our code's organization, structure, and functionality.
+                Our GitLab repo also automatically deploys to our hosting
+                service due to our build configuration.<br /><br />
+                Amazon Web Services:<br />
+                We used AWS to host our site on its CloudFront platform, using
+                its S3 bucket structure to manage our static web pages. We also
+                used AWS to obtain our SSL certificate, allowing our site to
+                trasnfer data through HTTPS.<br /><br />
+                Namecheap:<br />
+                We used Namecheap to obtain our domain name and to verify our
+                SSL certificate. We also currently use Namecheap to redirect
+                HTTP and www sub-domain calls to the standard HTTPS version of
+                our site.
+            </p>
+
+            <h2 class="mt-4">Optional Tools Used</h2>
+            <p>
+                Bootstrap:<br />
+                We used Bootstrap as our CSS framework, mainly making use of its
+                pre-made objects such as navigational bars, buttons, and tables.
+                We also used Boostrap's formatting tools to create consistently
+                styled headers, paragraphs, and text boxes.<br /><br />
+            </p>
+
+            <h2 class="mt-4">Links</h2>
+            <p>
+                <a href="https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07"
+                    >GitLab Repository</a
+                ><br />
+                <a
+                    href="https://www.postman.com/downing-group-7/dafrancc-s-workspace/overview"
+                    >Postman API</a
+                >
+            </p>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center py-3 bg-primary text-white">
+            &copy; 2025 FoodBankConnect
+        </footer>
+
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Original JavaScript Logic -->
+        <script src="commitsAndIssues.js" defer></script>
+    </body>
+</html>
