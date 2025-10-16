@@ -1,5 +1,5 @@
-import "./SponsorCard.css";
 import { useNavigate } from "react-router-dom";
+import styles from "./SponsorCard.module.css"
 
 const SponsorCard = ({
 	sponsor_img,
@@ -32,15 +32,15 @@ const SponsorCard = ({
 
 	return (
 		<div
-			className="card sponsor-card h-100 shadow-sm"
+			className={`card ${styles["sponsor-card"]} h-100 shadow-sm`}
 			onClick={handleClick}
 			style={{ cursor: "pointer" }}>
-			<div className="sponsor-img-container">
+			<div className={styles["sponsor-img-container"]}>
 				<img src={sponsor_img} alt={sponsor_alt} />
 			</div>
-			<div className="card-body">
-				<h5 className="card-title">{name}</h5>
-				<p className="card-text">
+			<div className={styles["card-body"]}>
+				<h5 className={styles["card-title"]}>{name}</h5>
+				<p className={styles["text"]}>
 					<strong>Contribution:</strong> {contribution}
 					<br />
 					<strong>Amount:</strong> {contribution_amt} {contribution_unit}

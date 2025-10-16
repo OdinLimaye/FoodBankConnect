@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import "../styles/Home.css";
+import styles from "../styles/Home.module.css"
 
 const Home = () => {
   useEffect(() => {
     function adjustScroll() {
-      const scrollbar = document.getElementById("scrollbar");
-      const thumb = document.getElementById("scrollthumb");
+      
+      const scrollbar = document.getElementsByClassName(styles.scrollbar);
+      const thumb = document.getElementsByClassName(styles.scrollthumb);
       const scrollEl = document.scrollingElement || document.documentElement;
 
       if (!scrollbar || !thumb) return;
@@ -37,7 +38,7 @@ const Home = () => {
   return (
     <div id="wrapper">
       <div id="pictures">
-        <table id="bgtable">
+        <table className={styles.bgtable}>
           <tbody>
             <tr>
               {[
@@ -58,7 +59,7 @@ const Home = () => {
                 <td key={idx} id={`bgtd${idx}`}>
                   <img
                     data-lazy={`images/${img}`}
-                    className="fade-in bg-img"
+                    className={`${styles["fade-in"]} ${styles["bg-img"]}`}
                     src={`images/${img}`}
                     alt=""
                   />
@@ -67,22 +68,22 @@ const Home = () => {
             </tr>
           </tbody>
         </table>
-        <div className="overlay"></div>
+        <div className={styles.overlay}></div>
       </div>
 
-      <div id="maintable">
+      <div className={styles.maintable}>
         <table className="center">
           <tbody>
             <tr>
               <td>
-                <img id="icon" src="favicon.svg" alt="Food Bank Icon" />
+                <img className={styles.icon} src="favicon.svg" alt="Food Bank Icon" />
               </td>
             </tr>
             <tr>
               <td>
                 <div className="invert">
                   <h1>Food Bank Connect</h1>
-                  <p id="info">
+                  <p className={styles.info}>
                     <strong>We are foodbankconnect.me</strong>
                     <br />
                     We are a hub for food banks, donors, and volunteers to find
@@ -99,22 +100,22 @@ const Home = () => {
                   <tbody>
                     <tr id="select-tr">
                       <td>
-                        <Link to="/foodbanks" id="food-banks-btn">
+                        <Link to="/foodbanks" className={styles["food-banks-btn"]}>
                           <strong>View Food Banks</strong>
                         </Link>
                       </td>
                       <td>
-                        <Link to="/sponsors" id="sponsors-btn">
+                        <Link to="/sponsors" className={styles["sponsors-btn"]}>
                           <strong>View Sponsors</strong>
                         </Link>
                       </td>
                       <td>
-                        <Link to="/programs" id="programs-btn">
+                        <Link to="/programs" className={styles["programs-btn"]}>
                           <strong>View Programs</strong>
                         </Link>
                       </td>
                       <td>
-                        <Link to="/about" id="about-btn">
+                        <Link to="/about" className={styles["about-btn"]}>
                           <strong>About the Site</strong>
                         </Link>
                       </td>
@@ -123,13 +124,13 @@ const Home = () => {
                 </table>
               </td>
             </tr>
-            <tr id="scroll-tr">
+            <tr className={styles["scroll-tr"]}>
               <td>
-                <div id="scrollbar">
-                  <div id="scrollbody"></div>
-                  <div id="scrollthumb"></div>
+                <div className={styles.scrollbar}>
+                  <div className={styles.scrollbody}></div>
+                  <div className={styles.scrollthumb}></div>
                 </div>
-                <p id="thumbtext">Shift+Scroll to Move</p>
+                <p className={styles.thumbtext}>Shift+Scroll to Move</p>
               </td>
             </tr>
           </tbody>

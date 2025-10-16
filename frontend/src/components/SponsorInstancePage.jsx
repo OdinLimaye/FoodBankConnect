@@ -4,7 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
 
-import "../styles/Sponsors.css"
+import "../styles/Sponsors.css";
 
 const SponsorInstancePage = () => {
 	const location = useLocation();
@@ -27,16 +27,21 @@ const SponsorInstancePage = () => {
 
 			{/* <!--Main container--> */}
 			<main className="container my-5">
-				<div className="sponsor-img-container">
+				<div className="sponsor-img-container text-center mb-4">
 					<img src={sponsor_img} alt={sponsor_alt} />
 				</div>
-				<div>
-					<h1>About</h1>
+				<section className="mb-4">
+					<h2>About</h2>
 					<p>
-						{/* {about} */}
+						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus
+						impedit veritatis odio, quae eligendi dignissimos quibusdam quo
+						natus dolores nihil nostrum vitae nulla at sapiente sequi molestias
+						corporis sit exercitationem.
 					</p>
-					<h1>Details</h1>
-					<ul style={{listStyle: "none"}}>
+				</section>
+				<section className="mb-4">
+					<h2>Details</h2>
+					<ul style={{ listStyle: "none" }}>
 						<li>
 							<p>
 								<strong>Contribution Type:</strong> {contribution}
@@ -58,15 +63,13 @@ const SponsorInstancePage = () => {
 							</p>
 						</li>
 						<li>
-							{
-							/*Figure out how to link to other instance pages
+							{/*Figure out how to link to other instance pages
 							 *May want to send in an array of past involvements and
 							 *loop through array creating various link components to
 							 *other instance pages
 							 *Perhaps list of tuples [(model type : instance of model)]
 							 *e.g. (Sponsor : Trader Joe's)
-							 */
-							}
+							 */}
 							<p>
 								<strong>Past Involvement: </strong>
 								{
@@ -76,26 +79,26 @@ const SponsorInstancePage = () => {
 								}
 							</p>
 						</li>
-						<li style={{marginTop: "25px"}}>
+						<li style={{ marginTop: "25px" }}>
 							<a
 								href=""
 								// {website_url}
 								target="_blank">
-								<strong>Website: </strong> 
+								<strong>Website: </strong>
 								{/* {website_url} */}
 							</a>
 						</li>
 					</ul>
-					{/* <div className="map-container mt-3">
+				</section>
+				<section className="map-container mt-4 text-center">
 						<iframe
-							style={{width: "80%", height: "450px", textAlign: "center"}}
+							style={{width: "80%", height: "450px"}}
 							src=""
 							// {map_link}
-							allowfullscreen=""
+							allowFullScreen=""
 							loading="lazy"
-							referrerpolicy="no-referrer-when-downgrade"></iframe>
-					</div> */}
-				</div>
+							referrerPolicy="no-referrer-when-downgrade"></iframe>
+				</section>
 			</main>
 
 			<Footer />
