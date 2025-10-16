@@ -116,19 +116,21 @@ https://foodbankconnect.me
 - **Git SHA:**  
 - **Project Leader:**  
   - Responsibilities:  
-- **GitLab Pipelines:**  
-- **Website:**  
+- **GitLab Pipelines:**
+https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07/-/pipelines  
+- **Website:**
+https://foodbankconnect.me
 
 ### Time Tracking
 | Member            | Estimated Hours | Actual Hours |  
 |-------------------|-----------------|--------------|  
-| Odin Limaye       |                 |              |  
+| Odin Limaye       | 17              |              |  
 | Francisco Vivas   |                 |              |  
 | Christine Dominic |                 |              |  
 | Mahika Dawar      |                 |              |  
 | Jose Lopez        |                 |              |  
 
-**Comments:**  
+**Comments:**
 
 ---  
 

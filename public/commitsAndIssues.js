@@ -2,13 +2,13 @@
 const PROJECT = "74614252";
 const PER_PAGE = 100;
 
-// Array of each team member's first name, GiLab email, and GitLab user ID
+// Array of each team member's first name, GiLab emails, and GitLab user ID
 const team = [
-    {firstName: "Odin", email: "odin@cs.utexas.edu", userID: "29883443", commits: 0, issues_closed: 0},
-    {firstName: "Mahika", email: "mahika.dawar@utexas.edu", userID: "30052392", commits: 0, issues_closed: 0},
-    {firstName: "Jose", email: "jl82838@utexas.edu", userID: "29919402", commits: 0, issues_closed: 0},
-    {firstName: "Christine", email: "cdominic@cs.utexas.edu", userID: "30022393", commits: 0, issues_closed: 0},
-    {firstName: "Francisco", email: "xenonaught@gmail.com", userID: "25760273", commits: 0, issues_closed: 0},
+    {firstName: "Odin", emails: ["odin@cs.utexas.edu"], userID: "29883443", commits: 0, issues_closed: 0},
+    {firstName: "Mahika", emails: ["mahika.dawar@utexas.edu"], userID: "30052392", commits: 0, issues_closed: 0},
+    {firstName: "Jose", emails: ["jl82838@utexas.edu"], userID: "29919402", commits: 0, issues_closed: 0},
+    {firstName: "Christine", emails: ["cdominic@cs.utexas.edu"], userID: "30022393", commits: 0, issues_closed: 0},
+    {firstName: "Francisco", emails: ["xenonaught@gmail.com", "ceo@dafrancc.com"], userID: "25760273", commits: 0, issues_closed: 0},
 ];
 
 // Handles displaying each member's number of issues opened
@@ -81,7 +81,7 @@ async function getCommits(PROJECT, PER_PAGE, team) {
         for (let i = 0; i < json_commits.length; i++) {
             const current_email = json_commits[i].author_email;
             for (let j = 0; j < team.length; j++) {
-                if (team[j].email === current_email) {
+                if (team[j].emails.includes(current_email)) {
                     team[j].commits++;
                     break;
                 }
