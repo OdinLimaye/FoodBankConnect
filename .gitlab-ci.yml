@@ -1,18 +1,40 @@
 stages:
+  - build
   - deploy
 
+# Build React pages into static files
+build_react:
+  stage: build
+  image: node:20-bullseye
+  script:
+    # Install dependencies
+    - npm ci
+    # Create the production build in /build
+    - npm run build
+  artifacts:
+    paths:
+      # Save build folder for next job
+      - build
+  rules:
+    # Only build on pushes to the main branch
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+    - when: never
+
+# Deploy to S3 and invalidate CloudFront
 deploy_website:
   stage: deploy
-
-  image: 
+  image:
     name: amazon/aws-cli
     entrypoint: [""]
-
   script:
-    - aws s3 sync public/ s3://$S3_BUCKET --delete
+    - aws s3 sync build/ s3://$S3_BUCKET --delete
     - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DIST_ID --paths "/*"
-
+  dependencies:
+    # Use the build from the previous job
+    - build_react
   rules:
+    # Only deploy on pushes to the main branch
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
     - when: never
