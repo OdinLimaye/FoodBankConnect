@@ -5,10 +5,11 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   font-family: "Motiva Sans", "Roboto", sans-serif;
 }
 
-/* Hide scrollbars */
+/* Hide native scrollbars where possible */
 *::-webkit-scrollbar {
   display: none;
 }
@@ -17,148 +18,115 @@
   scrollbar-width: none;
 }
 
-/* Allow horizontal scroll */
+/* The page container: full screen, allow horizontal scrolling */
 .wrapper {
-  background-color: #1a1a1a;
-  color: white;
-  overflow-x: auto; /* enable horizontal scrolling */
-  overflow-y: hidden;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  scroll-behavior: smooth;
-  white-space: nowrap; /* keep horizontal flow */
-}
-
-/* Overlay */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  pointer-events: none;
-  z-index: 5;
-}
-
-/* Header / Icon */
-.icon {
-  display: block;
-  margin: 0 auto;
-  width: 10em;
-  height: auto;
-  margin-bottom: 1rem;
-  z-index: 10;
   position: relative;
-}
-
-/* Main table wrapper */
-.maintable {
-  position: relative;
-  margin: 0 auto;
-  z-index: 20;
-  text-align: center;
-  max-width: 900px;
-  padding: 2rem;
-  background: transparent;
-  white-space: normal;
-}
-
-/* Scrollbar */
-.scroll-tr {
-  height: 3em;
-  width: 100%;
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-  z-index: 15;
-}
-
-.scrollbar {
-  position: relative;
-  width: 50%;
-  max-width: 600px;
-  height: 1.5em;
-}
-
-.scrollbody {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 0.25em;
-  transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 1em;
-  box-shadow: 0 0 1em #000000aa;
-}
-
-.scrollthumb {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  width: 2.5em;
-  height: 1em;
-  border-radius: 1em;
-  background: white;
-  box-sizing: border-box;
-}
-
-/* Background table and images */
-.bgtable {
-  position: relative;
-  display: inline-block; /* horizontal layout */
-  white-space: nowrap;
+  width: 100vw;
   height: 100vh;
-  text-align: center;
-  z-index: 1;
+  overflow-x: auto;   /* allow horizontal scrolling for background strip */
+  overflow-y: hidden; /* prevent vertical scrolling */
+  white-space: nowrap; /* ensure background cells line up horizontally */
+  background-color: #111;
+  color: #fff;
+  scroll-behavior: smooth;
 }
 
+/* Background pictures container (uses your table markup but we style it as a horizontal strip) */
+.pictures {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: max-content; /* will expand horizontally with children */
+  z-index: 1;
+  pointer-events: none; /* background doesn't intercept clicks */
+}
+
+/* Make the table behave like a horizontal strip */
+.bgtable {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: max-content;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* each cell is one full viewport width */
 .bgtable td {
-  display: inline-block;
+  display: block;
   width: 100vw;
   height: 100vh;
   margin: 0;
   padding: 0;
 }
 
+/* images fill the viewport */
 .bg-img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  margin: 0;
-  padding: 0;
   opacity: 0;
-  transition: opacity 2s;
-  pointer-events: none;
+  transition: opacity 1.6s ease;
 }
 
+/* visible image class - keep fade-in behavior you already used */
 .fade-in {
   opacity: 1;
-  transition: opacity 2s;
 }
 
-/* Text styles */
-.wrapper h1,
-.wrapper h2,
-.wrapper h3,
-.wrapper h4,
-.wrapper h5,
-.wrapper h6 {
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  color: white;
+/* overlay: translucent layer sitting above images (improves text contrast) */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 3; /* above background but below interactive content container */
+  pointer-events: none; /* allow clicks to pass through this visual-only overlay */
+}
+
+/* Foreground / interactive content: sits on top of everything */
+.maintable {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: auto; /* this must accept clicks */
+  padding: 2rem;
+}
+
+/* center content wrapper */
+.maintable table.center {
+  margin: 0 auto;
   text-align: center;
 }
 
-.wrapper p {
-  font-size: 1.1em;
-  line-height: 1.6;
-  color: #cccccc;
+/* Logo */
+.icon {
+  display: inline-block;
+  width: 110px;
+  height: auto;
+  margin-bottom: 0.75rem;
+}
+
+/* Text block styling */
+.info {
+  color: #eee;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
   max-width: 60ch;
-  margin: 1em auto;
-  text-shadow: 0 0 0.5em #00000067;
+  margin: 0.5rem auto 1.25rem auto;
+  line-height: 1.6;
+  font-size: 1.05rem;
+}
+
+/* Headline */
+.maintable h1 {
+  margin: 0.25rem 0 0.5rem 0;
+  font-size: 2rem;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
 }
 
 /* Buttons / links */
@@ -169,21 +137,19 @@ a.button,
 .sponsors-btn,
 .programs-btn,
 .food-banks-btn {
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 1em;
-  font-weight: 500;
-  padding: 0.75em 1.5em;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.6rem 1.1rem;
   border-radius: 999px;
-  border: none;
+  border: 1px solid rgba(255,255,255,0.12);
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   text-decoration: none;
   display: inline-block;
-  transition: all 0.2s ease-in-out;
-  position: relative;
-  z-index: 25;
-  margin: 0.5em;
+  transition: transform 0.18s ease, background 0.18s ease;
+  margin: 0.45rem;
+  pointer-events: auto;
 }
 
 button:hover,
@@ -193,43 +159,59 @@ a.button:hover,
 .sponsors-btn:hover,
 .programs-btn:hover,
 .food-banks-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  transform: translateY(-3px);
+  background-color: rgba(255,255,255,0.95);
+  color: #111;
 }
 
-/* Specific element adjustments */
+/* Custom small scrollbar UI (thumb moves as you scroll horizontally) */
+.scroll-tr {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 12;
+}
+
+.scrollbar {
+  position: relative;
+  width: 320px;
+  height: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scrollbody {
+  position: absolute;
+  inset: 0;
+}
+
+.scrollthumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.9);
+  transition: left 0.08s linear;
+}
+
+/* small helper text */
 .thumbtext {
-  margin-top: 1.25em;
-  opacity: 85%;
+  margin-top: 0.5rem;
+  color: rgba(255,255,255,0.85);
+  font-size: 0.95rem;
+  text-align: center;
 }
 
-.info {
-  text-shadow: 0.1em 0.1em 0.2em black;
-}
-
-.food-banks-btn,
-.sponsors-btn,
-.programs-btn,
-.about-btn {
-  border-radius: 0.25em;
-  box-shadow: 0 0 0.5em #00000067;
-}
-
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 900px) {
-  .icon {
-    width: 8em;
-  }
-
-  .maintable {
-    padding: 1rem;
-  }
-
-  .scrollbar {
-    width: 80%;
-  }
-
-  .wrapper p {
-    font-size: 1em;
-  }
+  .icon { width: 90px; }
+  .maintable h1 { font-size: 1.6rem; }
+  .info { font-size: 0.95rem; max-width: 44ch; }
+  .scrollbar { width: 220px; }
 }

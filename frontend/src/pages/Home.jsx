@@ -5,49 +5,58 @@ import styles from "../styles/Home.module.css";
 const Home = () => {
   useEffect(() => {
     function adjustScroll() {
+      // select the single scrollbar / thumb elements (CSS Modules classes)
       const scrollbar = document.querySelector(`.${styles.scrollbar}`);
       const thumb = document.querySelector(`.${styles.scrollthumb}`);
+      // the element we scroll horizontally is the document's scrolling element
       const scrollEl = document.scrollingElement || document.documentElement;
 
-      if (!scrollbar || !thumb) return;
+      if (!scrollbar || !thumb || !scrollEl) return;
 
       const barWidth = scrollbar.getBoundingClientRect().width;
       const thumbWidth = thumb.getBoundingClientRect().width;
+
       const maxScroll = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
       const progress = maxScroll > 0 ? scrollEl.scrollLeft / maxScroll : 0;
+
       const maxThumbX = Math.max(0, barWidth - thumbWidth);
       const thumbX = Math.min(maxThumbX, Math.max(0, progress * maxThumbX));
+
       thumb.style.left = `${thumbX}px`;
     }
 
-    // Update thumb on scroll and resize
+    // Update thumb when page loads / resizes / scrolls
     window.addEventListener("DOMContentLoaded", adjustScroll);
     window.addEventListener("resize", adjustScroll);
     window.addEventListener("scroll", adjustScroll, { passive: true });
 
-    // Restore Shift + Scroll horizontal movement
-    const shiftScroll = (e) => {
-      if (e.shiftKey) {
+    // Enable Shift + Wheel -> horizontal scroll; also support normal wheel while pointer over page
+    const onWheel = (e) => {
+      // If shiftKey or (trackpad with horizontal delta), move horizontally
+      if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
         e.preventDefault();
-        window.scrollBy({
-          left: e.deltaY < 0 ? -100 : 100,
-          behavior: "smooth",
-        });
+        // prefer deltaX (if present) otherwise use deltaY when shift is pressed
+        const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+        window.scrollBy({ left: delta, behavior: "auto" });
       }
     };
-    window.addEventListener("wheel", shiftScroll, { passive: false });
+    window.addEventListener("wheel", onWheel, { passive: false });
+
+    // Make sure adjustScroll runs initially
+    setTimeout(adjustScroll, 100);
 
     return () => {
       window.removeEventListener("DOMContentLoaded", adjustScroll);
       window.removeEventListener("resize", adjustScroll);
       window.removeEventListener("scroll", adjustScroll);
-      window.removeEventListener("wheel", shiftScroll);
+      window.removeEventListener("wheel", onWheel);
     };
   }, []);
 
   return (
     <div className={styles.wrapper}>
-      <div id="pictures">
+      {/* BACKGROUND IMAGES (horizontal strip) */}
+      <div id="pictures" className={styles.pictures}>
         <table className={styles.bgtable}>
           <tbody>
             <tr>
@@ -78,9 +87,12 @@ const Home = () => {
             </tr>
           </tbody>
         </table>
+
+        {/* translucent overlay sits above images but below interactive content */}
         <div className={styles.overlay}></div>
       </div>
 
+      {/* FIXED / FOREGROUND CONTENT (logo, text, buttons) - stays on top of images */}
       <div className={styles.maintable}>
         <table className="center">
           <tbody>
@@ -93,6 +105,7 @@ const Home = () => {
                 />
               </td>
             </tr>
+
             <tr>
               <td>
                 <div className="invert">
@@ -138,6 +151,7 @@ const Home = () => {
                 </table>
               </td>
             </tr>
+
             <tr className={styles["scroll-tr"]}>
               <td>
                 <div className={styles.scrollbar}>
