@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import ProgramCard from "../components/ProgramsCard";
 
 const programsList = [
 	{
@@ -85,36 +86,18 @@ const Programs = () => {
 				<div className="row g-4">
 					{filteredPrograms.map((program, idx) => (
 						<div key={idx} className="col-md-6 col-lg-3">
-							<div className="card h-100 shadow-sm">
-								<img
-									src={program.image}
-									className="card-img-top"
-									alt={program.name}
-								/>
-								<div className="card-body">
-									<h5 className="card-title">{program.name}</h5>
-									<p>
-										<strong>Type:</strong> {program.type}
-									</p>
-									<p>
-										<strong>Eligibility:</strong> {program.eligibility}
-									</p>
-									<p>
-										<strong>Frequency:</strong> {program.frequency}
-									</p>
-									<p>
-										<strong>Cost:</strong> {program.cost}
-									</p>
-									<p>
-										<strong>Host:</strong> {program.host}
-									</p>
-									<Link
-										to={`/${program.detailsPage}`}
-										className="btn btn-primary w-100">
-										See Details
-									</Link>
-								</div>
-							</div>
+							<ProgramCard
+								name={program.name}
+								type={program.type}
+								elig={program.eligibility}
+								freq={program.frequency}
+								cost={program.cost}
+								host={program.host}
+								img={program.image}
+								about= "[Need to store about in entry]"
+								sign_up_link="[Need to store sign up link in entry]"
+								map_link="[Need to store map link in entry]"
+							/>
 						</div>
 					))}
 				</div>

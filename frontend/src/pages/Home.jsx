@@ -6,8 +6,8 @@ const Home = () => {
   useEffect(() => {
     function adjustScroll() {
       
-      const scrollbar = document.getElementsByClassName(styles.scrollbar);
-      const thumb = document.getElementsByClassName(styles.scrollthumb);
+      const scrollbar = document.getElementsByClassName(styles.scrollbar)[0];
+      const thumb = document.getElementsByClassName(styles.scrollthumb)[0];
       const scrollEl = document.scrollingElement || document.documentElement;
 
       if (!scrollbar || !thumb) return;
