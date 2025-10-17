@@ -22,34 +22,36 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.25);
-    pointer-events: none; /* clicks pass through */
-    z-index: 5; /* behind buttons */
+    pointer-events: none;
+    z-index: 5;
 }
 
 /* Header / Icon */
 .icon {
-    position: fixed;
-    width: 25em;
-    height: 25em;
-    margin-top: 1em;
-    left: 0;
-    right: 0;
+    width: 12em;              /* smaller logo */
+    height: auto;             /* keep aspect ratio */
+    margin-top: 2em;          /* add top space */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     z-index: 10;
 }
 
 /* Main table wrapper */
 .maintable {
-    position: fixed;
+    position: relative;       /* fixed -> relative for proper flow */
+    margin-top: 5em;          /* push content below top */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 20; /* ensure buttons are on top */
+    z-index: 20;
+    text-align: center;
 }
 
 /* Scrollbar */
 .scroll-tr {
     height: 3em;
     width: 55em;
-    transform: translateY(-5em);
+    margin-top: 2em;          /* give room below buttons */
     z-index: 15;
 }
 
@@ -57,6 +59,7 @@
     position: relative;
     width: 55em;
     height: 1.5em;
+    margin: 0 auto;
 }
 
 .scrollbody {
@@ -89,7 +92,7 @@
     width: 100%;
     height: 50%;
     text-align: center;
-    z-index: 1; /* behind overlay and buttons */
+    z-index: 1;
 }
 
 .wrapper td {
@@ -104,7 +107,7 @@
     padding: 0;
     opacity: 0;
     transition: opacity 2s;
-    pointer-events: none; /* <<< makes clicks pass through images */
+    pointer-events: none;
 }
 
 .fade-in {
@@ -119,6 +122,7 @@
     letter-spacing: -0.02em;
     color: white;
     text-align: center;
+    margin-top: 1em;
 }
 
 .wrapper p {
@@ -126,7 +130,7 @@
     line-height: 1.6;
     color: #cccccc;
     max-width: 60ch;
-    margin: 1em auto;
+    margin: 1.5em auto;
     text-shadow: 0 0 0.5em #00000067;
 }
 
@@ -146,7 +150,8 @@ button, .button, a.button,
     display: inline-block;
     transition: all 0.2s ease-in-out;
     position: relative;
-    z-index: 25; /* buttons always on top */
+    z-index: 25;
+    margin-top: 1em;          /* space buttons below text */
 }
 
 button:hover, .button:hover, a.button:hover,
@@ -163,6 +168,7 @@ button:hover, .button:hover, a.button:hover,
 
 .info {
     text-shadow: 0.1em 0.1em 0.2em black;
+    margin-top: 1em;          /* extra space below logo */
 }
 
 .food-banks-btn, .sponsors-btn, .programs-btn, .about-btn {
