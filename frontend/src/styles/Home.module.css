@@ -176,14 +176,14 @@ button:hover, .button:hover, a.button:hover,
 
 .thumbtext {
     position: fixed;
-    bottom: 0.25em;           
+    bottom: -1em;               /* pushes it further below buttons */
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
-    font-size: 0.7em;
-    color: #f5f5f5;
+    font-size: 0.65em !important; /* forces smaller text size */
+    color: #ffffff;
     opacity: 0.9;
-    z-index: 9999 !important;
-    text-shadow: 0 0 0.5em #000;
+    z-index: 99999 !important;   /* absolutely on top of all layers */
+    text-shadow: 0 0 0.75em #000;
     pointer-events: none;
 }
