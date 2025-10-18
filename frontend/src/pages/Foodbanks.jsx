@@ -69,16 +69,18 @@ const FoodBanks = () => {
   }, []);
 
   if (loading) return <div className="container my-5">Loading food banks...</div>;
-  if (error) return (
-    <div className="container my-5 text-danger">
-      Failed to load live data, showing static list instead. Error: {error}
-    </div>
-  );
 
   return (
     <div className="foodbanks-page">
       <Navbar />
       <Header headerText="Food Banks & Pantries" />
+
+      {/* Show error as warning but still render static list */}
+      {error && (
+        <div className="container my-5 text-warning">
+          Failed to load live data, showing static list instead.
+        </div>
+      )}
 
       {/* Food Bank Cards */}
       <main className="container my-5">

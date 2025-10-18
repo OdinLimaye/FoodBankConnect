@@ -1,4 +1,3 @@
-// Sponsors.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Header from "../components/Header";
@@ -48,8 +47,7 @@ const sponsorsListStatic = [
             CanMander for the Hope Food Pantry, donating roughly 1,200 pounds of
             canned food each year. The store also partners with and supports other
             community organizations, including CASA, AIDS Walk Austin, and Hill
-            Country Ride for AIDS. Trader Joe's is another organization in Austin 
-            that works with Hope Food Pantry to make donations.`,
+            Country Ride for AIDS.`,
     sponsor_link: "https://www.dlair.net/austin/",
     map_link:
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3442.7507971841947!2d-97.73534872543222!3d30.358031503646735!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644cba542543a81%3A0x71d6a75b8593f74b!2sDragon%27s%20Lair%20Comics%20and%20Fantasy!5e0!3m2!1sen!2sus!4v1759120976221!5m2!1sen!2sus",
@@ -72,8 +70,7 @@ const sponsorsListStatic = [
             progressive values.
             The Trinity Church of Austin also founded the Hope Food Pantry and has
             continued to house and support it for the past 20 years, serving
-            countless families in need throughout the Austin community. Another frequent
-            collaborator of Hope Food Pantry is fellow Austin business Dragon's Lair.`,
+            countless families in need throughout the Austin community.`,
     sponsor_link: "https://www.trinitychurchofaustin.org/about/",
     map_link:
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6889.361204326793!2d-97.73415362543467!3d30.303153106268617!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644ca79c5b19ad5%3A0xb8e828e4b25fb889!2sTrinity%20Church%20of%20Austin!5e0!3m2!1sen!2sus!4v1759121661517!5m2!1sen!2sus",
@@ -88,13 +85,13 @@ const Sponsors = () => {
   useEffect(() => {
     async function fetchSponsors() {
       try {
-        const res = await fetch("https://foodbankconnect.me/API/sponsors"); // replace with actual endpoint
+        const res = await fetch("https://foodbankconnect.me/API/sponsors");
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         setSponsors(data);
       } catch (err) {
         console.error("Failed to fetch sponsors, using static list as fallback:", err);
-        setSponsors(sponsorsListStatic); // fallback to static list
+        setSponsors(sponsorsListStatic);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -105,22 +102,24 @@ const Sponsors = () => {
   }, []);
 
   if (loading) return <div className="container my-5">Loading sponsors...</div>;
-  if (error) return (
-    <div className="container my-5 text-danger">
-      Failed to load live data, showing static list instead. Error: {error}
-    </div>
-  );
 
+  // ✅ Always show sponsors (even if fetch failed)
   return (
     <div className="sponsors-page">
       <Navbar />
       <Header headerText="Sponsors & Donors" />
 
-      {/* Sponsor Cards */}
       <main className="container my-5">
+        {error && (
+          <div className="text-danger mb-3">
+            Failed to load live data, showing static list instead. Error: {error}
+          </div>
+        )}
+
         <div className="mb-4 text-muted">
           Showing {sponsors.length} Sponsors in Total
         </div>
+
         <div className="row g-4">
           {sponsors.map((sponsor, idx) => (
             <div key={idx} className="col-md-4">

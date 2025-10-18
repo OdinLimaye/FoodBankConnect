@@ -1,4 +1,3 @@
-// Programs.jsx
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Header from "../components/Header";
@@ -83,12 +82,6 @@ const Programs = () => {
   };
 
   if (loading) return <div className="container my-5">Loading programs...</div>;
-  if (error)
-    return (
-      <div className="container my-5 text-danger">
-        Failed to load live data, showing static list instead. Error: {error}
-      </div>
-    );
 
   return (
     <div className="programs-page">
@@ -97,6 +90,13 @@ const Programs = () => {
         headerText="Programs & Volunteer Opportunities"
         subText="Explore how you can participate or benefit from local food programs."
       />
+
+      {/* Show error as warning but still render static list */}
+      {error && (
+        <div className="container my-5 text-warning">
+          Failed to load live data, showing static list instead.
+        </div>
+      )}
 
       {/* Filter Buttons */}
       <div className="container text-center mb-4">
