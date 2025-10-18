@@ -170,7 +170,7 @@ const About = () => {
                 return (
                   <tr key={member.firstName} id={member.firstName}>
                     <td>{member.fullName}</td>
-                    <td><img src={`images/portraits/${member.firstName}Portrait.jpg`} alt={member.fullName} className="img-fluid" /></td>
+                    <td><img src={`images/portraits/${member.firstName}Portrait1.jpg`} alt={member.fullName} className="img-fluid" /></td>
                     <td>{bio}</td>
                     <td>{responsibilities}</td>
                     <td>{member.commits}</td>
