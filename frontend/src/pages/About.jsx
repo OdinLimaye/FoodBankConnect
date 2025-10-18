@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 
 const About = () => {
   const [teamData, setTeamData] = useState([
-    { firstName: "Odin", emails: ["odin@cs.utexas.edu"], userID: "29883443", commits: 0, issuesOpened: 0, issuesClosed: 0 },
-    { firstName: "Mahika", emails: ["mahika.dawar@utexas.edu"], userID: "30052392", commits: 0, issuesOpened: 0, issuesClosed: 0 },
-    { firstName: "Jose", emails: ["jl82838@utexas.edu"], userID: "29919402", commits: 0, issuesOpened: 0, issuesClosed: 0 },
-    { firstName: "Christine", emails: ["cdominic@cs.utexas.edu"], userID: "30022393", commits: 0, issuesOpened: 0, issuesClosed: 0 },
-    { firstName: "Francisco", emails: ["xenonaught@gmail.com", "ceo@dafrancc.com"], userID: "25760273", commits: 0, issuesOpened: 0, issuesClosed: 0 },
+    { firstName: "Odin", fullName: "Odin Limaye", emails: ["odinlimaye1@gmail.com", "odin@cs.utexas.edu"], userID: "29883443", commits: 0, issuesOpened: 0, issuesClosed: 0 },
+    { firstName: "Mahika", fullName: "Mahika Dawar", emails: ["mahika.dawar@utexas.edu"], userID: "30052392", commits: 0, issuesOpened: 0, issuesClosed: 0 },
+    { firstName: "Jose", fullName: "Jose Lopez", emails: ["jl82838@utexas.edu"], userID: "29919402", commits: 0, issuesOpened: 0, issuesClosed: 0 },
+    { firstName: "Christine", fullName: "Christine Dominic", emails: ["cdominic@cs.utexas.edu"], userID: "30022393", commits: 0, issuesOpened: 0, issuesClosed: 0 },
+    { firstName: "Francisco", fullName: "Francisco Vivas", emails: ["xenonaught@gmail.com", "ceo@dafrancc.com"], userID: "25760273", commits: 0, issuesOpened: 0, issuesClosed: 0 },
   ]);
 
   useEffect(() => {
@@ -15,7 +15,13 @@ const About = () => {
     const PER_PAGE = 100;
 
     async function fetchData() {
-      const updatedData = [...teamData];
+      // Reset counts for all members
+      const updatedData = teamData.map(member => ({
+        ...member,
+        commits: 0,
+        issuesOpened: 0,
+        issuesClosed: 0
+      }));
 
       // Fetch issues opened for each member
       for (let i = 0; i < updatedData.length; i++) {
@@ -98,7 +104,18 @@ const About = () => {
       <main className="container my-5">
         <h1 className="mb-4">About the Site</h1>
         <p>
-          This site's purpose is to connect volunteers, donors, and food banks in order to increase their ability to work with one another...
+          This site's purpose is to connect volunteers, donors, and food
+          banks in order to increase their ability to work with one
+          another to achieve the common goal of alleviating hunger in
+          impoverished communities. We want food banks to be able to
+          increase their visibility so that people in need of their
+          services know about them and what they offer. This site also
+          allows food banks to increase their volunteer and sponsor
+          numbers by displaying relevant information to those fields. We
+          want people looking to volunteer to be able to find a multitude
+          of programs and opportunities in which they can enroll. Lastly,
+          we want possible sponsors and donors to find organizations
+          towards which they can put funding and support. <br /><br />
         </p>
 
         <h2 className="mb-4">Meet the Team</h2>
@@ -118,36 +135,42 @@ const About = () => {
             </thead>
             <tbody>
               {teamData.map(member => {
-                // Original bios and responsibilities
                 let bio = "";
                 let responsibilities = "";
+
                 switch (member.firstName) {
                   case "Odin":
-                    bio = "I'm a Junior at UT Austin, majoring in Math and Computer Science...";
-                    responsibilities = "Domain, AWS hosting, front-end web development using GitLab API.";
+                    bio = (
+                      <>
+                        I'm a Junior at UT Austin, and I'm majoring in Math and Computer Science. In my free time, I
+                        like reading books, gardening, and hiking. You can find out more about me at my personal website:{" "}
+                        <a href="https://odinlimaye.com">odinlimaye.com</a>
+                      </>
+                    );
+                    responsibilities = "My main responsibilities have been handling our site's domain name and hosting on Amazon Web Services, along with front-end web development involving our API.";
                     break;
                   case "Francisco":
-                    bio = "Junior at UT Austin, externally transferred, Computer Science major...";
-                    responsibilities = "Postman API, splash page, HTML/CSS/JS.";
+                    bio = "I'm a Junior at UT Austin, but I externally transferred from Lone Star College - Montgomery and I am majoring in Computer Science. I like to play video games, watch movies and TV shows, exercise, cook, and be with family.";
+                    responsibilities = "I worked on the Postman API, and I worked on the splash page, ensuring that it looks clean and modern. I worked on the HTML, CSS, and Javascript.";
                     break;
                   case "Mahika":
-                    bio = "Junior at UT Austin, CS major, Applied Statistical Modeling minor...";
-                    responsibilities = "Instance pages, front-end tweaks and CSS clean-up.";
+                    bio = "I'm a Junior at UT Austin majoring in Computer Science, and minoring in Applied Statistical Modeling. I enjoy trying new recipes, dancing, and playing pickleball outside of class!";
+                    responsibilities = "I worked on building the instance pages mostly, as well as tweaking the CSS to clean up the website so it had a sleeker look. In this phase, I mostly worked on the front-end.";
                     break;
                   case "Jose":
-                    bio = "Junior at UT Austin, CS major...";
-                    responsibilities = "Front-end on model and instance pages.";
+                    bio = "I'm a Junior at UT Austin and I'm majoring in Computer Science. In my freetime, I enjoy watching shows or movies, listening to music, and play video games.";
+                    responsibilities = "My main responsibilities have been working in the front end on model and instance pages.";
                     break;
                   case "Christine":
-                    bio = "Junior at UT Austin, CS, Canfield Business & Finance...";
-                    responsibilities = "Bootstrap styling, instance pages, user experience.";
+                    bio = "I'm a Junior at UT Austin studying Computer Science, Canfield Business, and Finance. Outside of class I enjoy trying out matcha spots, watching F1, and reading books.";
+                    responsibilities = "My main responsibilities included designing and styling the site using the Bootstrap CSS framework to ensure a clean, responsive layout across all devices. I have also contributed to building and refining the instance pages, focusing on user experience!";
                     break;
                 }
 
                 return (
                   <tr key={member.firstName} id={member.firstName}>
-                    <td>{member.firstName}</td>
-                    <td><img src={`images/portraits/${member.firstName}Portrait.jpg`} alt={member.firstName} className="img-fluid" /></td>
+                    <td>{member.fullName}</td>
+                    <td><img src={`images/portraits/${member.firstName}Portrait.jpg`} alt={member.fullName} className="img-fluid" /></td>
                     <td>{bio}</td>
                     <td>{responsibilities}</td>
                     <td>{member.commits}</td>
@@ -161,7 +184,6 @@ const About = () => {
           </table>
         </div>
 
-        {/* Data sources, tools, links */}
         <h2 className="mt-5">Data Sources</h2>
         <p>
           <a href="https://fdc.nal.usda.gov/api-guide">USDA</a><br />
@@ -173,10 +195,26 @@ const About = () => {
         </p>
 
         <h2 className="mt-4">Tools Used</h2>
-        <p>GitLab, AWS, Namecheap...</p>
+        <p>
+          <strong>GitLab:</strong><br />
+          We used GitLab as our method of source control and collaborative integration. We used GitLab's Continuous
+          Integration features to manage our code's organization, structure, and functionality. Our GitLab repo also
+          automatically deploys to our hosting service due to our build configuration.<br /><br />
+          <strong>Amazon Web Services:</strong><br />
+          We used AWS to host our site on its CloudFront platform, using its S3 bucket structure to manage our static web
+          pages. We also used AWS to obtain our SSL certificate, allowing our site to transfer data through HTTPS.<br /><br />
+          <strong>Namecheap:</strong><br />
+          We used Namecheap to obtain our domain name and to verify our SSL certificate. We also currently use Namecheap
+          to redirect HTTP and www sub-domain calls to the standard HTTPS version of our site.
+        </p>
 
         <h2 className="mt-4">Optional Tools Used</h2>
-        <p>Bootstrap CSS framework...</p>
+        <p>
+          <strong>Bootstrap:</strong><br />
+          We used Bootstrap as our CSS framework, mainly making use of its pre-made objects such as navigational bars,
+          buttons, and tables. We also used Bootstrap's formatting tools to create consistently styled headers,
+          paragraphs, and text boxes.<br /><br />
+        </p>
 
         <h2 className="mt-4">Links</h2>
         <p>
@@ -185,7 +223,6 @@ const About = () => {
         </p>
       </main>
 
-      {/* Footer */}
       <footer className="text-center py-3 bg-primary text-white">&copy; 2025 FoodBankConnect</footer>
     </div>
   );

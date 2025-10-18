@@ -24,8 +24,14 @@ status:
 
 # Run this the very first time you use the Docker
 docker-setup:
-	docker run -it -p 3000:3000 -v ${PWD}:/app -w /app idb-frontend
+	# Build the Docker image
+	docker build -t idb-frontend .
+	# Run container, mount project folder, and install dependencies inside container
+	docker run -it -p 3000:3000 -v ${PWD}:/app -w /app --name idb-frontend idb-frontend sh -c "npm install && npm start"
 
 # Run this for all future uses of the Docker
 docker:
-	docker start -ai 535e07ae1540
+	# Start existing container and install any new dependencies
+	docker start -ai idb-frontend || \
+	docker run -it -p 3000:3000 -v ${PWD}:/app -w /app --name idb-frontend idb-frontend sh -c "npm install && npm start"
+	
