@@ -3,7 +3,6 @@ import Navbar from "./Navbar";
 import Header from "./Header";
 import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
-import styles from "../styles/Foodbanks.module.css"; // optional, create or adapt styles
 
 const FoodbankInstancePage = () => {
   const location = useLocation();
