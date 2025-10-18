@@ -50,11 +50,11 @@ const FoodbankInstancePage = () => {
 
         {/* Map */}
         {map && (
-          <section className={`${styles["map-container"]} mt-3`}>
+          <section className="map-container mt-3">
             <iframe
               src={decodeURIComponent(map)}
-              style={{ width: "80%", height: "450px" }}
-              allowFullScreen=""
+              style={{ width: "80%", height: "450px", border: 0 }}
+              allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title={`${name} map`}
