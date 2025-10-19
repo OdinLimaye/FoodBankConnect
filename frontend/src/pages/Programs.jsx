@@ -73,9 +73,12 @@ const Programs = () => {
   }, []);
 
   const filteredPrograms =
-    filter === "all"
-      ? programs
-      : programs.filter((p) => p.type === filter);
+  filter === "all"
+    ? programs
+    : programs.filter(
+        (p) => p.type && p.type.toLowerCase() === filter.toLowerCase()
+      );
+
 
   const handleFilterClick = (type) => {
     setFilter(type);
@@ -99,22 +102,18 @@ const Programs = () => {
       )}
 
       {/* Filter Buttons */}
-      <div className="container text-center mb-4">
-        <div className="btn-group">
-          {["all", "Distribution", "Volunteer", "Class", "Service"].map(
-            (type) => (
-              <button
-                key={type}
-                className={`btn btn-outline-primary ${
-                  filter === type ? "active" : ""
-                }`}
-                onClick={() => handleFilterClick(type)}
-              >
-                {type === "all" ? "All" : type}
-              </button>
-            )
-          )}
-        </div>
+      <div className="btn-group">
+        {["all", "distribution", "volunteer", "class", "service"].map((type) => (
+          <button
+            key={type}
+            className={`btn btn-outline-primary ${
+              filter.toLowerCase() === type ? "active" : ""
+            }`}
+            onClick={() => handleFilterClick(type)}
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+          </button>
+        ))}
       </div>
 
       {/* Program Cards */}
