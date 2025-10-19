@@ -1,0 +1,32 @@
+/* This is in alphabetical order, but the order doesn't matter. The ordering is just a remnant from DynamoDB. */
+
+{
+  "about": "The Central Texas Food Bank is the largest hunger-relief charity in Central Texas, providing over 50,000 meals every week to families in need. They distribute food through partner agencies and community programs, helping fight food insecurity in the Austin region. They have an on-site kitchen, allowing them to offer meal preparation from scratch in addition to job training and volunteer opportunities. ",
+  "address": "6500 Metropolis Dr",
+  "capacity": "50000",
+  "capacity_unit": "meals/week",
+  "city": "Austin",
+  "eligibility": "No ID required for most programs; income guidelines may apply for certain assistance",
+  "id": "1" ,
+  "image": "https://foodbankconnect.me/images/central-texas-food-bank.jpg",
+  "languages": 
+    [
+        "English", 
+        "Spanish" 
+    ],
+  "name": "Central Texas Food Bank" ,
+  "phone": "(512) 282-2111" ,
+  "services": 
+    [
+        /* You can make these into links if you want. Just make them HTML anchor tags. */
+        "Culinary Training Program",
+        "Nutrition Education",
+        "Emergency Food Assistance",
+        "Mobile Food Pantry",
+        "SNAP Outreach" 
+    ],
+  "type": "foodbank",
+  "urgency": "Very High" ,
+  "website": "https://www.centraltexasfoodbank.org/",
+  "zipcode": "78744"
+}
