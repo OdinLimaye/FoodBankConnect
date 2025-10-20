@@ -1,0 +1,15 @@
+{
+	"name": "Trader Joe's",
+	"image": "/images/trader-joes.png",
+	"alt": "Trader Joe's Logo",
+	"contribution": "Food Sourcing",
+	"contributionAmt": 180000,
+	"contributionUnit": "Pounds",
+	"affiliation": "Private Corporation",
+	"pastInvolvement": "Hope Food Pantry",
+	"about": "Trader Joe's is a national chain of grocery stores known ...",
+	"sponsor_link": "https://www.traderjoes.com/home/about-us",
+    "type": "program",
+	"map_link":
+		"https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d187102.43328912946!2d-97.83191852982272!3d30.277193772584845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1strader%20joe's!5e0!3m2!1sen!2sus!4v1760831297709!5m2!1sen!2sus"
+	}
