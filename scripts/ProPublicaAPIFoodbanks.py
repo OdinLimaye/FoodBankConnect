@@ -111,4 +111,4 @@ def scrape(q="food bank", state=None, max_results=100):
 if __name__ == "__main__":
     # Example usage: fetch Texas food banks, up to 100 results
     data = scrape(q="food bank", state="TX", max_results=100)
-    print(json.dumps(data, indent=2))
+    print(f"✅ Scraped {len(data)} food banks successfully.")
