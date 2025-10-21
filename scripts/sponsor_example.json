@@ -8,5 +8,8 @@
 	"pastInvolvement": "Hope Food Pantry",
 	"about": "Trader Joe's is a national chain of grocery stores known ...",
 	"sponsor_link": "https://www.traderjoes.com/home/about-us",
-    "type": "sponsor"
+    "type": "sponsor",
+	"city": "Wilmington",
+    "state": "DE",
+    "EIN": "832624526"
 	}
