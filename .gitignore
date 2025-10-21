@@ -3,3 +3,4 @@ frontend/node_modules
 scripts/foodbanks_and_programs.json
 scripts/foodbanks_with_programs.json
 scripts/foodbanks_programs.json
+donors.json

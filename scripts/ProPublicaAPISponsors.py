@@ -14,7 +14,6 @@ KEYWORDS = [
     "corporate giving"
 ]
 
-# Common keywords to recognize food-related recipients
 FOOD_RELATED_KEYWORDS = [
     "food bank",
     "pantry",
@@ -26,51 +25,41 @@ FOOD_RELATED_KEYWORDS = [
     "food insecurity"
 ]
 
-
-def classify_affiliation(name: str) -> str:
-    """Classify whether an organization is likely a private corporation or a nonprofit."""
+def classify_affiliation(name: str, org_detail: dict = None) -> str:
+    """Classify whether an organization is a private corporation or a nonprofit, including 501/503 type."""
     corp_terms = ["INC", "LLC", "CORP", "COMPANY", "CO.", "LTD", "CORPORATION"]
     if any(term in name.upper() for term in corp_terms):
         return "Private Corporation"
+    # If org_detail is available, extract nonprofit type
+    if org_detail:
+        ntype = org_detail.get("organization_type") or org_detail.get("ntee_code") or ""
+        if ntype:
+            return f"Nonprofit Foundation ({ntype})"
     return "Nonprofit Foundation"
 
-
 def fetch_grants(ein: str) -> str:
-    """
-    Fetch the first food-related grant recipient (if any) from an organization's filings.
-    Falls back to first grant if no food-related one is found.
-    """
+    """Fetch the first food-related grant recipient if possible."""
     url = f"{BASE_URL}/organizations/{ein}.json"
     resp = requests.get(url)
     if resp.status_code != 200:
         return "N/A"
     data = resp.json()
-
     filings = data.get("filings_with_data", [])
     for filing in filings:
         grants = filing.get("grants", [])
         if not grants:
             continue
-
-        # Try to find a food-related recipient
+        # Prefer food-related recipient
         for grant in grants:
             recipient = grant.get("recipient_name", "")
             if any(keyword in recipient.lower() for keyword in FOOD_RELATED_KEYWORDS):
                 return recipient
-
-        # Otherwise fall back to the first grant recipient
-        first_recipient = grants[0].get("recipient_name", "N/A")
-        if first_recipient:
-            return first_recipient
-
+        # Otherwise first grant
+        return grants[0].get("recipient_name", "N/A")
     return "N/A"
 
-
 def scrape(max_results=MAX_RESULTS):
-    """
-    Returns a list of sponsor JSON objects formatted for the database.
-    Automatically searches for donor-related organizations.
-    """
+    """Scrape sponsors and return as JSON array formatted for database."""
     all_results = []
     for keyword in KEYWORDS:
         page = 0
@@ -90,10 +79,28 @@ def scrape(max_results=MAX_RESULTS):
                     break
 
                 name = org.get("name", "N/A")
-                ein = org.get("ein", "")
-                about = org.get("mission", "N/A")
-                affiliation = classify_affiliation(name)
+                ein = org.get("ein", "N/A")
+                city = org.get("city", "N/A")
+                state_code = org.get("state", "N/A")
+
+                # Fetch org detail for more info
+                detail = None
+                if ein:
+                    detail_resp = requests.get(f"{BASE_URL}/organizations/{ein}.json")
+                    if detail_resp.status_code == 200:
+                        detail_json = detail_resp.json()
+                        detail = detail_json.get("organization")
+
+                # Ensure tax-exempt info
+                if detail:
+                    tax_period = detail.get("tax_period") or "Unknown"
+                    about = detail.get("mission") or f"Nonprofit, tax-exempt since {tax_period}"
+                else:
+                    about = "N/A"
+
+                affiliation = classify_affiliation(name, detail)
                 past_involvement = fetch_grants(ein) if ein else "N/A"
+                sponsor_link = f"https://projects.propublica.org/nonprofits/organizations/{ein}" if ein else "N/A"
 
                 donor_json = {
                     "name": name,
@@ -104,25 +111,29 @@ def scrape(max_results=MAX_RESULTS):
                     "affiliation": affiliation,
                     "pastInvolvement": past_involvement,
                     "about": about,
-                    "sponsor_link": f"https://projects.propublica.org/nonprofits/organizations/{ein}" if ein else "N/A",
-                    "type": "sponsor"
+                    "sponsor_link": sponsor_link,
+                    "type": "sponsor",
+                    "city": city,
+                    "state": state_code,
+                    "EIN": str(ein)
                 }
 
                 all_results.append(donor_json)
-                time.sleep(0.3)  # polite delay per org
+                time.sleep(0.3)
 
             page += 1
             if page >= data.get("num_pages", 0):
                 break
 
-            time.sleep(0.5)  # polite delay per page
+            time.sleep(0.5)
 
         if len(all_results) >= max_results:
             break
 
     return all_results
 
-
 if __name__ == "__main__":
-    # When run directly, just return the list for database insertion
     donors = scrape()
+    with open("donors.json", "w", encoding="utf-8") as f:
+        json.dump(donors, f, indent=4, ensure_ascii=False)
+    print(f"✅ Saved {len(donors)} sponsors to donors.json")
