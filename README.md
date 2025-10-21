@@ -3,6 +3,8 @@
 - **Scrapers Repo:**
   https://gitlab.com/dafrancc/fbc-scrapers
 
+- **Postman:**
+
 - **Canvas / Slack group number:**  
   55085_07  
 
@@ -123,6 +125,7 @@ https://foodbankconnect.me
 https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07/-/pipelines  
 - **Website:**
 https://foodbankconnect.me
+- **Postman:**
 
 ### Time Tracking
 | Member            | Estimated Hours | Actual Hours |  
