@@ -39,6 +39,33 @@ def infer_services(text):
         services.append("Food Distribution")
     return services
 
+def fetch_tax_exempt_date(ein: str):
+    """
+    Try to fetch the tax-exempt date from ProPublica.
+    Fallback to generic string if year is missing.
+    """
+    if not ein:
+        return "This is a nonprofit, tax exempt."
+    url = f"https://projects.propublica.org/nonprofits/organizations/{ein}"
+    try:
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+        if resp.status_code != 200:
+            return "This is a nonprofit, tax exempt."
+        text = resp.text
+        import re
+        match = re.search(r"Tax-exempt since ([A-Za-z0-9 ,]+)", text)
+        if match:
+            tax_str = match.group(1)
+            # check if there's a 4-digit year
+            if re.search(r"\b\d{4}\b", tax_str):
+                return f"Tax-exempt since {tax_str}"
+            else:
+                return "This is a nonprofit, tax exempt."
+        return "This is a nonprofit, tax exempt."
+    except:
+        return "This is a nonprofit, tax exempt."
+
+
 def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
     """
     Returns a list of JSON objects formatted for the FoodBank and Program schema.
@@ -66,12 +93,7 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
             detail = fetch_organization(ein)
             if detail and "organization" in detail:
                 org_detail = detail["organization"]
-                about = (
-                    org_detail.get("mission")
-                    or org_detail.get("ntee_description")
-                    or org_detail.get("purpose")
-                    or f"This is a nonprofit, tax exempt since {org_detail.get('tax_period', 'N/A')}."
-                )
+                about = fetch_tax_exempt_date(ein)
                 zipcode = org_detail.get("zipcode") or org_detail.get("zip") or "N/A"
                 phone = org_detail.get("telephone") or org_detail.get("phone") or "N/A"
             else:
@@ -128,7 +150,7 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
     return results
 
 if __name__ == "__main__":
-    data = scrape(q="food bank", max_results=10)  # <-- nationwide now
+    data = scrape(q="food bank", state=None, max_results=10)
     with open("foodbanks_programs.json", "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     print(f"✅ Scraped {len(data)//2} food banks and programs successfully.")
