@@ -28,7 +28,7 @@
 
 /* Header / Icon */
 .icon {
-    width: 12em;
+    width: 10em; /* smaller to fit better */
     height: auto;
     display: block;
     margin: 0 auto 1em auto;
@@ -43,6 +43,8 @@
     transform: translate(-50%, -50%);
     text-align: center;
     z-index: 20;
+    max-width: 90%; /* ensures table doesn't overflow */
+    padding: 1em 0; /* spacing for top and bottom */
 }
 
 /* Scrollbar */
@@ -107,7 +109,7 @@
     opacity: 0;
     transition: opacity 2s;
     pointer-events: none;
-    filter: blur(4px) brightness(0.85); /* blur and slightly darken */
+    filter: blur(4px) brightness(0.85);
 }
 
 .fade-in {
@@ -125,14 +127,14 @@
     margin-top: 0.5em;
 }
 
-/* Bright hero text */
+/* Hero text */
 .wrapper p {
-    font-size: 1.4em; /* larger text */
-    line-height: 1.8;
-    color: #ffffff; /* bright white */
+    font-size: 1.2em; /* slightly smaller to fit */
+    line-height: 1.6;
+    color: #ffffff;
     max-width: 60ch;
-    margin: 1.5em auto 2.5em auto;
-    text-shadow: 0 0 1em rgba(0,0,0,0.9); /* ensures readability */
+    margin: 1em auto 2em auto;
+    text-shadow: 0 0 1em rgba(0,0,0,0.9);
 }
 
 /* Buttons / links */
@@ -179,7 +181,7 @@ button:hover, .button:hover, a.button:hover,
 
 .thumbtext {
     position: fixed;
-    bottom: 7.5em;
+    bottom: 9.5em; 
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
