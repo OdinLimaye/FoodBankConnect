@@ -40,7 +40,7 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* center both ways */
+    transform: translate(-50%, -50%);
     text-align: center;
     z-index: 20;
 }
@@ -98,6 +98,7 @@
     padding: 0;
 }
 
+/* Slightly blurred background images */
 .bg-img {
     width: auto;
     height: 100vh;
@@ -106,14 +107,9 @@
     opacity: 0;
     transition: opacity 2s;
     pointer-events: none;
+    filter: blur(4px) brightness(0.85); /* blur and slightly darken */
 }
 
-/* Slightly blur carousel images */
-.carouselImage {
-    filter: blur(2px); /* slight blur */
-}
-
-/* Fade-in effect */
 .fade-in {
     opacity: 1;
     transition: opacity 2s;
@@ -129,15 +125,14 @@
     margin-top: 0.5em;
 }
 
-/* Hero text - darker shadow for better readability */
-.wrapper p,
-.wrapper .info {
-    font-size: 1.2em;
-    line-height: 1.6;
+/* Bright hero text */
+.wrapper p {
+    font-size: 1.4em; /* larger text */
+    line-height: 1.8;
     color: #ffffff; /* bright white */
     max-width: 60ch;
-    margin: 1.2em auto 2em auto;
-    text-shadow: 0 0 1em rgba(0, 0, 0, 0.8); /* darker shadow to improve contrast */
+    margin: 1.5em auto 2.5em auto;
+    text-shadow: 0 0 1em rgba(0,0,0,0.9); /* ensures readability */
 }
 
 /* Buttons / links */
@@ -173,7 +168,7 @@ button:hover, .button:hover, a.button:hover,
 }
 
 .info {
-    text-shadow: 0 0 1em rgba(0, 0, 0, 0.8); /* darker shadow */
+    text-shadow: 0.1em 0.1em 0.2em black;
 }
 
 .food-banks-btn, .sponsors-btn, .programs-btn, .about-btn {
@@ -184,7 +179,7 @@ button:hover, .button:hover, a.button:hover,
 
 .thumbtext {
     position: fixed;
-    bottom: 7.5em;               
+    bottom: 7.5em;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
