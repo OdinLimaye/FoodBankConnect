@@ -48,6 +48,10 @@
   border-color: #007bff;
 }
 
+.filterContainer {
+  text-align: center;
+}
+
 /* Filter bar spacing */
 .program-filter-bar {
   margin-bottom: 2rem;
