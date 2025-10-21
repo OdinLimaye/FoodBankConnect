@@ -1,189 +1,143 @@
-/* Import Google Fonts */
+/* =========================
+   Google Fonts
+   ========================= */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&family=Motiva+Sans:wght@800&display=swap');
 
-/* Reset and base styles */
-* {
-    margin: 0;
-    padding: 0;
-    font-family: "Motiva Sans", "Roboto", sans-serif;
+/* =========================
+   Carousel / Background
+   ========================= */
+.carouselWrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Hide scrollbars */
-*::-webkit-scrollbar { display: none; }
-* { -ms-overflow-style: none; scrollbar-width: none; }
-
-.wrapper body {
-    background-color: #1a1a1a;
-    color: white;
+.carouselItem {
+  height: 100vh;
+  display: flex !important;            
+  justify-content: center;
+  align-items: center;
+  position: relative;                 
 }
 
-/* Overlay */
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.25);
-    pointer-events: none;
-    z-index: 5;
+.carouselImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  margin: auto;
+  display: block;
+  opacity: 0.8;
+  filter: blur(3px) grayscale(30%);
+  transition: opacity 2s, filter 2s;
 }
 
-/* Header / Icon */
+/* =========================
+   Overlay / Text Container
+   ========================= */
+.overlayContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;               
+  display: flex;
+  justify-content: center;  
+  align-items: center;      
+  color: white;
+  text-align: center;
+}
+
+/* =========================
+   Text wrapper
+   ========================= */
+.wrapper {
+  position: relative;
+  z-index: 10;
+  padding: 2rem;
+  max-width: 70ch;
+  margin: 0 auto;
+}
+
+/* Dark overlay behind text */
+.wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: -1; /* behind text */
+  border-radius: 0.5rem;
+}
+
+/* =========================
+   Text styles
+   ========================= */
+.wrapper .info {
+  color: #ffffff; /* bright white */
+  text-shadow: 0 0 1em rgba(0, 0, 0, 0.7);
+  font-size: 1.25em;
+  line-height: 1.6;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* =========================
+   Icon
+   ========================= */
 .icon {
-    width: 12em;
-    height: auto;
-    display: block;
-    margin: 0 auto 1em auto;
-    z-index: 10;
+  width: 12em;
+  height: auto;
+  display: block;
+  margin: 0 auto 1em auto;
+  z-index: 10;
 }
 
-/* Main table wrapper (centered and fixed) */
-.maintable {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* center both ways */
-    text-align: center;
-    z-index: 20;
-}
-
-/* Scrollbar */
-.scroll-tr {
-    height: 3em;
-    width: 55em;
-    margin-top: 2em;
-    z-index: 15;
-}
-
-.scrollbar {
-    position: relative;
-    width: 55em;
-    height: 1.5em;
-    margin: 0 auto;
-}
-
-.scrollbody {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 0.25em;
-    transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 1em;
-    box-shadow: 0 0 1em #000000aa;
-}
-
-.scrollthumb {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    width: 2.5em;
-    height: 1em;
-    border-radius: 1em;
-    background: white;
-    box-sizing: border-box;
-}
-
-/* Background table and images */
-.bgtable {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
-    text-align: center;
-    z-index: 1;
-}
-
-.wrapper td {
-    margin: 0;
-    padding: 0;
-}
-
-.bg-img {
-    width: auto;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
-    transition: opacity 2s;
-    pointer-events: none;
-}
-
-.fade-in {
-    opacity: 1;
-    transition: opacity 2s;
-}
-
-/* Text styles */
-.wrapper h1, h2, h3, h4, h5, h6 {
-    font-weight: 800;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    color: white;
-    text-align: center;
-    margin-top: 0.5em;
-}
-
-.wrapper p {
-    font-size: 1.2em;
-    line-height: 1.6;
-    color: #cccccc;
-    max-width: 60ch;
-    margin: 1.2em auto 2em auto;
-    text-shadow: 0 0 0.5em #00000067;
-}
-
-/* Buttons / links */
+/* =========================
+   Buttons
+   ========================= */
 button, .button, a.button,
-.about-btn, .sponsors-btn, .programs-btn, .food-banks-btn {
-    background-color: #000;
-    color: #fff;
-    font-size: 1em;
-    font-weight: 500;
-    padding: 0.75em 1.5em;
-    border-radius: 999px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    text-decoration: none;
-    display: inline-block;
-    transition: all 0.2s ease-in-out;
-    position: relative;
-    z-index: 25;
-    margin-top: 0.75em;
+.food-banks-btn, .sponsors-btn, .programs-btn, .about-btn {
+  background-color: #000;
+  color: #fff;
+  font-size: 1em;
+  font-weight: 500;
+  padding: 0.75em 1.5em;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  z-index: 15;
+  margin: 0.75em 0.5em 0 0.5em;
 }
 
 button:hover, .button:hover, a.button:hover,
-.about-btn:hover, .sponsors-btn:hover, .programs-btn:hover, .food-banks-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+.food-banks-btn:hover, .sponsors-btn:hover, .programs-btn:hover, .about-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
 }
 
-/* Specific element adjustments */
-.thumbtext {
-    transform: translateY(1.5em);
-    opacity: 85%;
-}
-
+/* =========================
+   Additional helpers
+   ========================= */
 .info {
-    text-shadow: 0.1em 0.1em 0.2em black;
-}
-
-.food-banks-btn, .sponsors-btn, .programs-btn, .about-btn {
-    margin: 0.5em;
-    border-radius: 0.25em;
-    box-shadow: 0 0 0.5em #00000067;
+  text-shadow: 0 0 1em rgba(0,0,0,0.7);
 }
 
 .thumbtext {
-    position: fixed;
-    bottom: 7.5em;               
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    font-size: 0.7em !important;
-    color: #ffffff;
-    opacity: 0.9;
-    z-index: 99999 !important;
-    text-shadow: 0 0 0.75em #000;
-    pointer-events: none;
+  position: fixed;
+  bottom: 7.5em;               
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 0.75em;
+  color: #ffffff;
+  opacity: 0.95;
+  z-index: 9999;
+  text-shadow: 0 0 0.75em #000;
+  pointer-events: none;
 }
