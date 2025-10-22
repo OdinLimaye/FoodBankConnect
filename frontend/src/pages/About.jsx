@@ -184,6 +184,18 @@ const About = () => {
           </table>
         </div>
 
+        <h2 className="mt-5">Integrating Disparate Data</h2>
+        <p>
+          We saw some interesting results in regards to integrating the disparate models together on our site, both in the 
+          front and back ends of our website. Since the three different models are related, we noticed a decent amount 
+          of overlap when comparing common attributes and similar data fields. However, each model was just unique enough to 
+          exhibit its own behavior and attributes that the other models did not share. For example, all the models have a sense 
+          of location - where the food bank is located, where the program is taking place, where the sponsor is headquartered. But, 
+          a sponsor wouldn't have a sign-up link like a program would, and a food bank wouldn't have an employee identification 
+          number with the IRS like the charitable donors would. This led to Venn-diagram-esque overlap of commonalities and differences
+          between data of the three different models.
+        </p>
+
         <h2 className="mt-5">Data Sources</h2>
         <p>
           <a href="https://fdc.nal.usda.gov/api-guide">USDA</a><br />
@@ -217,12 +229,12 @@ const About = () => {
           <strong>React:</strong><br />
           We used React as the central framework for the front-end of our website, using it to create components 
           and templates in our dynamic instance page and model page card generation. We also made use of React's routing
-          to organize the interconncted links within our site with the correct variable passing.<br /><br />
+          to organize the interconnected links within our site with the correct variable passing.<br /><br />
         <p>
           <strong>Beautiful Soup:</strong><br />
           We used the Beautiful Soup library for Python to aid us in our web scraping when populating our database. This 
           library provided helpful tools and objects for reading from HTML pages and navigating among the various sections 
-          in these HTML files.
+          in these HTML files.<br /><br />
         </p>
         <p>
           <strong>Google Cloud API:</strong><br />

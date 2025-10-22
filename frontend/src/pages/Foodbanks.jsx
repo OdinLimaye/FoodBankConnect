@@ -44,7 +44,7 @@ const Foodbanks = () => {
         {/* Top info and pagination */}
         <div className="d-flex justify-content-between align-items-center mb-3">
           <p className="mb-0">
-            Showing {foodbanks.length} foodbanks
+            Showing {foodbanks.length} / 100 foodbanks 
           </p>
           <div>
             <button
