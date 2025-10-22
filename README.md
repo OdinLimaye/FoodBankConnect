@@ -1,6 +1,6 @@
 # Project Proposal  
 
-- **Scrapers Repo:**
+- **Web Scrapers Repo:**
   https://gitlab.com/dafrancc/fbc-scrapers
 
 - **Postman:**
