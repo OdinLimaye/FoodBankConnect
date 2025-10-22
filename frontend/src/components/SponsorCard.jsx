@@ -22,18 +22,22 @@ const SponsorCard = ({
 		<div
 			className={`card ${styles["sponsor-card"]} h-100 shadow-sm`}
 			onClick={handleClick}
-			style={{ cursor: "pointer" }}>
+			style={{ cursor: "pointer" }}
+		>
 			<div className={styles["sponsor-img-container"]}>
 				<img src={sponsor_img} alt={sponsor_alt} />
 			</div>
 			<div className={styles["card-body"]}>
-				<h5 className={styles["card-title"]}>{name}</h5>
 				<p className={styles["text"]}>
+					<strong>Name:</strong> {name}
+					<br />
 					<strong>Contribution:</strong> Donations / Grants
 					<br />
 					<strong>Affiliation:</strong> {affiliation}
 					<br />
-					<strong>Location:</strong> {city}, {state}
+					<strong>City:</strong> {city}
+					<br />
+					<strong>State:</strong> {state}
 				</p>
 			</div>
 		</div>
