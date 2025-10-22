@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Header from "./Header";
@@ -10,6 +10,7 @@ const BASE_URL = "https://api.foodbankconnect.me/v1/sponsors";
 
 const SponsorInstancePage = () => {
 	const location = useLocation();
+	const navigate = useNavigate();
 	const { id } = location.state || {};
 	const [sponsor, setSponsor] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -33,6 +34,15 @@ const SponsorInstancePage = () => {
 		};
 		fetchSponsor();
 	}, [id]);
+
+	const handleNavigate = (type) => {
+		if (!sponsor?.id) return;
+		if (type === "foodbank") {
+			navigate(`/foodbanks/${sponsor.id}`, { state: { id: sponsor.id, name: sponsor.name } });
+		} else if (type === "program") {
+			navigate(`/programs/${sponsor.id}`, { state: { id: sponsor.id, name: sponsor.name } });
+		}
+	};
 
 	if (loading) return <div className="container my-5">Loading sponsor details...</div>;
 	if (!sponsor) return <div className="container my-5">Sponsor not found.</div>;
@@ -61,7 +71,31 @@ const SponsorInstancePage = () => {
 						<li><strong>Contribution Amount:</strong> {sponsor.contribution_amt}</li>
 						<li><strong>City:</strong> {sponsor.city}</li>
 						<li><strong>State:</strong> {sponsor.state}</li>
-						<li><strong>Past Involvement:</strong> {sponsor.past_involvement}</li>
+						<li>
+							<strong>Past Involvement:</strong>{" "}
+							{sponsor.past_involvement || "N/A"}
+							<br />
+							{/* New navigation links */}
+							<a
+								href="#"
+								onClick={(e) => {
+									e.preventDefault();
+									handleNavigate("foodbank");
+								}}
+							>
+								View Related Foodbank
+							</a>{" "}
+							|{" "}
+							<a
+								href="#"
+								onClick={(e) => {
+									e.preventDefault();
+									handleNavigate("program");
+								}}
+							>
+								View Related Program
+							</a>
+						</li>
 						<li style={{ marginTop: "25px" }}>
 							<strong>Website:</strong>{" "}
 							<a href={sponsor.sponsor_link} target="_blank" rel="noreferrer">
@@ -84,7 +118,8 @@ const SponsorInstancePage = () => {
 							src={sponsor.map_link}
 							allowFullScreen=""
 							loading="lazy"
-							referrerPolicy="no-referrer-when-downgrade"></iframe>
+							referrerPolicy="no-referrer-when-downgrade"
+						></iframe>
 					</section>
 				)}
 			</main>
