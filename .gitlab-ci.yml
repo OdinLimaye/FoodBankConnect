@@ -1,40 +1,53 @@
 stages:
   - build
-  - backend_test
-  - deploy
+  - deploy              # Frontend deploy runs before any backend work
+  - backend_test        # Non-blocking tests run AFTER deploy
+  - backend_release     # Non-blocking release runs AFTER deploy
   - selenium_tests
-  - backend_release
-
 
 # ------------------------------
-# Frontend: Build React (unchanged)
+# Frontend: Build React
 # ------------------------------
 build_react:
   stage: build
   image: node:20-bullseye
   script:
     - cd frontend
-    # Install dependencies
     - npm ci
-    # Create the production build in /build
     - CI=false npm run build
   artifacts:
     paths:
-      # Save build folder for next job
       - frontend/build
   rules:
-    # Only build on pushes to the main branch
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
     - when: never
 
 # ------------------------------
-# Backend: Python unit tests (pytest) — non-blocking
+# Frontend: Deploy to S3 + CloudFront
+# ------------------------------
+deploy_website:
+  stage: deploy
+  image:
+    name: amazon/aws-cli
+    entrypoint: [""]
+  script:
+    - aws s3 sync frontend/build/ s3://$S3_BUCKET --delete
+    - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DIST_ID --paths "/*"
+  dependencies:
+    - build_react
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+    - when: never
+
+# ------------------------------
+# Backend: Python unit tests (pytest) — non-blocking and AFTER deploy
 # ------------------------------
 backend_unit_tests:
   stage: backend_test
   image: python:3.11
-  allow_failure: true           # <-- ensures frontend still proceeds
+  allow_failure: true                   # never block anything
   services:
     - name: postgres:15
       alias: postgres
@@ -43,7 +56,6 @@ backend_unit_tests:
     PIP_DISABLE_PIP_VERSION_CHECK: "1"
     PYTHONDONTWRITEBYTECODE: "1"
     PYTHONUNBUFFERED: "1"
-    # Flask app env for tests
     FLASK_ENV: "production"
     PORT: "8080"
     DB_HOST: "postgres"
@@ -52,7 +64,6 @@ backend_unit_tests:
     DB_PASSWORD: "postgres"
     DB_NAME: "postgres"
     DB_SCHEMA: "app"
-    # Postgres service defaults
     POSTGRES_DB: postgres
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
@@ -60,7 +71,7 @@ backend_unit_tests:
     - python -V
     - pip install -r requirements.txt
     - pip install pytest pytest-cov
-    # Wait for Postgres to be ready
+    # Wait for Postgres
     - for i in {1..30}; do pg_isready -h postgres -p 5432 && break; sleep 1; done || (echo "Postgres not ready" && exit 1)
   script:
     - pytest -q --maxfail=1 --disable-warnings --cov=./ --cov-report=xml:coverage.xml --junitxml=pytest-report.xml
@@ -75,23 +86,22 @@ backend_unit_tests:
       - pytest-report.xml
       - coverage.xml
   rules:
-    # Only run when backend/test files change; never block pipeline
     - changes:
         - main.py
         - scraper.py
-        - db-tests/**/* # pytest and postman files
         - requirements.txt
+        - tests/**/*         # your pytest tree
       when: on_success
     - when: never
 
 # ------------------------------
-# Backend: API tests (start Flask + run Postman via Newman) — non-blocking
+# Backend: API tests (start Flask + run Postman via Newman) — non-blocking and AFTER deploy
 # ------------------------------
 backend_api_tests:
   stage: backend_test
   image: node:20
-  allow_failure: true           # <-- ensures frontend still proceeds
-  needs: []                     # don't depend on unit tests; keep independent
+  allow_failure: true                   # never block anything
+  needs: []                             # keep independent
   services:
     - name: postgres:15
       alias: postgres
@@ -112,18 +122,27 @@ backend_api_tests:
     - apt-get update && apt-get install -y python3 python3-pip curl
     - pip install -r requirements.txt
     - npm install -g newman
-    # wait for postgres socket to accept connections
-    - for i in {1..30}; do (python3 - <<'PY'
-import socket; s=socket.socket(); s.settimeout(1)
+    # Wait for Postgres socket using a safe heredoc inside a block scalar
+    - |
+      for i in {1..30}; do
+        python3 - <<'PY'
+import socket, sys
+s = socket.socket()
+s.settimeout(1)
 try:
-  s.connect(('postgres',5432)); print("ok")
+    s.connect(('postgres', 5432))
+    print("ok")
+    sys.exit(0)
 except Exception:
-  pass
-s.close()
+    sys.exit(1)
+finally:
+    s.close()
 PY
-) && break; sleep 1; done
+        [ $? -eq 0 ] && break
+        sleep 1
+      done
   script:
-    # Start Flask app (your main.py) in the background
+    # Start Flask app in background
     - python3 main.py & echo $! > flask.pid
     # Wait for health endpoint
     - for i in {1..60}; do curl -sf http://localhost:8080/health && break; sleep 1; done
@@ -138,65 +157,16 @@ PY
     paths:
       - newman-results.xml
   rules:
-    # Only run when backend/test files change; never block pipeline
     - changes:
         - main.py
         - scraper.py
-        - api-tests/**/* # pytest and postman files
         - requirements.txt
+        - tests/postman/**/*  # your postman/newman files
       when: on_success
     - when: never
 
 # ------------------------------
-# Frontend: Deploy to S3 + CloudFront (unchanged)
-# ------------------------------
-deploy_website:
-  stage: deploy
-  image:
-    name: amazon/aws-cli
-    entrypoint: [""]
-  script:
-    - aws s3 sync frontend/build/ s3://$S3_BUCKET --delete
-    - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DIST_ID --paths "/*"
-  dependencies:
-    # Use the build from the previous job
-    - build_react
-  rules:
-    # Only deploy on pushes to the main branch
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: on_success
-    - when: never
-
-# ------------------------------
-# Frontend: Selenium tests (kept disabled as in your current file)
-# ------------------------------
-selenium_tests:
-  stage: selenium_tests
-  image: python:3.12-bullseye
-  script:
-    # Install dependencies
-    - apt-get update && apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
-    - pip install selenium
-    # Install Chrome
-    - wget -q -O google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    - apt install -y ./google-chrome.deb
-    # Install ChromeDriver
-    - CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-    - wget -q https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip
-    - unzip chromedriver_linux64.zip
-    - mv chromedriver /usr/local/bin/
-    - chmod +x /usr/local/bin/chromedriver
-    # Run Selenium tests
-    - cd frontend/src/selenium_tests
-    - python -m unittest discover -s . -p "*.py" -v
-  dependencies:
-    - deploy_website
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: never  # Change when ready to run tests
-    - when: never
-# ------------------------------
-# Backend Release: build & push 2 images, update Lambda, start Batch — non-blocking
+# Backend Release: build & push 2 images, update Lambda, start Batch — non-blocking and AFTER deploy
 # ------------------------------
 backend_release:
   stage: backend_release
@@ -204,80 +174,77 @@ backend_release:
   services:
     - name: docker:24.0.7-dind
       alias: docker
-      command: ["--tls=false", "--mtu=1460"]
-  allow_failure: true             # <-- never block frontend
+      command: ["--tls=false","--mtu=1460"]
+  allow_failure: true                 # never block anything
   variables:
     DOCKER_HOST: "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
-    # ----- REQUIRED AWS VARS (set these in GitLab CI variables) -----
+    # AWS (set these in GitLab CI variables)
     AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
     AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-    # ECR & IMG TAG
-    ECR_REGISTRY: $ECR_REGISTRY          # e.g. 123456789012.dkr.ecr.us-east-2.amazonaws.com
-    ECR_REPO_API: $ECR_REPO_API          # e.g. fbc-rest-api
-    ECR_REPO_LOADER: $ECR_REPO_LOADER    # e.g. fbc-load-db
+    # ECR
+    ECR_REGISTRY: $ECR_REGISTRY
+    ECR_REPO_API: $ECR_REPO_API
+    ECR_REPO_LOADER: $ECR_REPO_LOADER
     IMAGE_TAG: $CI_COMMIT_SHORT_SHA
     # Lambda
-    LAMBDA_FUNCTION_NAME: $LAMBDA_FUNCTION_NAME   # e.g. fbc-rest-api
+    LAMBDA_FUNCTION_NAME: $LAMBDA_FUNCTION_NAME
     # Batch
-    BATCH_JOB_QUEUE: $BATCH_JOB_QUEUE             # e.g. fbc-queue
-    BATCH_JOB_DEFINITION: $BATCH_JOB_DEFINITION   # e.g. fbc-refill:1
-    BATCH_JOB_NAME: $BATCH_JOB_NAME               # e.g. fbc-refill-${CI_COMMIT_SHORT_SHA}
-    # Local build contexts (adjust paths if your Dockerfiles live elsewhere)
+    BATCH_JOB_QUEUE: $BATCH_JOB_QUEUE
+    BATCH_JOB_DEFINITION: $BATCH_JOB_DEFINITION     # e.g. fbc-refill  (or fbc-refill:2 to pin)
+    BATCH_JOB_NAME: $BATCH_JOB_NAME                 # e.g. fbc-refill-${CI_COMMIT_SHORT_SHA}
+    # Docker build paths (override in CI variables if needed)
     API_CONTEXT: "."
-    API_DOCKERFILE: "Dockerfile.api"              # or "Dockerfile" if single file
+    API_DOCKERFILE: "Dockerfile.api"
     LOADER_CONTEXT: "."
     LOADER_DOCKERFILE: "Dockerfile.loader"
   before_script:
-    # Install AWS CLI inside docker:24 image
     - apk add --no-cache curl python3 py3-pip bash jq
     - pip install awscli
-    # ECR login
     - aws --version
     - aws ecr get-login-password --region "$AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
   script:
-    # --- Build & push Image 1 (API) ---
-    - echo "Building API image..."
+    # Build & push API image
+    - echo "Building API image…"
     - docker build -f "$API_DOCKERFILE" -t "$ECR_REGISTRY/$ECR_REPO_API:$IMAGE_TAG" "$API_CONTEXT"
     - docker push "$ECR_REGISTRY/$ECR_REPO_API:$IMAGE_TAG"
-    # (Optional) also push 'latest' on main
     - |
       if [ "$CI_COMMIT_BRANCH" = "main" ]; then
         docker tag "$ECR_REGISTRY/$ECR_REPO_API:$IMAGE_TAG" "$ECR_REGISTRY/$ECR_REPO_API:latest"
         docker push "$ECR_REGISTRY/$ECR_REPO_API:latest"
       fi
 
-    # --- Build & push Image 2 (Loader) ---
-    - echo "Building Loader image..."
+    # Build & push Loader image
+    - echo "Building Loader image…"
     - docker build -f "$LOADER_DOCKERFILE" -t "$ECR_REGISTRY/$ECR_REPO_LOADER:$IMAGE_TAG" "$LOADER_CONTEXT"
     - docker push "$ECR_REGISTRY/$ECR_REPO_LOADER:$IMAGE_TAG"
-    # (Optional) also push 'latest' on main
     - |
       if [ "$CI_COMMIT_BRANCH" = "main" ]; then
         docker tag "$ECR_REGISTRY/$ECR_REPO_LOADER:$IMAGE_TAG" "$ECR_REGISTRY/$ECR_REPO_LOADER:latest"
         docker push "$ECR_REGISTRY/$ECR_REPO_LOADER:latest"
       fi
 
-    # --- Update Lambda to the new API image ---
-    - echo "Updating Lambda function image..."
+    # Update Lambda to new API image
+    - echo "Updating Lambda function image…"
     - aws lambda update-function-code \
         --function-name "$LAMBDA_FUNCTION_NAME" \
         --image-uri "$ECR_REGISTRY/$ECR_REPO_API:$IMAGE_TAG" \
         --region "$AWS_DEFAULT_REGION" \
-        | jq -r '.LastUpdateStatus, .StateReason || empty'
-    # (Optional) wait until it's Active (does not fail pipeline if it takes long)
+        | jq -r '.LastUpdateStatus, .StateReason // empty'
+
+    # Wait for Lambda to be Active (best-effort; non-fatal)
     - |
-      echo "Waiting for Lambda to be Active (timeout ~2min)..."
-      for i in $(seq 1 24); do
+      echo "Waiting for Lambda to be Active (~2min max)…"
+      for i in {1..24}; do
         STATUS=$(aws lambda get-function-configuration --function-name "$LAMBDA_FUNCTION_NAME" --region "$AWS_DEFAULT_REGION" | jq -r '.State')
         echo "Lambda state: $STATUS"
         [ "$STATUS" = "Active" ] && break
         sleep 5
       done
 
-    # --- Submit AWS Batch job to refill database ---
-    - echo "Submitting AWS Batch job..."
+    # Submit AWS Batch job
+    - echo "Submitting AWS Batch job…"
     - aws batch submit-job \
         --job-name "${BATCH_JOB_NAME:-fbc-refill-$CI_COMMIT_SHORT_SHA}" \
         --job-queue "$BATCH_JOB_QUEUE" \
@@ -285,11 +252,36 @@ backend_release:
         --region "$AWS_DEFAULT_REGION" \
         --container-overrides "image=$ECR_REGISTRY/$ECR_REPO_LOADER:$IMAGE_TAG,environment=[]" \
         | tee batch_submit.json
-    - echo "Batch job submitted: $(cat batch_submit.json | jq -r .jobId)"
+    - echo "Batch job submitted: $(jq -r .jobId batch_submit.json)"
   rules:
-    # Run on main (and optionally tags) without blocking anything
+    # Run on main (and optionally tags)
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
-    - if: '$CI_COMMIT_TAG'         # OPTIONAL: run on tags, too
+    - if: '$CI_COMMIT_TAG'
       when: on_success
+    - when: never
+
+# ------------------------------
+# Frontend: Selenium tests (kept disabled)
+# ------------------------------
+selenium_tests:
+  stage: selenium_tests
+  image: python:3.12-bullseye
+  script:
+    - apt-get update && apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+    - pip install selenium
+    - wget -q -O google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    - apt install -y ./google-chrome.deb
+    - CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+    - wget -q https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip
+    - unzip chromedriver_linux64.zip
+    - mv chromedriver /usr/local/bin/
+    - chmod +x /usr/local/bin/chromedriver
+    - cd frontend/src/selenium_tests
+    - python -m unittest discover -s . -p "*.py" -v
+  dependencies:
+    - deploy_website
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: never    # flip to on_success when ready
     - when: never
