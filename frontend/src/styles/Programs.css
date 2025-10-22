@@ -119,3 +119,33 @@
     background: linear-gradient(135deg, #ff6ec4, #7873f5);
   }
 }
+
+.card-grid {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Fine-tuned responsiveness */
+@media (min-width: 640px) {
+  .program-card {
+    padding: 1.25rem;
+  }
+
+  .program-card-body .btn {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .program-card {
+    padding: 1.5rem;
+    max-width: 420px;
+  }
+
+  .program-card-body .btn {
+    font-size: 1.05rem;
+    padding: 0.85rem 1.6rem;
+  }
+}

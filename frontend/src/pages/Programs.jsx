@@ -81,17 +81,16 @@ const Programs = () => {
           Showing {filteredPrograms.length} Program
           {filteredPrograms.length !== 1 && "s"} in Total
         </p>
-        <div className="row g-4 justify-content-center">
+        <div className="card-grid">
           {filteredPrograms.map((program) => (
-            <div key={program.id} className="col-md-6 col-lg-4">
-              <ProgramCard
-                id={program.id}
-                name={program.name}
-                program_type={program.program_type}
-                freq={program.frequency}
-                host={program.host}
-              />
-            </div>
+            <ProgramCard
+              key={program.id}
+              id={program.id}
+              name={program.name}
+              program_type={program.program_type}
+              freq={program.frequency}
+              host={program.host}
+            />
           ))}
         </div>
       </main>
