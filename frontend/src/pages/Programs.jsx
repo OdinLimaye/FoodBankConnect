@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import ProgramCard from "../components/ProgramCard";
+import ProgramCard from "../components/ProgramsCard";
 
 const BASE_URL = "https://api.foodbankconnect.me/v1/programs";
 
