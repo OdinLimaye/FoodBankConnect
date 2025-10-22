@@ -1,7 +1,10 @@
 # Project Proposal  
 
 - **Web Scrapers Repo:**
-  https://gitlab.com/dafrancc/fbc-scrapers
+https://gitlab.com/dafrancc/fbc-scrapers
+
+- **Docker Scraper Repo:**
+https://gitlab.com/dafrancc/fbc-load-db
 
 - **Postman:**
 https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/food-bank-api-v2
