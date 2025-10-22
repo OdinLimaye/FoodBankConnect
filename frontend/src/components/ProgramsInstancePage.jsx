@@ -17,33 +17,34 @@ const ProgramsInstancePage = () => {
   const [hostId, setHostId] = useState(null);
   const [hostStatus, setHostStatus] = useState("Waiting to fetch host ID...");
 
-  // Fetch program and host info
+  // Fetch program and host ID immediately on page load
   useEffect(() => {
-    const fetchProgram = async () => {
+    const fetchProgramAndHost = async () => {
       if (!id) {
         setLoading(false);
         return;
       }
 
       try {
+        // Fetch program
         const res = await fetch(`${BASE_URL}/${id}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        setProgram(data);
+        const programData = await res.json();
+        setProgram(programData);
 
-        // Fetch host ID
-        if (data.host) {
-          setHostStatus(`Fetching host ID for: ${data.host}`);
+        // Immediately fetch host ID if host exists
+        if (programData.host) {
+          setHostStatus(`Fetching host ID for: ${programData.host}`);
           try {
             const hostRes = await fetch(FOODBANKS_URL);
             if (!hostRes.ok) throw new Error(`HTTP ${hostRes.status}`);
             const hostData = await hostRes.json();
-            const target = (hostData.items || []).find(fb => fb.name === data.host);
+            const target = (hostData.items || []).find(fb => fb.name === programData.host);
             if (target) {
               setHostId(target.id);
-              setHostStatus(`Found host ID: ${target.id} for host: ${data.host}`);
+              setHostStatus(`Found host ID: ${target.id} for host: ${programData.host}`);
             } else {
-              setHostStatus(`Host not found in first 10 items: ${data.host}`);
+              setHostStatus(`Host not found in first 10 items: ${programData.host}`);
             }
           } catch (err) {
             console.error("Error fetching foodbanks:", err);
@@ -57,17 +58,19 @@ const ProgramsInstancePage = () => {
       }
     };
 
-    fetchProgram();
+    fetchProgramAndHost();
   }, [id]);
 
   const handleHostClick = (e) => {
     e.preventDefault();
     if (!hostId) {
-      alert("Host foodbank not found.");
+      alert("Host foodbank not found yet. Please wait a moment.");
       return;
     }
-    navigate(`/foodbanks/${encodeURIComponent(program.host)}`, { state: { id: hostId } });
+    // Navigate using React Router with stored host ID and name
+    navigate(`/foodbanks/${encodeURIComponent(program.host)}`, { state: { id: hostId, name: program.host } });
   };
+
 
   if (loading) return <div className="container my-5">Loading program details...</div>;
   if (!program) return <div className="container my-5">Program not found.</div>;
@@ -109,7 +112,7 @@ const ProgramsInstancePage = () => {
               <li><strong>Fetched At:</strong> {program.fetched_at || "N/A"}</li>
             </ul>
 
-            {/* Debug printout */}
+            {/* Debug info for host */}
             <div style={{ marginTop: "10px", padding: "10px", background: "#f5f5f5", borderRadius: "4px" }}>
               <strong>Host debug info:</strong> {hostStatus}
             </div>
