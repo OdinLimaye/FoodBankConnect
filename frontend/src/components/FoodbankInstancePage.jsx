@@ -103,7 +103,6 @@ const FoodbankInstancePage = () => {
         <section className="mb-4">
           <h2>Details</h2>
           <ul style={{ listStyle: "none", padding: 0 }}>
-            <li><strong>ID:</strong> {foodbank.id || "N/A"}</li>
             <li><strong>Name:</strong> {foodbank.name || "N/A"}</li>
             <li><strong>About:</strong> {foodbank.about || "N/A"}</li>
             <li>
@@ -116,8 +115,6 @@ const FoodbankInstancePage = () => {
                 "N/A"
               )}
             </li>
-            <li><strong>Phone:</strong> {foodbank.phone || "N/A"}</li>
-            <li><strong>Address:</strong> {foodbank.address || "N/A"}</li>
             <li><strong>City:</strong> {foodbank.city || "N/A"}</li>
             <li><strong>State:</strong> {foodbank.state || "N/A"}</li>
             <li><strong>ZIP Code:</strong> {foodbank.zipcode || "N/A"}</li>
@@ -156,7 +153,7 @@ const FoodbankInstancePage = () => {
         <section className="mt-4">
           <h3>Related Sponsor</h3>
           <a href="#" onClick={handleSponsorClick}>
-            View Sponsor (ID {foodbank.id})
+            View Sponsor
           </a>
         </section>
       </main>

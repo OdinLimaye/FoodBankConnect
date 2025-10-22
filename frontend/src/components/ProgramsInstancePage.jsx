@@ -96,10 +96,8 @@ const ProgramsInstancePage = () => {
           <div className="col-lg-6">
             <h3 className="fw-bold">Program Details</h3>
             <ul className="list-group mb-3">
-              <li><strong>ID:</strong> {program.id}</li>
-              <li><strong>Type:</strong> {program.program_type}</li>
               <li><strong>Frequency:</strong> {program.frequency}</li>
-              <li><strong>Eligibility:</strong> {program.eligibility || "Everybody"}</li>
+              <li><strong>Eligibility:</strong> Everybody</li>
               <li><strong>Cost:</strong> {program.cost}</li>
               <li>
                 <strong>Host:</strong>{" "}
@@ -111,19 +109,16 @@ const ProgramsInstancePage = () => {
                   "N/A"
                 )}
               </li>
-              <li><strong>Details Page:</strong> {program.details_page}</li>
               <li><strong>Sign Up / Learn More:</strong> {program.sign_up_link || "N/A"}</li>
-              <li><strong>Links:</strong> {program.links || "N/A"}</li>
-              <li><strong>Created At:</strong> {program.created_at}</li>
-            </ul>
 
-            {/* Sponsor link */}
-            <div className="mt-3">
-              <h5>Related Sponsor:</h5>
-              <a href="#" onClick={handleSponsorClick}>
-                View Sponsor (ID {program.id})
-              </a>
-            </div>
+              {/* Sponsor link */}
+              <div className="mt-3">
+                <h5>Related Sponsor:</h5>
+                <a href="#" onClick={handleSponsorClick}>
+                  View Sponsor
+                </a>
+              </div>
+            </ul>
           </div>
         </div>
 

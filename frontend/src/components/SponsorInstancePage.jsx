@@ -75,7 +75,6 @@ const SponsorInstancePage = () => {
 					<ul style={{ listStyle: "none" }}>
 						<li><strong>Affiliation:</strong> {sponsor.affiliation}</li>
 						<li><strong>Contribution:</strong> {sponsor.contribution}</li>
-						<li><strong>Contribution Amount:</strong> {sponsor.contribution_amt}</li>
 						<li><strong>City:</strong> {sponsor.city}</li>
 						<li><strong>State:</strong> {sponsor.state}</li>
 						<li>
@@ -109,10 +108,6 @@ const SponsorInstancePage = () => {
 						</li>
 						<li><strong>Media / Logo Alt:</strong> {sponsor.alt}</li>
 						<li><strong>EIN:</strong> {sponsor.ein}</li>
-						<li><strong>Created At:</strong> {sponsor.created_at}</li>
-						<li><strong>Fetched At:</strong> {sponsor.fetched_at}</li>
-						<li><strong>Type:</strong> {sponsor.type}</li>
-						<li><strong>ID:</strong> {sponsor.id}</li>
 					</ul>
 				</section>
 
