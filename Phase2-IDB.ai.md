@@ -23,13 +23,13 @@ One of the biggest ways AI helped us improve our code this time was by helping u
 # Reflection on Use
 
 ## What specific improvements to your code or understanding came from this AI interaction?
-
+Our biggest improvements were in understanding how to set up and test our Flask app, plus cleaning up the way we scrape and store data. We also got better at debugging both backend and frontend issues. Instead of using AI to solve problems, we used it to explained the why behind why we were encountering certain issues, which made us know more about where to look to find the root cause of the issue so we could debug more easily.
 
 ## How did you decide what to keep or ignore from the AI’s suggestions?
-
+We mostly stuck to suggestions that were easy to understand and didn’t add unnecessary complexity. For example, sometimes it recommended testing frameworks or deployment setups that didn’t match our current scope.
 
 ## Did the AI ever produce an incorrect or misleading suggestion? How did you detect that?
-
+AI wasn’t perfect — especially with AWS and some scraping examples. A couple of the Flask routes it suggested were outdated, and it once gave us incorrect syntax for setting environment variables on EC2. We realized something was off when the commands didn’t work, so we double-checked with the AWS docs and Stack Overflow. For scraping, AI sometimes gave us selectors that wouldn’t work because the HTML structure was dynamic or hidden behind JavaScript. We figured this out through testing and added manual fallbacks.
 
 ---
 
