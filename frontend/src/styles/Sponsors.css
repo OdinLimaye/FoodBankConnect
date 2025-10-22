@@ -1,33 +1,105 @@
 .map-container {
-	position: relative;
-	width: 100%;
-	margin-top: 10px;
-	border-radius: 6px;
-	overflow: hidden;
-	text-align: center;
+  position: relative;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 1rem;
+  overflow: hidden;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
+
 .map-container iframe {
-	width: 100%;
-	height: 100%;
-	border: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .sponsor-img-container {
-	width: 100%;
-	height: 400px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color: #f8f9fa;
-	border-bottom: 1px solid #dee2e6;
-	border-top: 1px solid #dee2e6;
-	overflow: hidden;
-	background-color: white;
-	margin-bottom: 10px;
+  width: 100%;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 10px;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
 }
 
 .sponsor-img-container img {
-	max-width: 100%;
-	max-height: 100%;
-	object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.sponsor-img-container img:hover {
+  transform: scale(1.03);
+}
+
+.gradient-button {
+  background: transparent;
+  color: white;
+  font-weight: 500;
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #6f00ff, #00dbde) 1;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
+
+.gradient-button:hover {
+  background: linear-gradient(135deg, #6f00ff, #00dbde);
+  color: white;
+}
+
+.loader {
+  display: inline-block;
+  width: 56px;
+  height: 56px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #00dbde;
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .map-container {
+    background: rgba(30, 30, 30, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .sponsor-img-container {
+    background: rgba(40, 40, 40, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .gradient-button {
+    border-image: linear-gradient(135deg, #ff6ec4, #7873f5) 1;
+  }
+
+  .gradient-button:hover {
+    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+  }
 }
