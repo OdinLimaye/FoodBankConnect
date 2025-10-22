@@ -1,0 +1,4 @@
+Flask
+Flask-Cors
+SQLAlchemy>=2.0
+pg8000 

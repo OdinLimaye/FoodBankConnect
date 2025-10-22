@@ -1,0 +1,5 @@
+aws-wsgi==0.2.7
+flask==3.*
+flask-cors==4.*
+sqlalchemy==2.*
+psycopg[binary]==3.*

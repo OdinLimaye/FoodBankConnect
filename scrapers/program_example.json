@@ -1,0 +1,12 @@
+{
+    "name": "Culinary Training Program",
+    "program_type": "class",
+    "eligibility": "High School GED",
+    "frequency": "Yearly",
+    "cost": "Free",
+    "host": "Food Bank",
+    "detailsPage": "culinary-training",
+    "about": "...",
+    "sign_up_link": "Link to sign up or other website",
+    "type": "program"
+  }
