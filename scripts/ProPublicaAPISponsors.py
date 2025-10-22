@@ -1,5 +1,3 @@
-# Odin wrote this
-
 import requests
 import json
 import time
@@ -27,12 +25,13 @@ FOOD_RELATED_KEYWORDS = [
     "food insecurity"
 ]
 
+GOOGLE_API_KEY = "YOUR_GOOGLE_API_KEY"
+GOOGLE_CX = "YOUR_GOOGLE_CX"
+
 def classify_affiliation(name: str, org_detail: dict = None) -> str:
-    """Classify whether an organization is a private corporation or a nonprofit, including 501/503 type."""
     corp_terms = ["INC", "LLC", "CORP", "COMPANY", "CO.", "LTD", "CORPORATION"]
     if any(term in name.upper() for term in corp_terms):
         return "Private Corporation"
-    # If org_detail is available, extract nonprofit type
     if org_detail:
         ntype = org_detail.get("organization_type") or org_detail.get("ntee_code") or ""
         if ntype:
@@ -40,7 +39,6 @@ def classify_affiliation(name: str, org_detail: dict = None) -> str:
     return "Nonprofit Foundation"
 
 def fetch_grants(ein: str) -> str:
-    """Fetch the first food-related grant recipient if possible."""
     url = f"{BASE_URL}/organizations/{ein}.json"
     resp = requests.get(url)
     if resp.status_code != 200:
@@ -51,17 +49,31 @@ def fetch_grants(ein: str) -> str:
         grants = filing.get("grants", [])
         if not grants:
             continue
-        # Prefer food-related recipient
         for grant in grants:
             recipient = grant.get("recipient_name", "")
             if any(keyword in recipient.lower() for keyword in FOOD_RELATED_KEYWORDS):
                 return recipient
-        # Otherwise first grant
         return grants[0].get("recipient_name", "N/A")
     return "N/A"
 
+def fetch_image(name: str) -> str:
+    """Fetch an image URL from Google Custom Search."""
+    if not name:
+        return "N/A"
+    query = f"{name} logo"
+    url = f"https://www.googleapis.com/customsearch/v1?q={query}&cx=47dcfe213c7274b68&key=AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE&searchType=image&num=1"
+    try:
+        resp = requests.get(url)
+        if resp.status_code != 200:
+            return "N/A"
+        data = resp.json()
+        if data.get("items"):
+            return data["items"][0]["link"]
+    except Exception as e:
+        print("Error fetching image:", e)
+    return "N/A"
+
 def scrape(max_results=MAX_RESULTS):
-    """Scrape sponsors and return as JSON array formatted for database."""
     all_results = []
     for keyword in KEYWORDS:
         page = 0
@@ -85,7 +97,6 @@ def scrape(max_results=MAX_RESULTS):
                 city = org.get("city", "N/A")
                 state_code = org.get("state", "N/A")
 
-                # Fetch org detail for more info
                 detail = None
                 if ein:
                     detail_resp = requests.get(f"{BASE_URL}/organizations/{ein}.json")
@@ -93,20 +104,18 @@ def scrape(max_results=MAX_RESULTS):
                         detail_json = detail_resp.json()
                         detail = detail_json.get("organization")
 
-                # Ensure tax-exempt info
-                if detail:
-                    tax_period = detail.get("tax_period") or "Unknown"
-                    about = detail.get("mission") or f"Nonprofit, tax-exempt since {tax_period}"
-                else:
-                    about = "N/A"
-
+                about = detail.get("mission") if detail else "N/A"
                 affiliation = classify_affiliation(name, detail)
                 past_involvement = fetch_grants(ein) if ein else "N/A"
                 sponsor_link = f"https://projects.propublica.org/nonprofits/organizations/{ein}" if ein else "N/A"
 
+                # ✅ Fetch image
+                image_url = fetch_image(name)
+                time.sleep(0.2)  # polite delay
+
                 donor_json = {
                     "name": name,
-                    "image": "N/A",
+                    "image": image_url,
                     "alt": f"{name} Logo",
                     "contribution": "Donations / Grants",
                     "contributionAmt": "N/A",
@@ -126,7 +135,6 @@ def scrape(max_results=MAX_RESULTS):
             page += 1
             if page >= data.get("num_pages", 0):
                 break
-
             time.sleep(0.5)
 
         if len(all_results) >= max_results:

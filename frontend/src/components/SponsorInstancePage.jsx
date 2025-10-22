@@ -8,34 +8,12 @@ import styles from "../styles/Sponsors.module.css";
 
 const BASE_URL = "https://api.foodbankconnect.me/v1/sponsors";
 
-// ✅ Pull from .env
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
-const GOOGLE_CX = process.env.REACT_APP_GOOGLE_CX;
-
 const SponsorInstancePage = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { id } = location.state || {};
 	const [sponsor, setSponsor] = useState(null);
 	const [loading, setLoading] = useState(true);
-
-	// ✅ Helper: fetch image from Google if sponsor has none
-	const fetchSponsorImage = async (name) => {
-		if (!name) return null;
-		try {
-			const query = encodeURIComponent(name + " logo");
-			const url = `https://www.googleapis.com/customsearch/v1?q=${query}&cx=47dcfe213c7274b68&key=AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE&searchType=image&num=1`;
-			const res = await fetch(url);
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			const data = await res.json();
-			if (data.items && data.items.length > 0) {
-				return data.items[0].link; // use direct image link
-			}
-		} catch (err) {
-			console.error("Error fetching Google image:", err);
-		}
-		return null;
-	};
 
 	useEffect(() => {
 		const fetchSponsor = async () => {
@@ -47,13 +25,6 @@ const SponsorInstancePage = () => {
 				const res = await fetch(`${BASE_URL}/${id}`);
 				if (!res.ok) throw new Error(`HTTP ${res.status}`);
 				const data = await res.json();
-
-				// ✅ If missing image, try Google
-				if (!data.image && data.name) {
-					const imageUrl = await fetchSponsorImage(data.name);
-					if (imageUrl) data.image = imageUrl;
-				}
-
 				setSponsor(data);
 			} catch (err) {
 				console.error("Error fetching sponsor:", err);
@@ -85,15 +56,10 @@ const SponsorInstancePage = () => {
 			<main className="container my-5">
 				<div className={`${styles["sponsor-img-container"]} text-center mb-4`}>
 					{sponsor.image ? (
-						<>
-							<img
-								src={sponsor.image} // direct URL
-								alt={sponsor.alt || sponsor.name + " Logo"}
-							/>
-							<p style={{ color: "white", wordBreak: "break-all" }}>
-								{sponsor.image}
-							</p>
-						</>
+						<img
+							src={sponsor.image}
+							alt={sponsor.alt || sponsor.name + " Logo"}
+						/>
 					) : (
 						<p>No image found</p>
 					)}
@@ -113,8 +79,7 @@ const SponsorInstancePage = () => {
 						<li><strong>City:</strong> {sponsor.city}</li>
 						<li><strong>State:</strong> {sponsor.state}</li>
 						<li>
-							<strong>Past Involvement:</strong>{" "}
-							{sponsor.past_involvement || "N/A"}
+							<strong>Past Involvement:</strong> {sponsor.past_involvement || "N/A"}
 							<br />
 							<a
 								href="#"
