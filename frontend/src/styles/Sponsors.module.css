@@ -22,7 +22,8 @@
 
 .sponsor-img-container {
   width: 100%;
-  height: 250px;
+  height: auto; /* changed from 250px */
+  min-height: 250px; /* ensures minimum height */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -39,7 +40,7 @@
 
 .sponsor-img-container img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 400px; /* allow taller images */
   object-fit: contain;
   transition: transform 0.3s ease;
 }

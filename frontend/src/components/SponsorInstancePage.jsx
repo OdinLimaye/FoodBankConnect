@@ -85,7 +85,10 @@ const SponsorInstancePage = () => {
 			<main className="container my-5">
 				<div className={`${styles["sponsor-img-container"]} text-center mb-4`}>
 					{sponsor.image && (
-						<img src={sponsor.image} alt={sponsor.alt || sponsor.name + " Logo"} />
+						<img
+							src={`https://images.weserv.nl/?url=${encodeURIComponent(sponsor.image)}`}
+							alt={sponsor.alt || sponsor.name + " Logo"}
+						/>
 					)}
 				</div>
 
