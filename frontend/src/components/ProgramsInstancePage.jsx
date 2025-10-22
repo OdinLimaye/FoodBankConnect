@@ -15,7 +15,6 @@ const ProgramsInstancePage = () => {
   const [program, setProgram] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hostId, setHostId] = useState(null);
-  const [hostStatus, setHostStatus] = useState("Waiting to fetch host ID...");
 
   // Fetch program and host ID immediately on page load
   useEffect(() => {
@@ -34,7 +33,6 @@ const ProgramsInstancePage = () => {
 
         // Immediately fetch host ID if host exists
         if (programData.host) {
-          setHostStatus(`Fetching host ID for: ${programData.host}`);
           try {
             const hostRes = await fetch(FOODBANKS_URL);
             if (!hostRes.ok) throw new Error(`HTTP ${hostRes.status}`);
@@ -42,13 +40,9 @@ const ProgramsInstancePage = () => {
             const target = (hostData.items || []).find(fb => fb.name === programData.host);
             if (target) {
               setHostId(target.id);
-              setHostStatus(`Found host ID: ${target.id} for host: ${programData.host}`);
-            } else {
-              setHostStatus(`Host not found in first 10 items: ${programData.host}`);
             }
           } catch (err) {
             console.error("Error fetching foodbanks:", err);
-            setHostStatus("Error fetching host info");
           }
         }
       } catch (err) {
@@ -70,7 +64,6 @@ const ProgramsInstancePage = () => {
     // Navigate using React Router with stored host ID and name
     navigate(`/foodbanks/${encodeURIComponent(program.host)}`, { state: { id: hostId, name: program.host } });
   };
-
 
   if (loading) return <div className="container my-5">Loading program details...</div>;
   if (!program) return <div className="container my-5">Program not found.</div>;
@@ -111,11 +104,6 @@ const ProgramsInstancePage = () => {
               <li><strong>Created At:</strong> {program.created_at}</li>
               <li><strong>Fetched At:</strong> {program.fetched_at || "N/A"}</li>
             </ul>
-
-            {/* Debug info for host */}
-            <div style={{ marginTop: "10px", padding: "10px", background: "#f5f5f5", borderRadius: "4px" }}>
-              <strong>Host debug info:</strong> {hostStatus}
-            </div>
           </div>
         </div>
 
