@@ -33,8 +33,19 @@ const ProgramsInstancePage = () => {
     fetchProgram();
   }, [id]);
 
-  if (loading) return <div className="container my-5">Loading program details...</div>;
-  if (!program) return <div className="container my-5">Program not found.</div>;
+  if (loading)
+    return (
+      <div className="container my-5">
+        Loading program details...
+      </div>
+    );
+
+  if (!program)
+    return (
+      <div className="container my-5">
+        Program not found.
+      </div>
+    );
 
   return (
     <div className="wrapper">
@@ -45,22 +56,40 @@ const ProgramsInstancePage = () => {
       <main className="container my-5">
         <div className="row">
           <div className="col-lg-6 mb-4">
-            {program.image && <img src={program.image} className="img-fluid rounded shadow" alt={program.name} />}
+            {program.image ? (
+              <img
+                src={program.image}
+                className="img-fluid rounded shadow"
+                alt={program.name}
+              />
+            ) : (
+              <div className="text-muted">No image available</div>
+            )}
           </div>
+
           <div className="col-lg-6">
             <h3 className="fw-bold">Program Details</h3>
             <ul className="list-group mb-3">
+              <li className="list-group-item"><strong>ID:</strong> {program.id}</li>
               <li className="list-group-item"><strong>Type:</strong> {program.program_type}</li>
-              <li className="list-group-item"><strong>Eligibility:</strong> {program.eligibility}</li>
               <li className="list-group-item"><strong>Frequency:</strong> {program.frequency}</li>
+              <li className="list-group-item"><strong>Eligibility:</strong> {program.eligibility}</li>
               <li className="list-group-item"><strong>Cost:</strong> {program.cost}</li>
               <li className="list-group-item"><strong>Host:</strong> {program.host}</li>
-              {program.sign_up_link && (
-                <li className="list-group-item">
-                  <strong>Sign Up / Learn More:</strong>{" "}
-                  <a href={program.sign_up_link} target="_blank" rel="noreferrer">{program.sign_up_link}</a>
-                </li>
-              )}
+              <li className="list-group-item"><strong>Details Page:</strong> {program.details_page}</li>
+              <li className="list-group-item">
+                <strong>Sign Up / Learn More:</strong>{" "}
+                {program.sign_up_link ? (
+                  <a href={program.sign_up_link} target="_blank" rel="noreferrer">
+                    {program.sign_up_link}
+                  </a>
+                ) : (
+                  "N/A"
+                )}
+              </li>
+              <li className="list-group-item"><strong>Links:</strong> {program.links || "N/A"}</li>
+              <li className="list-group-item"><strong>Created At:</strong> {program.created_at}</li>
+              <li className="list-group-item"><strong>Fetched At:</strong> {program.fetched_at || "N/A"}</li>
             </ul>
           </div>
         </div>
