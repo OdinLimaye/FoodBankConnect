@@ -126,18 +126,18 @@ backend_api_tests:
     - |
       for i in {1..30}; do
         python3 - <<'PY'
-import socket, sys
-s = socket.socket()
-s.settimeout(1)
-try:
-    s.connect(('postgres', 5432))
-    print("ok")
-    sys.exit(0)
-except Exception:
-    sys.exit(1)
-finally:
-    s.close()
-PY
+        import socket, sys
+        s = socket.socket()
+        s.settimeout(1)
+        try:
+            s.connect(('postgres', 5432))
+            print("ok")
+            sys.exit(0)
+        except Exception:
+            sys.exit(1)
+        finally:
+            s.close()
+        PY
         [ $? -eq 0 ] && break
         sleep 1
       done
