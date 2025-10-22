@@ -1,0 +1,37 @@
+# test_foodbanks_pagination.py
+import unittest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+class FoodbanksPaginationTest(unittest.TestCase):
+
+    def setUp(self):
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        self.driver = webdriver.Chrome(options=options)
+        self.wait = WebDriverWait(self.driver, 5)
+        self.base_url = "https://foodbankconnect.me/foodbanks"
+
+    def test_next_button_increments_page(self):
+        self.driver.get(self.base_url)
+        page_span = self.wait.until(
+            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Page')]"))
+        )
+        initial_text = page_span.text
+
+        next_button = self.driver.find_element(By.XPATH, "//button[text()='Next']")
+        next_button.click()
+
+        self.wait.until(
+            lambda d: page_span.text != initial_text
+        )
+        self.assertNotEqual(page_span.text, initial_text, "Page did not increment after clicking Next")
+        print("✅ Pagination Next button works.")
+
+    def tearDown(self):
+        self.driver.quit()
+
+if __name__ == "__main__":
+    unittest.main()

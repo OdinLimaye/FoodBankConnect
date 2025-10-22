@@ -1,6 +1,7 @@
 stages:
   - build
   - deploy
+  # - selenium
 
 # Build React pages into static files
 build_react:
@@ -27,7 +28,7 @@ deploy_website:
   stage: deploy
   image:
     name: amazon/aws-cli
-    entrypoint: [""]
+    entrypoint: [""] 
   script:
     - aws s3 sync frontend/build/ s3://$S3_BUCKET --delete
     - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DIST_ID --paths "/*"
@@ -36,6 +37,33 @@ deploy_website:
     - build_react
   rules:
     # Only deploy on pushes to the main branch
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+    - when: never
+
+# Run Selenium tests after deploy
+selenium_tests:
+  stage: selenium
+  image: python:3.12-bullseye
+  script:
+    # Install dependencies
+    - apt-get update && apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+    - pip install selenium
+    # Install Chrome
+    - wget -q -O google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    - apt install -y ./google-chrome.deb
+    # Install ChromeDriver
+    - CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+    - wget -q https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip
+    - unzip chromedriver_linux64.zip
+    - mv chromedriver /usr/local/bin/
+    - chmod +x /usr/local/bin/chromedriver
+    # Run Selenium tests
+    - cd frontend/src/selenium_tests
+    - python -m unittest discover -s . -p "*.py" -v
+  dependencies:
+    - deploy_website
+  rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
     - when: never
