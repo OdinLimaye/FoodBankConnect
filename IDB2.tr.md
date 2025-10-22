@@ -295,24 +295,44 @@ Include these exact URLs in the Postman collection (already present).
 
 **2) Deploying multiple services**
 
-* Problem: Coordinating frontend, backend, and DB deploys in CI.
-* Solution: Containerized builds and GitLab pipelines that run unit tests and only deploy on pipeline success.
+* Problem: Some websites changed layout or returned inconsistent data, causing scraper failures.
+* Solution: Added error handling and schema validation to skip or flag malformed entries, keeping the dataset clean and consistent.
+
+**3) Responsive design and layout consistency**
+
+* Problem: The UI layout broke on smaller screens due to inconsistent Bootstrap grid usage.
+* Solution: Refactored components using React-Bootstrap’s grid system and tested responsiveness across devices.
 
 ---
 
 ## 14. How to Onboard a New Developer
 
-1. Clone the frontend and backend repos (links in project README).
-2. Seed the DB with sample data from `scrapers/foodbank_example.json` using. 
-3. Run backend tests: `pytest tests/`.
-4. Run frontend dev server: `cd frontend && npm install && npm run start`.
+1. **Clone the repositories**  
+   Get access to both the frontend (React) and backend  repositories from GitLab.  
+   The links are provided in the main project README.
+
+2. **Set up the database**  
+   Connect to the Aurora RDS PostgreSQL instance using the credentials in the team’s documentation.  
+   You can view and verify the database schema using an SQL client.
+
+3. **Load sample data**  
+   Seed the database manually using the JSON examples in `scrapers/`  
+   (e.g., `foodbank_example.json`) to test queries and endpoints.
+
+4. **Run the backend locally**  
+
+5. **Run the frontend**
+    npm install
+    npm start
+    This runs the React dev server. 
+6. **Test API routes**
+    Use **Postman** to send requests to the API Gateway or local backend and verify that endpoints return the expected JSON responses.
 
 ---
 
 ## 15. Remaining Work & Next Steps (Phase III+)
 
 * Implement advanced filtering and sorting UI for model pages.
-* Add user accounts and contributor workflow for foodbank updates.
 * Implement Webhooks to notify partners when urgency levels change.
 * Harden authentication and rate-limiting for production API.
 
