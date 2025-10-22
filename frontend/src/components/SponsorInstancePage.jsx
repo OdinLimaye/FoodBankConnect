@@ -24,7 +24,7 @@ const SponsorInstancePage = () => {
 		if (!name) return null;
 		try {
 			const query = encodeURIComponent(name + " logo");
-			const url = `https://www.googleapis.com/customsearch/v1?q=${query}&cx=${GOOGLE_CX}&key=${GOOGLE_API_KEY}&searchType=image&num=1`;
+			const url = `https://www.googleapis.com/customsearch/v1?q=${query}&cx=47dcfe213c7274b68&key=AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE&searchType=image&num=1`;
 			const res = await fetch(url);
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			const data = await res.json();

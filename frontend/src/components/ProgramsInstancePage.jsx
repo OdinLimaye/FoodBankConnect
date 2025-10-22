@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
 
 const BASE_URL = "https://api.foodbankconnect.me/v1/programs";
-const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks?size=10&start=1";
+const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks?size=100&start=1";
 
 const ProgramsInstancePage = () => {
   const location = useLocation();
