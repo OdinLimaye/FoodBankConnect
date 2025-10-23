@@ -127,22 +127,24 @@ https://foodbankconnect.me
 ## Phase Two
 - **Git SHA:**  
 - **Project Leader: Francisco Vivas** 
-  - Responsibilities:  
+  - Responsibilities: Delegating tasks to the group members and setting up the backend and database servers. 
 - **GitLab Pipelines:**
 https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07/-/pipelines  
+- **Backend API Link:**
+https://api.foodbankconnect.me/v1/
 - **Website:**
 https://foodbankconnect.me
-- **Postman:**
+- **Postman (API Docs Link):**
 https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/food-bank-api-v2
 
 ### Time Tracking
 | Member            | Estimated Hours | Actual Hours |  
 |-------------------|-----------------|--------------|  
-| Odin Limaye       | 17              |              |  
-| Francisco Vivas   |                 |              |  
+| Odin Limaye       | 17              | 27           |  
+| Francisco Vivas   | 19              | 28           |  
 | Christine Dominic | 16              |              |  
-| Mahika Dawar      | 18              |              |  
-| Jose Lopez        | 20              |   19         |  
+| Mahika Dawar      | 18              | 18           |  
+| Jose Lopez        | 20              | 19           |  
 
 **Comments:** None
 

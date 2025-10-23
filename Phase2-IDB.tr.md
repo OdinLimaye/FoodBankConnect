@@ -128,39 +128,39 @@ Diagram (logical):
 
 **FoodBanks**
 
-* `GET /api/foodbanks?` — returns a specified range of the list of foodbanks.
+* `GET /v1/foodbanks?` — returns a specified range of the list of foodbanks.
 
   * Query params: `size` (int), `start` (int)
-  * Example: `https://foodbankconnect.me/api/v1/foodbanks?size=10&start=1`
+  * Example: `https://api.foodbankconnect.me/v1/foodbanks?size=10&start=1`
 
-* `GET /api/foodbanks/<id>` — returns a single foodbank instance.
+* `GET /v1/foodbanks/<id>` — returns a single foodbank instance.
 
   * Query params: `ID` (int)
-  * Example: `https://foodbankconnect.me/api/v1/foodbanks/123`
+  * Example: `https://api.foodbankconnect.me/v1/foodbanks/123`
 
 **Programs**
 
-* `GET /api/programs` — returns a specified range of the list of programs.
+* `GET /v1/programs` — returns a specified range of the list of programs.
 
   * Query params: `size` (int), `start` (int)
-  * Example: `https://foodbankconnect.me/api/v1/programs?size=10&start=1`
+  * Example: `https://api.foodbankconnect.me/v1/programs?size=10&start=1`
 
-* `GET /api/programs/<id>` — returns a single program instance.
+* `GET /v1/programs/<id>` — returns a single program instance.
 
    * Query params: `ID` (int)
-   * Example: `https://foodbankconnect.me/api/v1/programs/123`
+   * Example: `https://api.foodbankconnect.me/v1/programs/123`
 
 **Sponsors**
 
-* `GET /api/sponsors` — returns a specified range of the list of sponsors.
+* `GET /v1/sponsors` — returns a specified range of the list of sponsors.
 
   * Query params: `size` (int), `start` (int)
-  * Example: `https://foodbankconnect.me/api/v1/sponsors?size=10&start=1`
+  * Example: `https://api.foodbankconnect.me/v1/sponsors?size=10&start=1`
 
-* `GET /api/sponsors/<id>` — 
+* `GET /v1/sponsors/<id>` — 
 
    * Query params: `ID` (int)
-   * Example: `https://foodbankconnect.me/api/v1/sponsors/123`
+   * Example: `https://api.foodbankconnect.me/v1/sponsors/123`
 
 **Response format**
 
@@ -334,7 +334,29 @@ This project’s Phase II required database integration, API endpoints, paginati
 
 ---
 
-## 16. Appendix
+## 16. User Stories
+
+**Note**
+   We only ever received 5 user stories from our customer group.
+
+**User Story 1**
+   Our customer group recommended that we add a feature to filer food banks by user location, allowing them to find the food bank that is nearest to them geographically. They also suggested a filter by open/closed hours for the foodbanks. After having a dialogue with the customer group, we concluded that these features are out of scope for phase 2 since they primarily revolve around filtering and sorting, which is not to be implemented until phase 3.
+
+**User Story 2**
+   Our customer group suggested that we add in functionality to allow users to sort for certain food items that meet their dietary needs or healthiness levels. We had a dialogue over this and came to the conclusion that this feature falls squarely into phase 3, not phase 2, since it implements searching and filtering.
+
+**User Story 3**
+   Our customer group was suggesting from the standpoint of another developer seeking to use our site's API as a client. They asked if we could implement a feature in our API to return a list of all of the foodbank instances and their attributes. We were already going to be doing this anyways as part of the project's requirements, so this was naturally implemented on its own.
+
+**User Story 4**
+   Our customer group informed us that the text on our landing page was very faint and that the images behind the text in the slideshow made the text hard to see. We predicted that this would take us around 15 minutes to implement, and it took us around 20 minutes to implement. We blurred the backing images and made the font and color of the landing page text more bold so that its visiblity was boosted.
+
+**User Story 5**
+   Our customer group suggested that we include a navigational bar to our home page so that access to the model pages and the about pages from the landing page is easy. We included the header navigational bar in addition to the navigation tool already present on the landing page. We predicted this would only take 5 minutes since we already had a navigational bar React component. It took us about that long to implement.
+
+****
+
+## 17. Appendix
 
 * **Sample JSON files**: `foodbank_example.json`, `program_example.json`, `sponsor_example.json` (found in repo `src/`)
 * **Scripts**: `fetch_data.py`, `parse_foodbanks_html.py`, `parse_programs_html.py`, `parse_sponsors_html.py` (in `src/`)
