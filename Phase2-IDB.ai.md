@@ -16,7 +16,9 @@ When it came to writing unit tests for our Flask app, we weren’t sure where to
 One of the biggest ways AI helped us improve our code this time was by helping us reorganize to implement global styling. Initially, we were styling buttons directly inside each page’s CSS file or even inline in the JSX, which made things really repetitive and hard to manage. After asking AI for a better way to handle design consistency, it suggested creating a shared global CSS file specifically for button styles (like .glass-button or .gradient-button). We took that advice and made a centralized file with reusable class names for different button styles, which we then applied across all pages. This change made our design easier to update — now if we want to tweak the look of all buttons across the site, we just do it once in the shared file instead of editing 5+ components.
 
 ## Alternative approaches
-
+One of the main ways in which we asked AI to help us produce an alternative approach was when we were trying to scrape through various HTML pages to find attributes for our database. We were having trouble with this since web pages were all structured differently, with different components in different places. Embedded components also caused us trouble. Then, upon asking AI for a better method, it recommended the use of the 
+Google API query to find attributes not able to be located easily in the initial source. This ended up being 
+a semi-effective (definitely easier) alternative method.
 
 ---
 
@@ -46,13 +48,8 @@ def test_card_click(self):
 After:
 def test_first_card_clickable(self):
     self.driver.get(self.base_url)
-    card = self.wait.until(
-        EC.element_to_be_clickable((By.CLASS_NAME, "card"))
-    )
+    card = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "card")))
     initial_url = self.driver.current_url
-    card.click()
-    self.wait.until(lambda d: d.current_url != initial_url)
-    self.assertNotEqual(self.driver.current_url, initial_url, "Clicking card did not navigate")
 
 ## In 2–3 sentences, explain what you learned by making this change.
 When we first wrote the test, it only worked sometimes. However, if the page was slow or the cards hadn’t loaded yet, it would fail. After using AI to learn more about how Selenium actually works, we realized we needed to wait for the elements to be clickable, not just present. AI showed us how to use WebDriverWait and expected_conditions, which made our test way more reliable and useful. It also helped us understand how Selenium mimics real users. For example, it waits for stuff to load and makes sure clicks actually go somewhere. Overall, we feel way more confident writing tests now using Selenium.
