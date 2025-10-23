@@ -194,6 +194,7 @@ backend_release:
 backend_unit_tests:
   stage: backend_test
   image: python:3.12-bullseye
+  needs: []
   before_script:
     - python -V
     - pip install -r "$REQUIREMENTS_FILE_UNIT"
