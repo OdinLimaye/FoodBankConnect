@@ -1,3 +1,8 @@
+# =============================================================================
+# Dockerfile
+# © 2025 Francisco Vivas. All rights reserved.
+# =============================================================================
+
 FROM public.ecr.aws/lambda/python:3.13
 WORKDIR ${LAMBDA_TASK_ROOT}
 
