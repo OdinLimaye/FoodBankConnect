@@ -237,10 +237,7 @@ backend_unit_tests:
       - $PYTEST_JUNIT_XML
       - $PYTEST_COVERAGE_XML
   rules:
-    - changes:
-        - fbc-load-db/**/*
-      when: on_success
-    - when: never
+    - when: on_success
 
 
 # ------------------------------------------------
@@ -279,11 +276,7 @@ backend_api_tests:
     paths:
       - $NEWMAN_JUNIT_XML
   rules:
-    - changes:
-        - fbc-rest-api/**/*
-        - tests/postman/**/*
-      when: on_success
-    - when: never
+    - when: on_success
 
 
 
