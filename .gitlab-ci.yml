@@ -91,10 +91,12 @@ backend_unit_tests:
     - pip install pytest pytest-cov
     - mkdir -p "$CI_PROJECT_DIR/$REPORT_DIR"
   script:
-    - pytest -q --maxfail=1 --disable-warnings \
+    - |
+      pytest -q --maxfail=1 --disable-warnings \
         --cov=. \
         --cov-report=xml:"$CI_PROJECT_DIR/$PYTEST_COVERAGE_XML" \
         --junitxml "$CI_PROJECT_DIR/$PYTEST_JUNIT_XML"
+
   artifacts:
     when: always
     reports:
