@@ -1,6 +1,8 @@
 import requests
 import json
 import time
+import re
+import random
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
 MAX_RESULTS = 100
@@ -9,7 +11,7 @@ GOOGLE_API_KEY = "AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE"
 GOOGLE_CX = "47dcfe213c7274b68"
 
 def fetch_google(query: str, search_type: str = None):
-    """Fetch first result (image or link) from Google Custom Search."""
+    """Fetch a Google Custom Search result (safe with retries and user-agent)."""
     params = {
         "q": query,
         "cx": GOOGLE_CX,
@@ -19,15 +21,26 @@ def fetch_google(query: str, search_type: str = None):
     if search_type == "image":
         params["searchType"] = "image"
 
-    try:
-        resp = requests.get("https://www.googleapis.com/customsearch/v1", params=params)
-        resp.raise_for_status()
-        data = resp.json()
-        if "items" in data and len(data["items"]) > 0:
-            return data["items"][0]["link"]
-    except Exception as e:
-        print(f"Error fetching Google result for '{query}': {e}")
-    # Default if no result
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
+
+    for attempt in range(3):  # Retry up to 3 times
+        try:
+            time.sleep(1.5 + random.uniform(0.3, 0.8))  # Randomized delay
+            resp = requests.get("https://www.googleapis.com/customsearch/v1", params=params, headers=headers, timeout=10)
+            resp.raise_for_status()
+            data = resp.json()
+            if "items" in data and len(data["items"]) > 0:
+                return data["items"][0]["link"]
+            return "N/A"
+        except requests.exceptions.RequestException as e:
+            print(f"[Attempt {attempt+1}/3] Google fetch failed for '{query}': {e}")
+            time.sleep(2 ** attempt)  # exponential backoff
     return "N/A"
 
 def fetch_search(q="food bank", state=None, page=0):
@@ -35,13 +48,13 @@ def fetch_search(q="food bank", state=None, page=0):
     params = {"q": q, "page": page}
     if state:
         params["state[id]"] = state
-    resp = requests.get(url, params=params)
+    resp = requests.get(url, params=params, headers={"User-Agent": "Mozilla/5.0"})
     resp.raise_for_status()
     return resp.json()
 
 def fetch_organization(ein: str):
     url = f"{BASE_URL}/organizations/{ein}.json"
-    resp = requests.get(url)
+    resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     if resp.status_code != 200:
         return None
     return resp.json()
@@ -62,6 +75,7 @@ def infer_services(text):
     return services
 
 def fetch_tax_exempt_date(ein: str):
+    """Scrape the ProPublica page for tax-exempt info."""
     if not ein:
         return "This is a nonprofit, tax exempt."
     url = f"https://projects.propublica.org/nonprofits/organizations/{ein}"
@@ -70,28 +84,28 @@ def fetch_tax_exempt_date(ein: str):
         if resp.status_code != 200:
             return "This is a nonprofit, tax exempt."
         text = resp.text
-        import re
         match = re.search(r"Tax-exempt since ([A-Za-z0-9 ,]+)", text)
         if match:
             tax_str = match.group(1)
             if re.search(r"\b\d{4}\b", tax_str):
                 return f"Tax-exempt since {tax_str}"
         return "This is a nonprofit, tax exempt."
-    except:
+    except Exception:
         return "This is a nonprofit, tax exempt."
 
 def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
-    results = []
+    """Fetches foodbanks and their related programs, returns one combined list."""
+    combined = []
     page = 0
 
-    while len(results)//2 < max_results:
+    while len(combined) < 2 * max_results:  # since each org adds 2 entries
         search_json = fetch_search(q=q, state=state, page=page)
         orgs = search_json.get("organizations", [])
         if not orgs:
             break
 
         for org in orgs:
-            if len(results)//2 >= max_results:
+            if len(combined) >= 2 * max_results:
                 break
 
             ein = org.get("ein")
@@ -112,16 +126,14 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
 
             services_list = infer_services(about)
 
-            # ✅ Images
-            foodbank_image = fetch_google(name + " logo", search_type="image")
-            program_image = fetch_google(name + " volunteer", search_type="image")
+            # ✅ Safe Google fetch
+            foodbank_image = fetch_google(f"{name} logo", search_type="image")
+            program_image = fetch_google(f"{name} volunteer", search_type="image")
 
-            # ✅ Website links
-            foodbank_website = fetch_google(name + " official site")
-            program_signup = fetch_google(name + " volunteer")
-
-            # Foodbank JSON
+            propublica_url = f"https://projects.propublica.org/nonprofits/organizations/{ein}"
             program_name = f"{name} {' / '.join(services_list)} Program"
+
+            # Foodbank entry
             foodbank_json = {
                 "about": about,
                 "capacity": "N/A",
@@ -135,11 +147,11 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
                 "services": [program_name],
                 "type": "foodbank",
                 "urgency": "High",
-                "website": foodbank_website,
+                "website": propublica_url,
                 "zipcode": zipcode
             }
 
-            # Program JSON
+            # Program entry
             program_json = {
                 "name": program_name,
                 "program_type": "class" if "training" in program_name.lower() or "culinary" in program_name.lower() else "service",
@@ -149,19 +161,19 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
                 "host": name,
                 "detailsPage": program_name.replace(" ", "-").lower(),
                 "about": about,
-                "sign_up_link": program_signup,
+                "sign_up_link": propublica_url,
                 "type": "program",
                 "image": program_image
             }
 
-            results.append(foodbank_json)
-            results.append(program_json)
+            combined.extend([foodbank_json, program_json])
 
         page += 1
         if page >= search_json.get("num_pages", 0):
             break
 
-    return results
+    return combined
 
 if __name__ == "__main__":
-    data = scrape(q="food bank", state=None, max_results=MAX_RESULTS)
+    results = scrape()
+    print(f"✅ Retrieved {len(results)} total entries (foodbanks + programs).")

@@ -1,2 +1,2 @@
-ProPublicaAPIFoodbanksAndProgramsAsync.py
-ProPublicaAPISponsorsAsync.py
+ProPublicaAPIFoodbanksAndPrograms.py
+ProPublicaAPISponsors.py
