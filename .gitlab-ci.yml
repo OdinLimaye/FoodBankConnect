@@ -252,7 +252,7 @@ backend_release:
       --job-queue "$BATCH_JOB_QUEUE"
       --job-definition "$BATCH_JOB_DEFINITION"
       --region "$AWS_DEFAULT_REGION"
-      --container-overrides "image=$ECR_REGISTRY/$ECR_REPO_LOADER:$IMAGE_TAG,environment=[]"
+      --container-overrides 'environment=[]'
       | tee batch_submit.json;
       echo "Batch job submitted: $(jq -r .jobId batch_submit.json)"
   rules:
