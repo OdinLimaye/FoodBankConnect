@@ -200,39 +200,32 @@ backend_unit_tests:
     - pip install -r "$REQUIREMENTS_FILE_UNIT"
     - pip install pytest pytest-cov
     - mkdir -p "$CI_PROJECT_DIR/$REPORT_DIR"
+    # --- CLEAN TEST TABLES ---
+    - python - <<'PY'
+        import os, ssl, pg8000
+        schema = os.getenv("DB_SCHEMA", "app_ci_test")
+        conn = pg8000.connect(
+            host=os.environ["DB_HOST"],
+            user=os.environ["DB_USER"],
+            password=os.environ["DB_PASSWORD"],
+            database=os.environ["DB_NAME"],
+            ssl_context=ssl.create_default_context()
+        )
+        cur = conn.cursor()
+        cur.execute(f"TRUNCATE {schema}.programs, {schema}.sponsors, {schema}.foodbanks RESTART IDENTITY CASCADE;")
+        conn.commit()
+        conn.close()
+        print("[ci] truncated test tables")
+        PY
   script:
     - |
-      echo "CI_PROJECT_DIR: $CI_PROJECT_DIR"
-      echo "COV_TARGET_DIR: $COV_TARGET_DIR"
-      echo "Running pytest from repo root on: $PYTEST_TESTPATH"
-
-      # ensure backend code is importable for tests
       export PYTHONPATH="$CI_PROJECT_DIR/$COV_TARGET_DIR:$PYTHONPATH"
-
-      # list what pytest will see (helps if paths are off)
-      ls -la "$CI_PROJECT_DIR"
-      ls -la "$CI_PROJECT_DIR/$COV_TARGET_DIR" || true
-      ls -la "$CI_PROJECT_DIR/$PYTEST_TESTPATH" || true
-
-      # run tests from repo root, target top-level tests, ignore selenium, and collect coverage only for your backend
       pytest -q --maxfail=1 --disable-warnings \
         --ignore="$CI_PROJECT_DIR/$PYTEST_IGNORE" \
         "$CI_PROJECT_DIR/$PYTEST_TESTPATH" \
         --cov="$CI_PROJECT_DIR/$COV_TARGET_DIR" \
         --cov-report=xml:"$CI_PROJECT_DIR/$PYTEST_COVERAGE_XML" \
         --junitxml "$CI_PROJECT_DIR/$PYTEST_JUNIT_XML"
-  artifacts:
-    when: always
-    reports:
-      junit: $PYTEST_JUNIT_XML
-      coverage_report:
-        coverage_format: cobertura
-        path: $PYTEST_COVERAGE_XML
-    paths:
-      - $PYTEST_JUNIT_XML
-      - $PYTEST_COVERAGE_XML
-  rules:
-    - when: on_success
 
 
 
