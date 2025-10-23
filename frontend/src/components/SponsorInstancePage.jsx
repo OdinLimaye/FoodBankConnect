@@ -6,7 +6,8 @@ import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
 import styles from "../styles/Sponsors.module.css";
 
-const BASE_URL = "https://api.foodbankconnect.me/v1/sponsors";
+// Paths to scraper JSON files
+import sponsorsData from "../../sponsors.json";
 
 const SponsorInstancePage = () => {
   const location = useLocation();
@@ -22,9 +23,19 @@ const SponsorInstancePage = () => {
         return;
       }
       try {
-        const res = await fetch(`${BASE_URL}/${id}`);
+        const res = await fetch(`https://api.foodbankconnect.me/v1/sponsors/${id}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
+
+        // Lookup image and sponsor_link from the scraper JSON
+        const lookup = sponsorsData.find(
+          (s) => s.EIN === data.ein || s.name === data.name
+        );
+        if (lookup) {
+          data.image = lookup.image || data.image;
+          data.sponsor_link = lookup.sponsor_link || data.sponsor_link;
+        }
+
         setSponsor(data);
       } catch (err) {
         console.error("Error fetching sponsor:", err);

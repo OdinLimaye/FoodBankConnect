@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import Header from "./Header";
 import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
+import programsData from "../../programs.json";
 
 const BASE_URL = "https://api.foodbankconnect.me/v1/programs";
 const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks?size=100&start=1";
@@ -27,6 +28,16 @@ const ProgramsInstancePage = () => {
         const res = await fetch(`${BASE_URL}/${id}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const programData = await res.json();
+
+        // Lookup image and sign_up_link from programs.json
+        const lookup = programsData.find(
+          (p) => p.name === programData.name || p.host === programData.host
+        );
+        if (lookup) {
+          programData.image = lookup.image || programData.image;
+          programData.sign_up_link = lookup.sign_up_link || programData.sign_up_link;
+        }
+
         setProgram(programData);
 
         if (programData.host) {

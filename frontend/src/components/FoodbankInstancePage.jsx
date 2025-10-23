@@ -5,6 +5,9 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
 
+// Import local JSON from scraper
+import foodbanksData from "../../foodbanks.json";
+
 const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks";
 const PROGRAMS_URL = "https://api.foodbankconnect.me/v1/programs?size=100&start=1";
 
@@ -30,6 +33,16 @@ const FoodbankInstancePage = () => {
         const response = await fetch(`${FOODBANKS_URL}/${id}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
+
+        // Lookup image and website from foodbanks.json
+        const lookup = foodbanksData.find(
+          (fb) => fb.name === data.name || fb.id === id
+        );
+        if (lookup) {
+          data.image = lookup.image || data.image;
+          data.website = lookup.website || data.website;
+        }
+
         setFoodbank(data);
       } catch (err) {
         console.error("Error fetching food bank:", err);
@@ -100,6 +113,20 @@ const FoodbankInstancePage = () => {
       <Breadcrumb model_type="foodbanks" current_page={foodbank.name || name} />
 
       <main className="container my-5">
+        {/* Image section */}
+        <section className="mb-4 text-center">
+          {foodbank.image ? (
+            <img
+              src={foodbank.image}
+              alt={`${foodbank.name} Logo`}
+              className="img-fluid rounded shadow"
+              style={{ maxHeight: "400px", objectFit: "cover" }}
+            />
+          ) : (
+            <div className="text-muted">No image available</div>
+          )}
+        </section>
+
         <section className="mb-4">
           <h2>Details</h2>
           <ul style={{ listStyle: "none", padding: 0 }}>
