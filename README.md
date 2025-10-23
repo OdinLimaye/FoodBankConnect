@@ -142,7 +142,7 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 | Francisco Vivas   |                 |              |  
 | Christine Dominic | 16              |              |  
 | Mahika Dawar      | 18              |              |  
-| Jose Lopez        | 20              |              |  
+| Jose Lopez        | 20              |   19         |  
 
 **Comments:** None
 
