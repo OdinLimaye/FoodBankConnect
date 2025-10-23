@@ -1,8 +1,8 @@
 stages:
   - build
   - deploy         
-  - backend_test    
   - backend_release 
+  - backend_test    
   - selenium_tests
 
 # ------------------------------
@@ -38,131 +38,6 @@ deploy_website:
     - build_react
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-      when: on_success
-    - when: never
-
-# ------------------------------
-# Backend: Python unit tests (pytest) — non-blocking and AFTER deploy
-# ------------------------------
-backend_unit_tests:
-  stage: backend_test
-  image: python:3.11
-  needs: ["backend_deploy"]
-  allow_failure: true                   # never block anything
-  services:
-    - name: postgres:15
-      alias: postgres
-      command: ["postgres","-c","fsync=off","-c","full_page_writes=off","-c","synchronous_commit=off"]
-  variables:
-    PIP_DISABLE_PIP_VERSION_CHECK: "1"
-    PYTHONDONTWRITEBYTECODE: "1"
-    PYTHONUNBUFFERED: "1"
-    FLASK_ENV: "production"
-    PORT: "8080"
-    DB_HOST: "postgres"
-    DB_PORT: "5432"
-    DB_USER: "postgres"
-    DB_PASSWORD: "postgres"
-    DB_NAME: "postgres"
-    DB_SCHEMA: "app"
-    POSTGRES_DB: postgres
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
-  before_script:
-    - python -V
-    - pip install -r requirements.txt
-    - pip install pytest pytest-cov
-    # Wait for Postgres
-    - for i in {1..30}; do pg_isready -h postgres -p 5432 && break; sleep 1; done || (echo "Postgres not ready" && exit 1)
-  script:
-    - pytest -q --maxfail=1 --disable-warnings --cov=./ --cov-report=xml:coverage.xml --junitxml=pytest-report.xml
-  artifacts:
-    when: always
-    reports:
-      junit: pytest-report.xml
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
-    paths:
-      - pytest-report.xml
-      - coverage.xml
-  rules:
-    - changes:
-        - main.py
-        - scraper.py
-        - requirements.txt
-        - tests/**/*         # your pytest tree
-      when: on_success
-    - when: never
-
-# ------------------------------
-# Backend: API tests (start Flask + run Postman via Newman) — non-blocking and AFTER deploy
-# ------------------------------
-backend_api_tests:
-  stage: backend_test
-  image: node:20
-  allow_failure: true                   # never block anything
-  needs: ["backend_deploy"]
-  services:
-    - name: postgres:15
-      alias: postgres
-      command: ["postgres","-c","fsync=off","-c","full_page_writes=off","-c","synchronous_commit=off"]
-  variables:
-    FLASK_ENV: "production"
-    PORT: "8080"
-    DB_HOST: "postgres"
-    DB_PORT: "5432"
-    DB_USER: "postgres"
-    DB_PASSWORD: "postgres"
-    DB_NAME: "postgres"
-    DB_SCHEMA: "app"
-    POSTGRES_DB: postgres
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
-  before_script:
-    - apt-get update && apt-get install -y python3 python3-pip curl
-    - pip install -r requirements.txt
-    - npm install -g newman
-    # Wait for Postgres socket using a safe heredoc inside a block scalar
-    - |
-      for i in {1..30}; do
-        python3 - <<'PY'
-        import socket, sys
-        s = socket.socket()
-        s.settimeout(1)
-        try:
-            s.connect(('postgres', 5432))
-            print("ok")
-            sys.exit(0)
-        except Exception:
-            sys.exit(1)
-        finally:
-            s.close()
-        PY
-        [ $? -eq 0 ] && break
-        sleep 1
-      done
-  script:
-    # Start Flask app in background
-    - python3 main.py & echo $! > flask.pid
-    # Wait for health endpoint
-    - for i in {1..60}; do curl -sf http://localhost:8080/health && break; sleep 1; done
-    # Run Postman collection
-    - newman run tests/postman/collection.json --env-var BASE_URL=http://localhost:8080 --reporters cli,junit --reporter-junit-export newman-results.xml
-  after_script:
-    - if [ -f flask.pid ]; then kill $(cat flask.pid) || true; fi
-  artifacts:
-    when: always
-    reports:
-      junit: newman-results.xml
-    paths:
-      - newman-results.xml
-  rules:
-    - changes:
-        - main.py
-        - scraper.py
-        - requirements.txt
-        - tests/postman/**/*  # your postman/newman files
       when: on_success
     - when: never
 
@@ -261,6 +136,132 @@ backend_release:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
     - if: '$CI_COMMIT_TAG'
+      when: on_success
+    - when: never
+
+
+# ------------------------------
+# Backend: Python unit tests (pytest) — non-blocking and AFTER deploy
+# ------------------------------
+backend_unit_tests:
+  stage: backend_test
+  image: python:3.11
+  needs: ["backend_release"]
+  allow_failure: true                   # never block anything
+  services:
+    - name: postgres:15
+      alias: postgres
+      command: ["postgres","-c","fsync=off","-c","full_page_writes=off","-c","synchronous_commit=off"]
+  variables:
+    PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    PYTHONDONTWRITEBYTECODE: "1"
+    PYTHONUNBUFFERED: "1"
+    FLASK_ENV: "production"
+    PORT: "8080"
+    DB_HOST: "postgres"
+    DB_PORT: "5432"
+    DB_USER: "postgres"
+    DB_PASSWORD: "postgres"
+    DB_NAME: "postgres"
+    DB_SCHEMA: "app"
+    POSTGRES_DB: postgres
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+  before_script:
+    - python -V
+    - pip install -r requirements.txt
+    - pip install pytest pytest-cov
+    # Wait for Postgres
+    - for i in {1..30}; do pg_isready -h postgres -p 5432 && break; sleep 1; done || (echo "Postgres not ready" && exit 1)
+  script:
+    - pytest -q --maxfail=1 --disable-warnings --cov=./ --cov-report=xml:coverage.xml --junitxml=pytest-report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: pytest-report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - pytest-report.xml
+      - coverage.xml
+  rules:
+    - changes:
+        - main.py
+        - scraper.py
+        - requirements.txt
+        - tests/**/*         # your pytest tree
+      when: on_success
+    - when: never
+
+# ------------------------------
+# Backend: API tests (start Flask + run Postman via Newman) — non-blocking and AFTER deploy
+# ------------------------------
+backend_api_tests:
+  stage: backend_test
+  image: node:20
+  allow_failure: true                   # never block anything
+  needs: ["backend_release"]
+  services:
+    - name: postgres:15
+      alias: postgres
+      command: ["postgres","-c","fsync=off","-c","full_page_writes=off","-c","synchronous_commit=off"]
+  variables:
+    FLASK_ENV: "production"
+    PORT: "8080"
+    DB_HOST: "postgres"
+    DB_PORT: "5432"
+    DB_USER: "postgres"
+    DB_PASSWORD: "postgres"
+    DB_NAME: "postgres"
+    DB_SCHEMA: "app"
+    POSTGRES_DB: postgres
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+  before_script:
+    - apt-get update && apt-get install -y python3 python3-pip curl
+    - pip install -r requirements.txt
+    - npm install -g newman
+    # Wait for Postgres socket using a safe heredoc inside a block scalar
+    - |
+      for i in {1..30}; do
+        python3 - <<'PY'
+        import socket, sys
+        s = socket.socket()
+        s.settimeout(1)
+        try:
+            s.connect(('postgres', 5432))
+            print("ok")
+            sys.exit(0)
+        except Exception:
+            sys.exit(1)
+        finally:
+            s.close()
+        PY
+        [ $? -eq 0 ] && break
+        sleep 1
+      done
+  script:
+    # Start Flask app in background
+    - python3 main.py & echo $! > flask.pid
+    # Wait for health endpoint
+    - for i in {1..60}; do curl -sf http://localhost:8080/health && break; sleep 1; done
+    # Run Postman collection
+    - newman run tests/postman/collection.json --env-var BASE_URL=http://localhost:8080 --reporters cli,junit --reporter-junit-export newman-results.xml
+  after_script:
+    - if [ -f flask.pid ]; then kill $(cat flask.pid) || true; fi
+  artifacts:
+    when: always
+    reports:
+      junit: newman-results.xml
+    paths:
+      - newman-results.xml
+  rules:
+    - changes:
+        - main.py
+        - scraper.py
+        - requirements.txt
+        - tests/postman/**/*  # your postman/newman files
       when: on_success
     - when: never
 
