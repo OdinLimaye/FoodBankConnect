@@ -4,7 +4,7 @@ import time
 import re
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 5
+MAX_RESULTS = 10
 
 KEYWORDS = [
     "foundation",
@@ -185,7 +185,8 @@ def scrape(max_results=MAX_RESULTS):
                 past_involvement = fetch_grants(ein)
                 sponsor_link = f"https://projects.propublica.org/nonprofits/organizations/{ein}"
 
-                logo = fetch_logo(name)
+                # logo = fetch_logo(name)
+                logo = "N/A"
 
                 donor_json = {
                     "name": name,

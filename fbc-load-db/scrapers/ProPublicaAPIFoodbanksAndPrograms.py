@@ -4,7 +4,7 @@ import re
 import time
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 5
+MAX_RESULTS = 10
 
 GOOGLE_API_KEY = "AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE"
 GOOGLE_CX = "47dcfe213c7274b68"
@@ -181,11 +181,14 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
             # ---------------------------
 
             # 1. IMAGE for foodbank + program
-            foodbank_image = fetch_google_image(f"{name} food bank")
+            # foodbank_image = fetch_google_image(f"{name} food bank")
+            # program_image = foodbank_image
+            foodbank_image = "N/A"
             program_image = foodbank_image
 
             # 2. WEBSITE from first Google result
-            website = fetch_google_website(name)
+            # website = fetch_google_website(name)
+            website = "N/A"
 
             # ---------------------------
             # ASSEMBLE JSON OBJECTS
