@@ -1,5 +1,8 @@
 # Project Proposal  
 
+- **Forked Repo:**
+https://gitlab.com/christinedominic/cs373-fall-2025-55085_07
+
 - **Web Scrapers Repo:**
 https://gitlab.com/dafrancc/fbc-scrapers
 
