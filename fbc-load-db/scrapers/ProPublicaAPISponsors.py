@@ -4,7 +4,7 @@ import time
 import re
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 100
+MAX_RESULTS = 30
 
 KEYWORDS = [
     "foundation",
@@ -34,42 +34,17 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; DataFetcherBot/1.0; +https://example.com/bot)"
 }
 
-
 # -------------------------------------------------
-# Small Delay (same as other scraper)
+# Small Delay
 # -------------------------------------------------
 
 def tiny_delay():
-    """Small pause before every Google request."""
+    """Small pause before every request."""
     time.sleep(0.25)
 
 
 # -------------------------------------------------
-# Safety GET Wrapper
-# -------------------------------------------------
-
-def safe_request(url, params=None, max_retries=3, sleep_base=2):
-    """Perform GET with retries, backoff, and safe timeout."""
-    for attempt in range(1, max_retries + 1):
-        try:
-            resp = requests.get(url, params=params, headers=HEADERS, timeout=15)
-            if resp.status_code == 429:
-                wait = sleep_base * attempt
-                print(f"⚠️ Rate limited on {url}, sleeping {wait}s...")
-                time.sleep(wait)
-                continue
-            resp.raise_for_status()
-            return resp
-        except (requests.exceptions.RequestException, ConnectionResetError) as e:
-            wait = sleep_base * attempt
-            print(f"Attempt {attempt} failed for {url}: {e}. Retrying in {wait}s...")
-            time.sleep(wait)
-    print(f"❌ Failed after {max_retries} attempts: {url}")
-    return None
-
-
-# -------------------------------------------------
-# Clean Google Image Fetcher
+# Google Image Fetcher
 # -------------------------------------------------
 
 def fetch_logo(name: str) -> str:
@@ -84,13 +59,10 @@ def fetch_logo(name: str) -> str:
         "cx": GOOGLE_CX,
         "key": GOOGLE_API_KEY,
         "searchType": "image",
-        "num": 10   # get multiple results for filtering
+        "num": 10
     }
 
-    resp = safe_request("https://www.googleapis.com/customsearch/v1", params=params)
-    if not resp:
-        return "N/A"
-
+    resp = requests.get("https://www.googleapis.com/customsearch/v1", params=params)
     try:
         data = resp.json()
         items = data.get("items", [])
@@ -99,15 +71,12 @@ def fetch_logo(name: str) -> str:
 
         clean_exts = (".jpg", ".jpeg", ".png", ".gif", ".webp")
 
-        # ✅ Try to find a clean image URL
         for item in items:
             link = item.get("link", "")
             if isinstance(link, str) and link.lower().endswith(clean_exts):
                 return link
 
-        # ✅ Fallback to the first image
         return items[0].get("link", "N/A")
-
     except Exception as e:
         print(f"Error parsing Google response for '{name}': {e}")
         return "N/A"
@@ -133,9 +102,11 @@ def fetch_tax_exempt_date(ein: str) -> str:
     if not ein:
         return "This is a nonprofit, tax exempt."
 
+    tiny_delay()
     url = f"https://projects.propublica.org/nonprofits/organizations/{ein}"
-    resp = safe_request(url)
-    if not resp:
+    resp = requests.get(url, headers=HEADERS)
+
+    if resp.status_code != 200:
         return "This is a nonprofit, tax exempt."
 
     match = re.search(r"Tax-exempt since ([A-Za-z0-9 ,]+)", resp.text)
@@ -148,8 +119,11 @@ def fetch_tax_exempt_date(ein: str) -> str:
 
 def fetch_grants(ein: str) -> str:
     """Find first grant recipient (prefer food-related)."""
-    resp = safe_request(f"{BASE_URL}/organizations/{ein}.json")
-    if not resp:
+    tiny_delay()
+    url = f"{BASE_URL}/organizations/{ein}.json"
+    resp = requests.get(url, headers=HEADERS)
+
+    if resp.status_code != 200:
         return "N/A"
 
     try:
@@ -181,9 +155,10 @@ def scrape(max_results=MAX_RESULTS):
         page = 0
 
         while len(out) < max_results:
+            tiny_delay()
             params = {"q": keyword, "page": page}
-            resp = safe_request(f"{BASE_URL}/search.json", params=params)
-            if not resp:
+            resp = requests.get(f"{BASE_URL}/search.json", params=params, headers=HEADERS)
+            if resp.status_code != 200:
                 break
 
             data = resp.json()
@@ -200,8 +175,9 @@ def scrape(max_results=MAX_RESULTS):
                 city = org.get("city", "N/A")
                 state_code = org.get("state", "N/A")
 
-                detail_resp = safe_request(f"{BASE_URL}/organizations/{ein}.json")
-                detail_json = detail_resp.json() if detail_resp else {}
+                tiny_delay()
+                detail_resp = requests.get(f"{BASE_URL}/organizations/{ein}.json", headers=HEADERS)
+                detail_json = detail_resp.json() if detail_resp.status_code == 200 else {}
                 detail = detail_json.get("organization", {})
 
                 about = fetch_tax_exempt_date(ein)
@@ -209,7 +185,7 @@ def scrape(max_results=MAX_RESULTS):
                 past_involvement = fetch_grants(ein)
                 sponsor_link = f"https://projects.propublica.org/nonprofits/organizations/{ein}"
 
-                logo = fetch_logo(name)  # ✅ tiny delay already inside
+                logo = fetch_logo(name)
 
                 donor_json = {
                     "name": name,
