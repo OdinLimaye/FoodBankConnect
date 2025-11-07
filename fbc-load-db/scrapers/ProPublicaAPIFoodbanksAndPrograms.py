@@ -2,12 +2,26 @@ import requests
 import json
 import re
 import time
+from bs4 import BeautifulSoup
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 10
+MAX_RESULTS = 100
 
 GOOGLE_API_KEY = "AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE"
 GOOGLE_CX = "47dcfe213c7274b68"
+
+ABOUT_KEYWORDS = [
+    "about",
+    "food",
+    "support",
+    "community",
+    "our story",
+    "mission",
+    "who we are",
+    "history",
+    "why we",
+    "vision"
+]
 
 
 def tiny_delay():
@@ -16,8 +30,21 @@ def tiny_delay():
 
 
 # -------------------------------
-# GOOGLE SEARCH HELPERS
+# GOOGLE HELPERS
 # -------------------------------
+
+def google_search_raw(query: str):
+    """Run a Google Custom Search and return the raw JSON."""
+    tiny_delay()
+    params = {
+        "q": query,
+        "cx": GOOGLE_CX,
+        "key": GOOGLE_API_KEY,
+        "num": 3
+    }
+    resp = requests.get("https://www.googleapis.com/customsearch/v1", params=params)
+    return resp.json()
+
 
 def fetch_google_image(query: str):
     """Return the first clean Google image result, skipping lookasides."""
@@ -26,7 +53,7 @@ def fetch_google_image(query: str):
         "q": query,
         "cx": GOOGLE_CX,
         "key": GOOGLE_API_KEY,
-        "num": 10,                 # fetch more results to filter
+        "num": 10,
         "searchType": "image"
     }
 
@@ -38,31 +65,139 @@ def fetch_google_image(query: str):
 
     clean_exts = (".jpg", ".jpeg", ".png", ".gif", ".webp")
 
-    # ✅ 1. Scan for clean images
     for item in data["items"]:
         link = item.get("link", "")
         if isinstance(link, str) and link.lower().endswith(clean_exts):
             return link
 
-    # ✅ 2. If no clean images found, return first result anyway
     return data["items"][0].get("link", "N/A")
 
 
+def fetch_google_website_and_about(name: str):
+    """
+    Return:
+      website (first result)
+      google_about (snippet or meta description)
+    """
+    data = google_search_raw(name)
 
-def fetch_google_website(query: str):
-    """Return first Google web result (not image)."""
-    tiny_delay()
-    params = {
-        "q": query,
-        "cx": GOOGLE_CX,
-        "key": GOOGLE_API_KEY,
-        "num": 1
-    }
-    resp = requests.get("https://www.googleapis.com/customsearch/v1", params=params)
-    data = resp.json()
-    if "items" in data and data["items"]:
-        return data["items"][0]["link"]
-    return "N/A"
+    if "items" not in data or not data["items"]:
+        return "N/A", None
+
+    first = data["items"][0]
+
+    website = first.get("link", "N/A")
+    snippet = first.get("snippet")
+
+    # Meta descriptions pulled by Google (even for JS-heavy sites)
+    meta_about = None
+    pagemap = first.get("pagemap", {})
+    meta_list = pagemap.get("metatags", [])
+    if meta_list and isinstance(meta_list, list):
+        meta = meta_list[0]
+        meta_about = (
+            meta.get("og:description")
+            or meta.get("twitter:description")
+            or meta.get("description")
+        )
+
+    google_about = meta_about or snippet
+    return website, google_about
+
+
+# -------------------------------
+# ABOUT SCRAPING HELPERS
+# -------------------------------
+
+def extract_about_from_url(url: str) -> str:
+    """Extracts meaningful text even from JS-heavy sites without real headers."""
+    if not url or url == "N/A":
+        return None
+
+    try:
+        tiny_delay()
+        resp = requests.get(url, timeout=8)
+        if resp.status_code != 200:
+            return None
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+
+        # Remove junk
+        for tag in soup(["script", "style", "noscript", "svg", "footer", "header", "nav"]):
+            tag.decompose()
+
+        # 1. HEADER-BASED ABOUT extraction
+        for header in soup.find_all(["h1", "h2", "h3", "h4"]):
+            header_text = header.get_text(strip=True).lower()
+            if any(kw in header_text for kw in ABOUT_KEYWORDS):
+                collected = []
+                for sib in header.find_next_siblings():
+                    text = sib.get_text(" ", strip=True)
+                    if len(text) > 40:
+                        collected.append(text)
+                    if len(" ".join(collected)) > 300:
+                        break
+                if collected:
+                    return " ".join(collected)
+
+        # 2. Meta description inside page HTML
+        desc = soup.find("meta", attrs={"name": "description"})
+        if desc and desc.get("content"):
+            return desc["content"]
+
+        # 3. Long paragraph/div/span text
+        candidate_blocks = []
+        for tag in soup.find_all(["p", "div", "span"]):
+            text = tag.get_text(" ", strip=True)
+            if not text:
+                continue
+            if len(text) < 40:
+                continue
+            if any(x in text.lower() for x in ["cookie", "privacy", "terms", "javascript"]):
+                continue
+            candidate_blocks.append(text)
+
+        if candidate_blocks:
+            candidate_blocks.sort(key=len, reverse=True)
+            return candidate_blocks[0]
+
+        # 4. Basic all-text fallback
+        all_text = soup.get_text(" ", strip=True)
+        if len(all_text) > 40:
+            chunks = [c.strip() for c in re.split(r"[.!?]", all_text) if len(c.strip()) > 40]
+            if chunks:
+                return chunks[0]
+
+        return None
+
+    except Exception:
+        return None
+
+
+def extract_about_section(website: str) -> str:
+    """
+    First try /about and /aboutus.
+    Then fallback to homepage.
+    """
+    if not website or website == "N/A":
+        return None
+
+    base = website.rstrip("/")
+
+    # 1. Try /about
+    about_url = base + "/about"
+    about_text = extract_about_from_url(about_url)
+    if about_text and len(about_text) > 40:
+        return about_text
+
+    # 2. Try /aboutus
+    aboutus_url = base + "/aboutus"
+    aboutus_text = extract_about_from_url(aboutus_url)
+    if aboutus_text and len(aboutus_text) > 40:
+        return aboutus_text
+
+    # 3. Homepage
+    return extract_about_from_url(website)
 
 
 # -------------------------------
@@ -70,7 +205,6 @@ def fetch_google_website(query: str):
 # -------------------------------
 
 def fetch_search(q="food bank", state=None, page=0):
-    """Search nonprofits from ProPublica."""
     tiny_delay()
     url = f"{BASE_URL}/search.json"
     params = {"q": q, "page": page}
@@ -82,7 +216,6 @@ def fetch_search(q="food bank", state=None, page=0):
 
 
 def fetch_organization(ein: str):
-    """Fetch detailed org data from ProPublica."""
     tiny_delay()
     url = f"{BASE_URL}/organizations/{ein}.json"
     resp = requests.get(url)
@@ -92,8 +225,7 @@ def fetch_organization(ein: str):
 
 
 def infer_services(text):
-    """Infer service types from description text."""
-    text = text.lower()
+    text = (text or "").lower()
     services = []
     if "nutrition" in text:
         services.append("Nutrition Education")
@@ -108,39 +240,11 @@ def infer_services(text):
     return services
 
 
-def fetch_tax_exempt_date(ein: str):
-    """Scrape ProPublica page for tax-exempt date."""
-    tiny_delay()
-
-    if not ein:
-        return "This is a nonprofit, tax exempt."
-
-    url = f"https://projects.propublica.org/nonprofits/organizations/{ein}"
-
-    try:
-        resp = requests.get(url)
-        if resp.status_code != 200:
-            return "This is a nonprofit, tax exempt."
-
-        text = resp.text
-        match = re.search(r"Tax-exempt since ([A-Za-z0-9 ,]+)", text)
-        if match:
-            tax_str = match.group(1)
-            if re.search(r"\b\d{4}\b", tax_str):
-                return f"Tax-exempt since {tax_str}"
-
-        return "This is a nonprofit, tax exempt."
-
-    except Exception:
-        return "This is a nonprofit, tax exempt."
-
-
 # -------------------------------
 # MAIN SCRAPER
 # -------------------------------
 
 def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
-    """Main scraper: fetch food banks + program entries."""
     print("Scraping for Foodbanks and Programs now.")
     combined = []
     page = 0
@@ -171,31 +275,33 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
                 zipcode = "N/A"
                 phone = "N/A"
 
-            # About: always tax-exempt info
-            about = fetch_tax_exempt_date(ein)
+            # GOOGLE WEBSITE + ABOUT META/SNIPPET
+            website, google_about = fetch_google_website_and_about(name)
 
+            # SCRAPED ABOUT
+            about = extract_about_section(website)
+
+            # If scraping failed, use Google's extracted description/snippet
+            if not about:
+                about = google_about
+
+            # If still nothing, try homepage one more time
+            if not about:
+                about = extract_about_from_url(website)
+
+            # Final fallback
+            if not about:
+                about = "This organization provides food assistance and community support."
+
+            # Infer services
             services_list = infer_services(about)
             program_name = f"{name} {' / '.join(services_list)} Program"
 
-            # ---------------------------
-            # GOOGLE SEARCH (ONLY 2 CALLS)
-            # ---------------------------
-
-            # 1. IMAGE for foodbank + program
-            # foodbank_image = fetch_google_image(f"{name} food bank")
-            # program_image = foodbank_image
-            foodbank_image = "N/A"
+            # IMAGE (Google)
+            foodbank_image = fetch_google_image(f"{name} food bank")
             program_image = foodbank_image
 
-            # 2. WEBSITE from first Google result
-            # website = fetch_google_website(name)
-            website = "N/A"
-
-            # ---------------------------
-            # ASSEMBLE JSON OBJECTS
-            # ---------------------------
-
-            # Foodbank entry
+            # JSON OBJECTS
             foodbank_json = {
                 "about": about,
                 "capacity": "N/A",
@@ -213,13 +319,10 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
                 "zipcode": zipcode
             }
 
-            # Program entry
             program_json = {
                 "name": program_name,
                 "program_type": (
-                    "class"
-                    if "training" in program_name.lower()
-                    or "culinary" in program_name.lower()
+                    "class" if "training" in program_name.lower() or "culinary" in program_name.lower()
                     else "service"
                 ),
                 "eligibility": "N/A",
@@ -242,6 +345,10 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
     return combined
 
 
+# -------------------------------
+# ENTRY POINT
+# -------------------------------
+
 if __name__ == "__main__":
     results = scrape()
     print(f"✅ Retrieved {len(results)} total entries (foodbanks + programs).")
@@ -254,4 +361,3 @@ if __name__ == "__main__":
 
     print(f"📝 Debug file written to {temp_path}")
     """
-

@@ -5,3 +5,5 @@ scripts/foodbanks_with_programs.json
 scripts/foodbanks_programs.json
 donors.json
 __pycache__
+fbc-load-db/scrapers/debug_output.json
+fbc-load-db/scrapers/sponsor_debug_output.json
