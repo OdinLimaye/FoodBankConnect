@@ -4,7 +4,7 @@ import re
 import time
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 30
+MAX_RESULTS = 5
 
 GOOGLE_API_KEY = "AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE"
 GOOGLE_CX = "47dcfe213c7274b68"

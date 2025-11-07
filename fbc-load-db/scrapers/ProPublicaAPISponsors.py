@@ -4,7 +4,7 @@ import time
 import re
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 30
+MAX_RESULTS = 5
 
 KEYWORDS = [
     "foundation",
