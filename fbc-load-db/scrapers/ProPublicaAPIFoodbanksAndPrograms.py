@@ -5,7 +5,7 @@ import time
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 100
+MAX_RESULTS = 10
 
 GOOGLE_API_KEY = "AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE"
 GOOGLE_CX = "47dcfe213c7274b68"

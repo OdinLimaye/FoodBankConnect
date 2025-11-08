@@ -5,7 +5,7 @@ import re
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 100
+MAX_RESULTS = 10
 
 KEYWORDS = [
     "foundation",
@@ -188,18 +188,18 @@ def classify_affiliation(name: str, org_detail: dict = None) -> str:
 
 def fetch_tax_exempt_date(ein: str) -> str:
     if not ein:
-        return "This is a nonprofit, tax exempt."
+        return "This is a nonprofit, tax exempt organization."
     tiny_delay()
     url = f"https://projects.propublica.org/nonprofits/organizations/{ein}"
     resp = requests.get(url, headers=HEADERS)
     if resp.status_code != 200:
-        return "This is a nonprofit, tax exempt."
+        return "This is a nonprofit, tax exempt organization."
     match = re.search(r"Tax-exempt since ([A-Za-z0-9 ,]+)", resp.text)
     if match:
         date = match.group(1)
         if re.search(r"\b\d{4}\b", date):
             return f"Tax-exempt since {date}"
-    return "This is a nonprofit, tax exempt."
+    return "This is a nonprofit, tax exempt organization."
 
 
 def fetch_grants(ein: str) -> str:
