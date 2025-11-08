@@ -1,3 +1,73 @@
+stages:
+  - build
+  - deploy
+  - backend_release
+  - backend_test
+  - selenium_tests
+  - jest_tests
+
+variables:
+  REQUIREMENTS_FILE_UNIT: "fbc-load-db/requirements.txt"
+  REQUIREMENTS_FILE_API:  "fbc-rest-api/requirements.txt"
+  PYTEST_WORKDIR: ""
+  PYTEST_TESTPATH: "tests"
+  PYTEST_IGNORE: "frontend/src/selenium_tests"
+  REPORT_DIR: "reports"
+  PYTEST_JUNIT_XML: "$REPORT_DIR/pytest-report.xml"
+  PYTEST_COVERAGE_XML: "$REPORT_DIR/coverage.xml"
+  POSTMAN_COLLECTION: "tests/postman/collection.json"
+  NEWMAN_JUNIT_XML: "$REPORT_DIR/newman-results.xml"
+  API_APP_ENTRY: "fbc-rest-api/main.py"
+  API_HEALTH_URL: "http://localhost:8080/health"
+  COV_TARGET_DIR: "fbc-load-db"
+
+build_react:
+  stage: build
+  image: node:20-bullseye
+  script:
+    - cd frontend
+    - npm ci
+    - CI=false npm run build
+  artifacts:
+    paths:
+      - frontend/build
+  rules:
+    - if: '$FORCE_FRONTEND == "1"'
+      when: on_success
+    - changes:
+        - frontend/**/*
+        - frontend/.env*
+        - package.json
+        - package-lock.json
+        - frontend/package.json
+        - frontend/package-lock.json
+      when: on_success
+    - when: never
+
+deploy_website:
+  stage: deploy
+  image:
+    name: amazon/aws-cli
+    entrypoint: [""]
+  dependencies:
+    - build_react
+  script:
+    - aws s3 sync frontend/build/ s3://$S3_BUCKET --delete
+    - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DIST_ID --paths "/*"
+  rules:
+    - if: '$FORCE_FRONTEND == "1" && $CI_COMMIT_BRANCH == "main"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
+        - frontend/**/*
+        - frontend/.env*
+        - package.json
+        - package-lock.json
+        - frontend/package.json
+        - frontend/package-lock.json
+      when: on_success
+    - when: never
+
 backend_release:
   stage: backend_release
   image: docker:24.0.7
@@ -25,7 +95,6 @@ backend_release:
     API_DOCKERFILE: "Dockerfile.api"
     LOADER_CONTEXT: "."
     LOADER_DOCKERFILE: "Dockerfile.loader"
-
   before_script:
     - apk add --no-cache curl bash jq aws-cli
     - aws --version
@@ -36,7 +105,6 @@ backend_release:
   script:
     - >
       set -e;
-      echo "Building API image…";
       docker build -f "$API_DOCKERFILE" -t "$ECR_REGISTRY/$ECR_REPO_API:$IMAGE_TAG" "$API_CONTEXT";
       docker push "$ECR_REGISTRY/$ECR_REPO_API:$IMAGE_TAG";
       if [ "$CI_COMMIT_BRANCH" = "main" ]; then
@@ -46,7 +114,6 @@ backend_release:
 
     # - >
     #   set -e;
-    #   echo "Building Loader image…";
     #   docker build -f "$LOADER_DOCKERFILE" -t "$ECR_REGISTRY/$ECR_REPO_LOADER:$IMAGE_TAG" "$LOADER_CONTEXT";
     #   docker push "$ECR_REGISTRY/$ECR_REPO_LOADER:$IMAGE_TAG";
     #   if [ "$CI_COMMIT_BRANCH" = "main" ]; then
@@ -56,7 +123,6 @@ backend_release:
 
     - >
       set -e;
-      echo "Updating Lambda function image…";
       aws lambda update-function-code
       --function-name "$LAMBDA_FUNCTION_NAME"
       --image-uri "$ECR_REGISTRY/$ECR_REPO_API:$IMAGE_TAG"
@@ -65,19 +131,16 @@ backend_release:
 
     - |
       set -e
-      echo "Waiting for Lambda to be Active (~2min max)…"
       for i in {1..24}; do
         STATUS=$(aws lambda get-function-configuration \
           --function-name "$LAMBDA_FUNCTION_NAME" \
           --region "$AWS_DEFAULT_REGION" | jq -r '.State')
-        echo "Lambda state: $STATUS"
         [ "$STATUS" = "Active" ] && break
         sleep 5
       done
 
     # - >
     #   set -e;
-    #   echo "Submitting AWS Batch job…";
     #   aws batch submit-job
     #   --job-name "${BATCH_JOB_NAME:-fbc-refill-$CI_COMMIT_SHORT_SHA}"
     #   --job-queue "$BATCH_JOB_QUEUE"
@@ -85,11 +148,58 @@ backend_release:
     #   --region "$AWS_DEFAULT_REGION"
     #   --container-overrides 'environment=[]'
     #   | tee batch_submit.json;
-    #   echo "Batch job submitted: $(jq -r .jobId batch_submit.json)"
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
     - if: '$CI_COMMIT_TAG'
+      when: on_success
+    - when: never
+
+selenium_tests:
+  stage: selenium_tests
+  image: python:3.12-bullseye
+  before_script:
+    - apt-get update && apt-get install -y wget unzip xvfb libxi6 libgconf-2-4 gnupg
+    - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+    - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+    - apt-get update && apt-get install -y google-chrome-stable
+    - CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+    - wget -q "https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip"
+    - unzip chromedriver_linux64.zip
+    - mv chromedriver /usr/local/bin/
+    - chmod +x /usr/local/bin/chromedriver
+    - pip install -r "frontend/tests/requirements.txt"
+    - pip install pytest
+  script:
+    - cd frontend/src/selenium_tests
+    - python -m pytest -q --maxfail=1 --disable-warnings \
+        --junitxml "$CI_PROJECT_DIR/reports/selenium-junit.xml"
+  artifacts:
+    when: always
+    reports:
+      junit: reports/selenium-junit.xml
+    paths:
+      - reports/selenium-junit.xml
+  rules:
+    - changes:
+        - frontend/src/selenium_tests/**/*
+        - frontend/tests/requirements.txt
+      when: on_success
+    - when: never
+
+jest_tests:
+  stage: jest_tests
+  image: node:20-bullseye
+  before_script:
+    - cd frontend
+  script:
+    - npm ci
+    - npm test -- --watchAll=false
+  rules:
+    - changes:
+        - frontend/src/__tests__/**/*
+        - frontend/package.json
+        - frontend/package-lock.json
       when: on_success
     - when: never

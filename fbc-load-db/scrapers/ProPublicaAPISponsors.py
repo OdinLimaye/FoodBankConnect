@@ -5,7 +5,7 @@ import re
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 10
+MAX_RESULTS = 100
 
 KEYWORDS = [
     "foundation",
