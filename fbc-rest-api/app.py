@@ -368,6 +368,84 @@ def handle_resource(resource: str, item_id: Optional[str] = None):
         logger.exception("unhandled error")
         return json_error(500, "InternalServerError", "Unexpected error occurred.", details={"reason": str(e)})
 
+# ------------------------------------------------------------------------------
+# Full-site search endpoint
+# ------------------------------------------------------------------------------
+
+@app.get("/v1/search")
+def search_all():
+    """
+    Performs a full-site text search across foodbanks, programs, and sponsors.
+    Returns ranked results with snippets highlighting matches.
+    """
+    query = (request.args.get("q") or "").strip()
+    if not query:
+        return jsonify({"items": [], "request_id": _request_id()})
+
+    q_lower = query.lower()
+    query_terms = re.findall(r"\b\w+\b", q_lower)
+    results: List[Dict[str, Any]] = []
+
+    def relevance_score(text: str) -> int:
+        """Compute a simple relevance score based on phrase and word frequency."""
+        text_lower = text.lower()
+        phrase_score = text_lower.count(q_lower) * 3
+        word_score = sum(text_lower.count(term) for term in query_terms)
+        return phrase_score + word_score
+
+    def get_snippet(text: str) -> str:
+        """Return ~80 chars of surrounding text around the first match."""
+        text_lower = text.lower()
+        for term in query_terms:
+            idx = text_lower.find(term)
+            if idx != -1:
+                start = max(0, idx - 40)
+                end = min(len(text), idx + 40)
+                return text[start:end]
+        return text[:80]
+
+    with engine.connect() as conn:
+        for model in ALLOWED_TYPES.keys():
+            table = _table_qualified(model)
+            try:
+                # Concatenate all textual columns for lightweight search
+                sql = text(
+                    f"""
+                    SELECT id, name,
+                           array_to_string(array_agg(t), ' ') AS searchable_text
+                    FROM (
+                        SELECT id, name,
+                               to_jsonb({table})::text AS t
+                        FROM {table}
+                    ) sub
+                    GROUP BY id, name
+                    """
+                )
+                rows = conn.execute(sql).fetchall()
+
+                for row in rows:
+                    text_blob = row.searchable_text or ""
+                    score = relevance_score(text_blob)
+                    if score > 0:
+                        results.append({
+                            "model": model.capitalize(),
+                            "id": row.id,
+                            "name": row.name or "(Unnamed)",
+                            "snippet": get_snippet(text_blob),
+                            "score": score,
+                        })
+            except Exception as e:
+                logger.warning("Search failed for %s: %s", model, e)
+                continue
+
+    # Sort by relevance (highest first)
+    results.sort(key=lambda r: r["score"], reverse=True)
+
+    return jsonify({
+        "items": results,
+        "query": query,
+        "request_id": _request_id(),
+    })
 
 # ------------------------------------------------------------------------------
 # AWS Lambda entrypoint
