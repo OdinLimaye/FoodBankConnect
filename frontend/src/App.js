@@ -8,6 +8,7 @@ import Sponsors from "./pages/Sponsors";
 import SponsorInstancePage from "./components/SponsorInstancePage";
 import ProgramsInstancePage from "./components/ProgramsInstancePage";
 import FoodbankInstancePage from "./components/FoodbankInstancePage";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
 	return (
@@ -21,6 +22,7 @@ function App() {
 				<Route path="/programs/:name" element={<ProgramsInstancePage />} />
 				<Route path="/sponsors" element={<Sponsors />} />
 				<Route path="/sponsors/:name" element={<SponsorInstancePage />} />
+				<Route path="/search" element={<SearchPage />} />
 			</Routes>
 		</Router>
 	);
