@@ -133,3 +133,20 @@ button:hover, .button:hover, a.button:hover,
                 0 0 40px rgba(255, 255, 255, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+/* animated glow on hover */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.food-banks-btn:hover,
+.sponsors-btn:hover,
+.programs-btn:hover,
+.about-btn:hover {
+  animation: glowPulse 1.5s infinite alternate;
+}
