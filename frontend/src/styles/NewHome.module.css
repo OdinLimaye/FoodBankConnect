@@ -25,16 +25,26 @@
 
 .overlayContainer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;               
+  inset: 0;
   display: flex;
-  justify-content: center;  
-  align-items: center;      
+  justify-content: center;
+  align-items: center;
   color: white;
   text-align: center;
+  padding: 2vh 2vw;
+  box-sizing: border-box;
+}
+
+.wrapper {
+  max-width: 90vw;         /* never exceed screen width */
+  max-height: 85vh;        /* prevent cutoff on short screens */
+  overflow-y: auto;        /* scroll only if absolutely needed */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  padding: 1em;
 }
 
 /* Reset and base styles */
