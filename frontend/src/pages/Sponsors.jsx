@@ -19,7 +19,6 @@ const sponsorsListStatic = [
     map_link:
       "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d187102.43328912946!2d-97.83191852982272!3d30.277193772584845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1strader%20joe's!5e0!3m2!1sen!2sus!4v1760831297709!5m2!1sen!2sus",
   },
-  // Add more static entries if needed
 ];
 
 const BASE_URL = "https://api.foodbankconnect.me/v1/sponsors";
@@ -29,6 +28,19 @@ const Sponsors = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // 🔍 filters (removed searchTerm UI, but kept state for consistency)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({
+    name: "",
+    city: "",
+    state: "",
+    affiliation: "",
+    eligibility: "",
+  });
+
+  const handleFilterChange = (e) =>
+    setFilters({ ...filters, [e.target.name]: e.target.value });
 
   const itemsPerPage = 20;
   const totalItems = 100; // Hardcoded total
@@ -55,8 +67,61 @@ const Sponsors = () => {
       }
     }
 
-    fetchSponsors();
-  }, [currentPage]);
+    if (!searchTerm) {
+      fetchSponsors();
+    }
+  }, [currentPage, searchTerm]);
+
+  // 🔍 optional backend search support remains (in case reused later)
+  useEffect(() => {
+    const apiRoot = "https://api.foodbankconnect.me/v1";
+    const doSearch = async () => {
+      if (!searchTerm || !searchTerm.trim()) return;
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `${apiRoot}/search?q=${encodeURIComponent(searchTerm.trim())}`
+        );
+        if (!res.ok) throw new Error("Search failed");
+        const data = await res.json();
+        const results = (data.items || [])
+          .filter((it) => String(it.model).toLowerCase() === "sponsors")
+          .map((it) => ({
+            id: it.id,
+            name: it.name,
+            affiliation: it.affiliation,
+            city: it.city,
+            state: it.state,
+            eligibility: it.eligibility,
+            image: it.image,
+            alt: it.alt,
+          }));
+        setSponsors(results.length ? results : sponsorsListStatic);
+      } catch (err) {
+        console.error("Sponsor search error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    doSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
+
+  // 🔍 client-side filters
+  const visibleSponsors = sponsors.filter((s) => {
+    const matches = (val, f) =>
+      !f ||
+      (val !== undefined &&
+        String(val).toLowerCase().includes(String(f).toLowerCase()));
+    return (
+      matches(s.name, filters.name) &&
+      matches(s.city, filters.city) &&
+      matches(s.state, filters.state) &&
+      matches(s.affiliation, filters.affiliation) &&
+      matches(s.eligibility, filters.eligibility)
+    );
+  });
 
   if (loading) {
     return (
@@ -79,10 +144,66 @@ const Sponsors = () => {
           </div>
         )}
 
+        {/* 🔍 Filters only (removed the "Search sponsors" input) */}
+        <div className="mb-3 p-3 bg-light rounded">
+          <div className="row g-2">
+            <div className="col-md-2">
+              <input
+                name="name"
+                className="form-control"
+                placeholder="Name"
+                value={filters.name}
+                onChange={handleFilterChange}
+              />
+            </div>
+
+            <div className="col-md-2">
+              <input
+                name="city"
+                className="form-control"
+                placeholder="City"
+                value={filters.city}
+                onChange={handleFilterChange}
+              />
+            </div>
+
+            <div className="col-md-2">
+              <input
+                name="state"
+                className="form-control"
+                placeholder="State"
+                value={filters.state}
+                onChange={handleFilterChange}
+              />
+            </div>
+
+            <div className="col-md-2">
+              <input
+                name="affiliation"
+                className="form-control"
+                placeholder="Affiliation"
+                value={filters.affiliation}
+                onChange={handleFilterChange}
+              />
+            </div>
+
+            <div className="col-md-2">
+              <input
+                name="eligibility"
+                className="form-control"
+                placeholder="Eligibility"
+                value={filters.eligibility}
+                onChange={handleFilterChange}
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Top info and pagination */}
         <div className="d-flex justify-content-between align-items-center mb-3">
           <p className="mb-0 text-muted">
-            Showing {sponsors.length} / 100 sponsor{sponsors.length !== 1 && "s"}
+            Showing {visibleSponsors.length} / 100 sponsor
+            {visibleSponsors.length !== 1 && "s"}
           </p>
           <div>
             <button
@@ -107,7 +228,7 @@ const Sponsors = () => {
 
         {/* Sponsor grid */}
         <div className="card-grid">
-          {sponsors.map((sponsor, idx) => (
+          {visibleSponsors.map((sponsor, idx) => (
             <SponsorCard
               key={idx}
               id={sponsor.id}

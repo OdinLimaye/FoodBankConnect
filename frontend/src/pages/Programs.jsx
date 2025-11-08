@@ -14,8 +14,19 @@ const Programs = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // 🔍 Filters (no searchTerm anymore)
+  const [filters, setFilters] = useState({
+    name: "",
+    program_type: "",
+    host: "",
+    frequency: "",
+    eligibility: "",
+  });
+  const handleFilterChange = (e) =>
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+
   const itemsPerPage = 20;
-  const totalItems = 100; // Hardcoded total
+  const totalItems = 100; // Hardcoded total since API doesn’t provide it
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   useEffect(() => {
@@ -38,11 +49,26 @@ const Programs = () => {
     fetchPrograms();
   }, [currentPage]);
 
+  // 🔍 Filter logic (client-side filtering)
   const filteredPrograms =
     filter === "all"
-      ? programs
+      ? programs.filter((p) => {
+          const matches = (val, f) =>
+            !f ||
+            (val !== undefined &&
+              String(val).toLowerCase().includes(String(f).toLowerCase()));
+          return (
+            matches(p.name, filters.name) &&
+            matches(p.program_type, filters.program_type) &&
+            matches(p.host, filters.host) &&
+            matches(p.frequency, filters.frequency) &&
+            matches(p.eligibility, filters.eligibility)
+          );
+        })
       : programs.filter(
-          (p) => p.program_type.toLowerCase() === filter.toLowerCase()
+          (p) =>
+            p.program_type &&
+            p.program_type.toLowerCase() === filter.toLowerCase()
         );
 
   const handleFilterClick = (program_type) => {
@@ -65,7 +91,8 @@ const Programs = () => {
         </div>
       )}
 
-      <div className="filterContainer">
+      {/* Program type filter buttons */}
+      <div className="filterContainer mb-3">
         <div className="btn-group">
           {["all", "distribution", "volunteer", "class", "service"].map(
             (program_type) => (
@@ -82,6 +109,63 @@ const Programs = () => {
           )}
         </div>
       </div>
+
+{/*  Filters only (consistent container width) */}
+<div className="container mb-3">
+  <div className="p-3 bg-light rounded">
+    <div className="row g-2">
+      <div className="col-md-2">
+        <input
+          name="name"
+          className="form-control"
+          placeholder="Name"
+          value={filters.name}
+          onChange={handleFilterChange}
+        />
+      </div>
+
+      <div className="col-md-2">
+        <input
+          name="program_type"
+          className="form-control"
+          placeholder="Type"
+          value={filters.program_type}
+          onChange={handleFilterChange}
+        />
+      </div>
+
+      <div className="col-md-2">
+        <input
+          name="host"
+          className="form-control"
+          placeholder="Host"
+          value={filters.host}
+          onChange={handleFilterChange}
+        />
+      </div>
+
+      <div className="col-md-2">
+        <input
+          name="frequency"
+          className="form-control"
+          placeholder="Frequency"
+          value={filters.frequency}
+          onChange={handleFilterChange}
+        />
+      </div>
+
+      <div className="col-md-2">
+        <input
+          name="eligibility"
+          className="form-control"
+          placeholder="Eligibility"
+          value={filters.eligibility}
+          onChange={handleFilterChange}
+        />
+      </div>
+    </div>
+  </div>
+</div>
 
       <main className="container my-5">
         {/* Top info and pagination */}
@@ -120,11 +204,12 @@ const Programs = () => {
               program_type={program.program_type}
               freq={program.frequency}
               host={program.host}
+              eligibility={program.eligibility}
             />
           ))}
         </div>
 
-        {/* Bottom pagination (optional) */}
+        {/* Bottom pagination */}
         <div className="d-flex justify-content-center align-items-center mt-4">
           <button
             className="btn btn-primary me-2"
