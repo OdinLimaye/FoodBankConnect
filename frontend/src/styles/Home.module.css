@@ -206,3 +206,18 @@ button:hover, .button:hover, a.button:hover,
   gap: 1em;
   z-index: 201;
 }
+
+/* Center the nav buttons table */
+#nav-buttons {
+  margin: 1.5em auto 0 auto;
+  border-collapse: separate;
+  border-spacing: 0.5em;
+}
+
+#nav-buttons td {
+  padding: 0;
+}
+
+#select-tr {
+  text-align: center;
+}

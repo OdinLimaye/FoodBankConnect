@@ -157,7 +157,7 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 ## Phase Three
 - **Git SHA:**  
 - **Project Leader: Mahika Dawar**  
-  - Responsibilities: Dividing tasks between group members, front end styling improvements, implement searching/filtering on model pages, and the AI report 
+  - Responsibilities: Dividing tasks between group members, implement searching/filtering, front end styling improvements, and the AI report 
 - **GitLab Pipelines:**
 https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07/-/pipelines  
 - **Backend API Link:**
