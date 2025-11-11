@@ -473,34 +473,35 @@ def search_all():
         for model in ALLOWED_TYPES.keys():
             table = _table_qualified(model)
             try:
-                # Concatenate all textual columns for lightweight search
-                sql = text(
-                    f"""
-                    SELECT id, name,
-                           array_to_string(array_agg(t), ' ') AS searchable_text
-                    FROM (
-                        SELECT id, name,
-                               to_jsonb({table})::text AS t
-                        FROM {table}
-                    ) sub
-                    GROUP BY id, name
-                    """
-                )
+                # Get all rows and convert to searchable text
+                sql = text(f"SELECT * FROM {table}")
                 rows = conn.execute(sql).fetchall()
 
                 for row in rows:
-                    text_blob = row.searchable_text or ""
+                    # Convert row to dict and create searchable text from all string fields
+                    row_dict = _row_to_dict(row)
+                    # Concatenate all text fields for searching
+                    text_parts = []
+                    for key, value in row_dict.items():
+                        if value is not None:
+                            if isinstance(value, (list, dict)):
+                                text_parts.append(str(value))
+                            else:
+                                text_parts.append(str(value))
+                    text_blob = " ".join(text_parts)
+                    
                     score = relevance_score(text_blob)
                     if score > 0:
                         results.append({
                             "model": model.capitalize(),
-                            "id": row.id,
-                            "name": row.name or "(Unnamed)",
+                            "id": row_dict.get("id", ""),
+                            "name": row_dict.get("name") or "(Unnamed)",
                             "snippet": get_snippet(text_blob),
                             "score": score,
                         })
             except Exception as e:
                 logger.warning("Search failed for %s: %s", model, e)
+                logger.exception("Full error details")
                 continue
 
     # Sort by relevance (highest first)
