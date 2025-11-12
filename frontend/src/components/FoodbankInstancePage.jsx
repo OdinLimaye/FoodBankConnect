@@ -137,10 +137,10 @@ const FoodbankInstancePage = () => {
           </ul>
         </section>
 
-        {/* About section (new) */}
-        <section className="mb-5">
+        {/* About section (centered) */}
+        <section className="mb-5 text-center">
           <h2>About</h2>
-          <p>{foodbank.about || "No description available."}</p>
+          <p className="mt-3">{foodbank.about || "No description available."}</p>
         </section>
 
         {/* Linked Programs Section */}

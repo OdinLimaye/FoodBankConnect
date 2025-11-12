@@ -86,7 +86,7 @@ const Sponsors = () => {
         {/* Top info and pagination */}
         <div className="d-flex justify-content-between align-items-center mb-3">
           <p className="mb-0 text-muted">
-            Showing {sponsors.length} / 100 sponsor{sponsors.length !== 1 && "s"}
+            Showing 20 / 100 sponsor{sponsors.length !== 1 && "s"}
           </p>
           <div>
             <button
