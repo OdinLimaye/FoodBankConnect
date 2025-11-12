@@ -3,7 +3,6 @@ stages:
   - deploy
   - backend_release
   - backend_test
-  - postman_tests
   - selenium_tests
   - jest_tests
 
@@ -15,13 +14,14 @@ variables:
   PYTEST_IGNORE: "frontend/src/selenium_tests"
   REPORT_DIR: "reports"
   PYTEST_JUNIT_XML: "$REPORT_DIR/pytest-report.xml"
-  PYTEST_COVERAGE_XML: "$REPORT_DIR/coverage.xml"
   POSTMAN_COLLECTION: "tests/postman/collection.json"
   NEWMAN_JUNIT_XML: "$REPORT_DIR/newman-results.xml"
   API_APP_ENTRY: "fbc-rest-api/main.py"
   API_HEALTH_URL: "http://localhost:8080/health"
-  COV_TARGET_DIR: "fbc-load-db"
 
+# ------------------------------
+# Frontend Build
+# ------------------------------
 build_react:
   stage: build
   image: node:20-bullseye
@@ -45,11 +45,14 @@ build_react:
       when: on_success
     - when: never
 
+# ------------------------------
+# Deploy Website
+# ------------------------------
 deploy_website:
   stage: deploy
   image:
     name: amazon/aws-cli
-    entrypoint: [""]
+    entrypoint: [""] 
   dependencies:
     - build_react
   script:
@@ -69,6 +72,9 @@ deploy_website:
       when: on_success
     - when: never
 
+# ------------------------------
+# Backend Release (Docker + Lambda)
+# ------------------------------
 backend_release:
   stage: backend_release
   image: docker:24.0.7
@@ -102,7 +108,6 @@ backend_release:
     - >
       aws ecr get-login-password --region "$AWS_DEFAULT_REGION" |
       docker login --username AWS --password-stdin "$ECR_REGISTRY"
-
   script:
     - >
       set -e;
@@ -157,30 +162,59 @@ backend_release:
       when: on_success
     - when: never
 
-postman_tests:
-  stage: postman_tests
-  image: node:20-bullseye
+# ------------------------------
+# Backend API Tests (pytest + Postman)
+# ------------------------------
+backend_test:
+  stage: backend_test
+  image: docker:24.0.7
+  services:
+    - name: docker:24.0.7-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: "tcp://docker:2375"
+    DOCKER_TLS_CERTDIR: ""
   before_script:
-    - npm install -g newman newman-reporter-junitfull
+    - apk add --no-cache curl bash python3 py3-pip nodejs npm
   script:
-    - >
-      newman run "$POSTMAN_COLLECTION"
-      --reporters cli,junitfull
-      --reporter-junitfull-export "$NEWMAN_JUNIT_XML"
-      --env-var "url=http://localhost:8080"  # Override your {{url}} variable
+    # Build and run API
+    - docker build -t fbc-api ./fbc-rest-api
+    - docker run -d --name fbc-api -p 8080:8080 fbc-api
+    # Wait for API to be healthy
+    - |
+      for i in {1..30}; do
+        STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health || echo 000)
+        [ "$STATUS" = "200" ] && break
+        echo "Waiting for API to be healthy..."
+        sleep 2
+      done
+    # Install Python deps
+    - pip install -r fbc-rest-api/requirements.txt
+    - pip install pytest requests
+    # Run pytest API tests
+    - pytest tests/test_api_endpoints.py --junitxml=$PYTEST_JUNIT_XML
+    # Install Newman and run Postman collection
+    - npm install -g newman newman-reporter-junitfull
+    - newman run "$POSTMAN_COLLECTION" --reporters cli,junitfull --reporter-junitfull-export "$NEWMAN_JUNIT_XML" --env-var "url=http://localhost:8080"
+    # Clean up API container
+    - docker stop fbc-api && docker rm fbc-api
   artifacts:
     when: always
     reports:
-      junit: "$NEWMAN_JUNIT_XML"
+      junit:
+        - "$PYTEST_JUNIT_XML"
+        - "$NEWMAN_JUNIT_XML"
     paths:
+      - "$PYTEST_JUNIT_XML"
       - "$NEWMAN_JUNIT_XML"
   rules:
-    - changes:
-        - tests/postman/**/*
+    - if: '$CI_COMMIT_BRANCH'
       when: on_success
     - when: never
 
-
+# ------------------------------
+# Selenium Tests
+# ------------------------------
 selenium_tests:
   stage: selenium_tests
   image: python:3.12-bullseye
@@ -198,8 +232,7 @@ selenium_tests:
     - pip install pytest
   script:
     - cd frontend/src/selenium_tests
-    - python -m pytest -q --maxfail=1 --disable-warnings \
-        --junitxml "$CI_PROJECT_DIR/reports/selenium-junit.xml"
+    - python -m pytest -q --maxfail=1 --disable-warnings --junitxml "$CI_PROJECT_DIR/reports/selenium-junit.xml"
   artifacts:
     when: always
     reports:
@@ -213,6 +246,9 @@ selenium_tests:
       when: on_success
     - when: never
 
+# ------------------------------
+# Jest Tests
+# ------------------------------
 jest_tests:
   stage: jest_tests
   image: node:20-bullseye
