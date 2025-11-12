@@ -230,9 +230,17 @@ def scrape(max_results=MAX_RESULTS):
 
                 website = fetch_google_website(name)
                 about = extract_about_section(website, name)
+
+                # -------------------------------
+                # HARD CAP ON ABOUT FIELD
+                # -------------------------------
+                if about and len(about) > 300:
+                    about = about[:300].rstrip() + "…"
+
                 sponsor_link = website or f"https://projects.propublica.org/nonprofits/organizations/{ein}"
                 affiliation = classify_affiliation(name, detail)
                 past_involvement = fetch_grants(ein)
+
 
                 # ----------- Contribution logic -----------
                 filings = detail_json.get("filings_with_data", [])

@@ -294,6 +294,13 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
             if not about:
                 about = "This organization provides food assistance and community support."
 
+            # -------------------------------
+            # HARD CAP ON ABOUT FIELD
+            # -------------------------------
+            if about and len(about) > 300:
+                about = about[:300].rstrip() + "…"
+
+
             services_list = infer_services(about)
             program_name = f"{name} {' / '.join(services_list)} Program"
 
