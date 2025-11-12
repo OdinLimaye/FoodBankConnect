@@ -338,7 +338,7 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
                 "frequency": random.choice(["Weekly", "Monthly", "Yearly"]),
                 "cost": "Free",
                 "host": name,
-                "detailsPage": program_name.replace(" ", "-").lower(),
+                "details_page": program_name.replace(" ", "-").lower(),
                 "about": about,
                 "sign_up_link": website,
                 "type": "program",

@@ -268,15 +268,15 @@ def scrape(max_results=MAX_RESULTS):
                     "image": logo,
                     "alt": f"{name} Logo",
                     "contribution": contrib_level,
-                    "contributionAmt": contrib_total,
+                    "contribution_amt": contrib_total,
                     "affiliation": affiliation,
-                    "pastInvolvement": past_involvement,
+                    "past_involvement": past_involvement,
                     "about": about,
                     "sponsor_link": sponsor_link,
                     "type": "sponsor",
                     "city": city,
                     "state": state_code,
-                    "EIN": str(ein)
+                    "ein": str(ein)
                 }
 
                 out.append(donor_json)

@@ -10,26 +10,30 @@ import json
 import hashlib
 import logging
 
-from sqlalchemy import String, Float, Integer, TIMESTAMP, create_engine, func
+from sqlalchemy import String, Float, Integer, TIMESTAMP, create_engine, func, cast, Sequence
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import JSONB, TEXT
 
 from scraper import scrape as run_all_scrapers
+
+global_foodbank_id = 1
+global_program_id = 1
+global_sponsor_id = 1
 
 
 class Base(DeclarativeBase):
     """
-     Serves as the SQLAlchemy metadata base. 
+     Serves as the SQLAlchemy metadata base.
     """
 
 
 class FoodBank(Base):
     """
-     Food banks table. Matches persisted record shape. 
+     Food banks table. Matches persisted record shape.
     """
     __tablename__ = "foodbanks"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True, server_default=cast(func.nextval("foodbanks_id_seq"), TEXT))
     name: Mapped[Optional[str]] = mapped_column(String(256))
     about: Mapped[Optional[str]] = mapped_column(String)
     address: Mapped[Optional[str]] = mapped_column(String(256))
@@ -57,7 +61,7 @@ class Program(Base):
     """
     __tablename__ = "programs"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True, server_default=cast(func.nextval("programs_id_seq"), TEXT))
     name: Mapped[Optional[str]] = mapped_column(String(256))
     program_type: Mapped[Optional[str]] = mapped_column(String(64))
     eligibility: Mapped[Optional[str]] = mapped_column(String(128))
@@ -79,7 +83,7 @@ class Sponsor(Base):
     """
     __tablename__ = "sponsors"
 
-    id: Mapped[str] = mapped_column(String, primary_key=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True, server_default=cast(func.nextval("sponsors_id_seq"), TEXT))
     name: Mapped[Optional[str]] = mapped_column(String(256))
     image: Mapped[Optional[str]] = mapped_column(String)
     alt: Mapped[Optional[str]] = mapped_column(String(256))
@@ -93,6 +97,7 @@ class Sponsor(Base):
     state: Mapped[Optional[str]] = mapped_column(String(8))
     contact: Mapped[Optional[Any]] = mapped_column(JSONB, nullable=True)        # null or object
     media: Mapped[Optional[Any]] = mapped_column(JSONB, nullable=True)          # null or array/object
+    ein: Mapped[Optional[str]] = mapped_column(String(256))
     fetched_at: Mapped[Optional[Any]] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
     created_at: Mapped[Any] = mapped_column(TIMESTAMP(timezone=True), server_default=func.now())
 
@@ -132,20 +137,22 @@ def get_session(engine) -> Session:
     return Session(engine)
 
 
-def normalize_buckets(rows: List[Dict[str, Any]]) -> Tuple[List[Dict], List[Dict], List[Dict]]:
+def normalize_buckets(rows):
     """
-    Splits rows into (foodbanks, programs, sponsors).
+    /* Split into (foodbanks, programs, sponsors) without 'type'. */
     """
     fb, prg, spn = [], [], []
+    def _classify(r):
+        if any(k in r for k in ("program_type","details_page","sign_up_link","frequency","host")):
+            return "program"
+        if any(k in r for k in ("affiliation","contribution","contribution_amt","sponsor_link","ein","media","contact")):
+            return "sponsor"
+        return "foodbank"
     for r in rows:
-        t = r.get("type") or r.get("__bucket__")
-        if t == "foodbank":
-            fb.append(r)
-        elif t == "program":
-            prg.append(r)
-        elif t == "sponsor":
-            spn.append(r)
+        b = r.get("__bucket__") or _classify(r)
+        (prg if b=="program" else spn if b=="sponsor" else fb).append(r)
     return fb, prg, spn
+
 
 
 def _dedup_rows(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -205,30 +212,42 @@ def make_stable_id(rec: Dict[str, Any], bucket: str) -> str:
     h = hashlib.sha256((bucket + "|" + canon).encode("utf-8")).hexdigest()[:24]
     return f"{bucket}:h:{h}"
 
+def _digits_only(s: object) -> Optional[str]:
+    """
+    /* Return s as a str if it is a non-empty sequence of digits; else None. */
+    """
+    if s is None:
+        return None
+    ss = str(s)
+    return ss if ss.isdigit() else None
+
+
 def _map_foodbank(rec: dict) -> dict:
     """
     Project a raw scraper record into FoodBank columns.
     """
-    rid = rec.get("id") or rec.get("uuid") or rec.get("slug") or make_stable_id(rec, "foodbank")
-    return {
-        "id": str(rid),
-        "name": rec.get("name") or rec.get("title"),
+    rid = _digits_only(rec.get("id"))     # only accept already-integer IDs
+    out = {
+        "name": rec.get("name"),
         "about": rec.get("about"),
         "address": rec.get("address"),
         "capacity": rec.get("capacity"),
         "city": rec.get("city"),
-        "state": rec.get("state") or rec.get("state_code"),
+        "state": rec.get("state"),
         "eligibility": rec.get("eligibility"),
-        "image": rec.get("image") or rec.get("foodbank_image"),
+        "image": rec.get("image"),
         "languages": rec.get("languages") or [],
         "open_hours": rec.get("open_hours"),
         "phone": rec.get("phone"),
         "services": rec.get("services") or [],
         "urgency": rec.get("urgency"),
         "website": rec.get("website"),
-        "zipcode": rec.get("zipcode") or rec.get("zip"),
+        "zipcode": rec.get("zipcode"),
         "fetched_at": rec.get("fetched_at"),
     }
+    if rid is not None:
+        out["id"] = rid
+    return out
 
 
 
@@ -236,52 +255,59 @@ def _map_program(rec: dict) -> dict:
     """
     Project a raw scraper record into Program columns.
     """
-    rid = rec.get("id") or rec.get("uuid") or rec.get("slug") or make_stable_id(rec, "program")
-    return {
+    rid = _digits_only(rec.get("id"))     # only accept already-integer IDs
+    out = {
         "id": str(rid),
-        "name": rec.get("name") or rec.get("title"),
+        "name": rec.get("name"),
         "program_type": rec.get("program_type"),
         "eligibility": rec.get("eligibility"),
         "frequency": rec.get("frequency"),
         "cost": rec.get("cost"),
         "host": rec.get("host"),
-        "details_page": rec.get("details_page") or rec.get("detailsPage"),
+        "details_page": rec.get("details_page"),
         "about": rec.get("about"),
-        "sign_up_link": rec.get("sign_up_link") or rec.get("signup") or rec.get("website"),
+        "sign_up_link": rec.get("sign_up_link"),
         "image": rec.get("image"),
         "links": rec.get("links"),                 # leave as dict/list/None; ORM handles JSONB
         "fetched_at": rec.get("fetched_at"),
     }
+    if rid is not None:
+        out["id"] = rid
+    return out
 
 
 def _map_sponsor(rec: dict) -> dict:
     """
     Project a raw scraper record into Sponsor columns.
     """
-    rid = rec.get("id") or rec.get("uuid") or rec.get("slug") or rec.get("ein") or make_stable_id(rec, "sponsor")
-    return {
+    rid = _digits_only(rec.get("id"))     # only accept already-integer IDs
+    out = {
         "id": str(rid),
         "name": rec.get("name") or rec.get("title"),
         "image": rec.get("image") or rec.get("logo"),
         "alt": rec.get("alt") or (f"{rec.get('name')} Logo" if rec.get("name") else None),
-        "contribution": rec.get("contribution") or rec.get("contrib_level"),
-        "contribution_amt": rec.get("contribution_amt") or rec.get("contributionAmt") or "N/A",
+        "contribution": rec.get("contribution"),
+        "contribution_amt": rec.get("contribution_amt") or "N/A",
         "affiliation": rec.get("affiliation"),
-        "past_involvement": rec.get("past_involvement") or rec.get("pastInvolvement"),
+        "past_involvement": rec.get("past_involvement"),
         "about": rec.get("about"),
-        "sponsor_link": rec.get("sponsor_link") or rec.get("url"),
+        "sponsor_link": rec.get("sponsor_link"),
         "city": rec.get("city"),
-        "state": rec.get("state") or rec.get("state_code"),
+        "state": rec.get("state"),
         "contact": rec.get("contact"),             # dict/list/None
         "media": rec.get("media"),                 # dict/list/None
+        "ein": rec.get("ein"),
         "fetched_at": rec.get("fetched_at"),
     }
+    if rid is not None:
+        out["id"] = rid
+    return out
 
 
 
 def coerce_kwargs(rec: Dict[str, Any], bucket: str) -> Dict[str, Any]:
     """
-     Dispatch to the correct projector for the target table. 
+     Dispatch to the correct projector for the target table.
     """
     if bucket == "foodbank":
         return _map_foodbank(rec)
@@ -303,15 +329,30 @@ def truncate_tables(session: Session) -> None:
     session.query(Sponsor).delete()
 
 
-def bulk_insert(session: Session, model, items: List[Dict[str, Any]], bucket: str) -> int:
-    """
-     Inserts many records for a given model; generates IDs if needed. 
-    """
-    if not items:
-        return 0
-    objs = [model(**coerce_kwargs(r, bucket)) for r in items]
-    session.add_all(objs)
-    return len(objs)
+def bulk_insert(session, model, items, bucket):
+    global global_foodbank_id, global_program_id, global_sponsor_id
+
+    rows = []
+    for r in items:
+        r.pop("type", None)  # remove legacy key
+
+        # Assign global ID as string if missing or invalid
+        if "id" not in r or not str(r["id"]).isdigit():
+            if model.__tablename__ == "foodbanks":
+                r["id"] = str(global_foodbank_id)
+                global_foodbank_id += 1
+            elif model.__tablename__ == "programs":
+                r["id"] = str(global_program_id)
+                global_program_id += 1
+            elif model.__tablename__ == "sponsors":
+                r["id"] = str(global_sponsor_id)
+                global_sponsor_id += 1
+
+        rows.append(model(**r))
+
+    session.bulk_save_objects(rows)
+    session.commit()
+    return len(rows)
 
 
 def run_once() -> int:
