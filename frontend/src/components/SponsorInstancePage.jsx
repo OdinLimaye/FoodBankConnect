@@ -29,33 +29,41 @@ const SponsorInstancePage = () => {
         const sponsorData = await sponsorRes.json();
         setSponsor(sponsorData);
 
-        // Fetch all foodbanks
+        const currentId = parseInt(id, 10);
+
+        // --- Fetch 2 Foodbanks ---
         const fbRes = await fetch(`https://api.foodbankconnect.me/v1/foodbanks?size=100&start=1`);
         if (!fbRes.ok) throw new Error(`HTTP ${fbRes.status}`);
         const fbData = await fbRes.json();
         const fbItems = fbData.items || [];
 
-        // Pick two foodbanks: ID-1 and ID-2 (or next if ID=1)
-        const currentId = parseInt(id, 10);
+        // First foodbank: match sponsor ID
+        const fbFirst = fbItems.find(fb => fb.id === currentId);
+
+        // Second foodbank: neighbor (ID-1 unless ID=1, then ID+1)
+        const neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
+        const fbSecond = fbItems.find(fb => fb.id === neighborId);
+
         const fbLinks = [];
-        const fbPrev = fbItems.find(fb => fb.id === (currentId > 1 ? currentId - 1 : currentId + 1));
-        const fbPrev2 = fbItems.find(fb => fb.id === (currentId > 2 ? currentId - 2 : currentId + 2));
-        if (fbPrev) fbLinks.push(fbPrev);
-        if (fbPrev2) fbLinks.push(fbPrev2);
+        if (fbFirst) fbLinks.push(fbFirst);
+        if (fbSecond) fbLinks.push(fbSecond);
         setFoodbanks(fbLinks);
 
-        // Fetch all programs
+        // --- Fetch 2 Programs ---
         const progRes = await fetch(`https://api.foodbankconnect.me/v1/programs?size=100&start=1`);
         if (!progRes.ok) throw new Error(`HTTP ${progRes.status}`);
         const progData = await progRes.json();
         const progItems = progData.items || [];
 
-        // Pick two programs: ID-1 and ID-2 (same logic)
+        // First program: match sponsor ID
+        const progFirst = progItems.find(p => p.id === currentId);
+
+        // Second program: neighbor (ID-1 unless ID=1, then ID+1)
+        const progSecond = progItems.find(p => p.id === neighborId);
+
         const progLinks = [];
-        const progPrev = progItems.find(p => p.id === (currentId > 1 ? currentId - 1 : currentId + 1));
-        const progPrev2 = progItems.find(p => p.id === (currentId > 2 ? currentId - 2 : currentId + 2));
-        if (progPrev) progLinks.push(progPrev);
-        if (progPrev2) progLinks.push(progPrev2);
+        if (progFirst) progLinks.push(progFirst);
+        if (progSecond) progLinks.push(progSecond);
         setPrograms(progLinks);
 
       } catch (err) {
@@ -133,9 +141,7 @@ const SponsorInstancePage = () => {
             </li>
             <li style={{ marginTop: "25px" }}>
               <strong>Website:</strong>{" "}
-              <a href={sponsor.sponsor_link} target="_blank" rel="noreferrer">
-                Official Website
-              </a>
+              <a href={sponsor.sponsor_link} target="_blank" rel="noreferrer">Official Website</a>
             </li>
             <li><strong>Media / Logo Alt:</strong> {sponsor.alt}</li>
             <li><strong>Employee Identification Number:</strong> {sponsor.ein}</li>

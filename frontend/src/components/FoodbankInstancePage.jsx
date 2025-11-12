@@ -177,7 +177,7 @@ const FoodbankInstancePage = () => {
 
         {/* Programs Hosted */}
         <section className="mt-5 text-center">
-          <h3>Programs Hosted by This Food Bank</h3>
+          <h3>Related Programs</h3>
           {programsLoading ? <p>Loading programs...</p> : (
             programs.map(program => (
               <div key={program.id} className="border rounded p-2 my-2">
