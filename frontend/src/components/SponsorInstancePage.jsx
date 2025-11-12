@@ -6,6 +6,9 @@ import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
 import styles from "../styles/Sponsors.module.css";
 
+const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks?size=100&start=1";
+const PROGRAMS_URL = "https://api.foodbankconnect.me/v1/programs?size=100&start=1";
+
 const SponsorInstancePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,39 +34,45 @@ const SponsorInstancePage = () => {
 
         const currentId = parseInt(id, 10);
 
-        // --- Fetch 2 Foodbanks ---
-        const fbRes = await fetch(`https://api.foodbankconnect.me/v1/foodbanks?size=100&start=1`);
-        if (!fbRes.ok) throw new Error(`HTTP ${fbRes.status}`);
-        const fbData = await fbRes.json();
-        const fbItems = fbData.items || [];
+        // --- Fetch all foodbanks ---
+        const fbRes = await fetch(FOODBANKS_URL);
+        const fbItems = (await fbRes.json()).items || [];
 
-        // First foodbank: match sponsor ID
-        const fbFirst = fbItems.find(fb => fb.id === currentId);
+        let fbLinks = [];
+        // First: match sponsor ID if exists
+        const fbMatch = fbItems.find(fb => fb.id === currentId);
+        if (fbMatch) fbLinks.push(fbMatch);
 
-        // Second foodbank: neighbor (ID-1 unless ID=1, then ID+1)
-        const neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
-        const fbSecond = fbItems.find(fb => fb.id === neighborId);
+        // Second: neighbor (ID-1 unless ID=1, then ID+1)
+        let neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
+        const fbNeighbor = fbItems.find(fb => fb.id === neighborId && fb.id !== currentId);
+        if (fbNeighbor) fbLinks.push(fbNeighbor);
 
-        const fbLinks = [];
-        if (fbFirst) fbLinks.push(fbFirst);
-        if (fbSecond) fbLinks.push(fbSecond);
+        // Fill up to 2
+        for (let fb of fbItems) {
+          if (fbLinks.length >= 2) break;
+          if (!fbLinks.find(f => f.id === fb.id)) fbLinks.push(fb);
+        }
         setFoodbanks(fbLinks);
 
-        // --- Fetch 2 Programs ---
-        const progRes = await fetch(`https://api.foodbankconnect.me/v1/programs?size=100&start=1`);
-        if (!progRes.ok) throw new Error(`HTTP ${progRes.status}`);
-        const progData = await progRes.json();
-        const progItems = progData.items || [];
+        // --- Fetch all programs ---
+        const progRes = await fetch(PROGRAMS_URL);
+        const progItems = (await progRes.json()).items || [];
 
-        // First program: match sponsor ID
-        const progFirst = progItems.find(p => p.id === currentId);
+        let progLinks = [];
+        // First: match sponsor ID if exists
+        const progMatch = progItems.find(p => p.id === currentId);
+        if (progMatch) progLinks.push(progMatch);
 
-        // Second program: neighbor (ID-1 unless ID=1, then ID+1)
-        const progSecond = progItems.find(p => p.id === neighborId);
+        // Second: neighbor (ID-1 unless ID=1, then ID+1)
+        const progNeighbor = progItems.find(p => p.id === neighborId && p.id !== currentId);
+        if (progNeighbor) progLinks.push(progNeighbor);
 
-        const progLinks = [];
-        if (progFirst) progLinks.push(progFirst);
-        if (progSecond) progLinks.push(progSecond);
+        // Fill up to 2
+        for (let p of progItems) {
+          if (progLinks.length >= 2) break;
+          if (!progLinks.find(pr => pr.id === p.id)) progLinks.push(p);
+        }
         setPrograms(progLinks);
 
       } catch (err) {
