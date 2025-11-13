@@ -3,9 +3,6 @@
 - **Forked Repo:**
 https://gitlab.com/christinedominic/cs373-fall-2025-55085_07
 
-- **Web Scrapers Repo:**
-https://gitlab.com/dafrancc/fbc-scrapers
-
 - **Docker Scraper Repo:**
 https://gitlab.com/dafrancc/fbc-load-db
 
@@ -157,7 +154,7 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 ## Phase Three
 - **Git SHA:**  
 - **Project Leader: Mahika Dawar**  
-  - Responsibilities: Dividing tasks between group members, implement searching/filtering, front end styling improvements, and the AI report.
+  - Responsibilities: Dividing tasks between group members, implement searching/filtering, and front end styling improvements.
 - **GitLab Pipelines:**
 https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07/-/pipelines  
 - **Backend API Link:**
@@ -170,13 +167,13 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 ### Time Tracking
 | Member            | Estimated Hours | Actual Hours |  
 |-------------------|-----------------|--------------|  
-| Odin Limaye       | 16              |              |  
+| Odin Limaye       | 16              | 16           |  
 | Francisco Vivas   |                 |              |  
 | Christine Dominic |                 |              |  
 | Mahika Dawar      | 15              | 19           |  
 | Jose Lopez        |                 |              |  
 
-**Comments:**  
+**Comments:** None
 
 ---  
 

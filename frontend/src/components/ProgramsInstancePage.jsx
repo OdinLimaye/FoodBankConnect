@@ -7,6 +7,7 @@ import Breadcrumb from "./Breadcrumb";
 
 const BASE_URL = "https://api.foodbankconnect.me/v1/programs";
 const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks?size=100&start=1";
+const SPONSORS_URL = "https://api.foodbankconnect.me/v1/sponsors?size=100&start=1";
 
 const ProgramsInstancePage = () => {
   const location = useLocation();
@@ -14,59 +15,104 @@ const ProgramsInstancePage = () => {
   const { id } = location.state || {};
   const [program, setProgram] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [hostId, setHostId] = useState(null);
+
+  const [foodbanks, setFoodbanks] = useState([]);
+  const [sponsors, setSponsors] = useState([]);
 
   useEffect(() => {
-    const fetchProgramAndHost = async () => {
+    const fetchProgram = async () => {
       if (!id) {
         setLoading(false);
         return;
       }
 
       try {
+        // Fetch this program
         const res = await fetch(`${BASE_URL}/${id}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const programData = await res.json();
         setProgram(programData);
 
+        // === Fetch related foodbanks ===
+        const fbRes = await fetch(FOODBANKS_URL);
+        if (!fbRes.ok) throw new Error(`HTTP ${fbRes.status}`);
+        const fbData = (await fbRes.json()).items || [];
+
+        // Host foodbank + neighbor
+        let fbLinks = [];
         if (programData.host) {
-          try {
-            const hostRes = await fetch(FOODBANKS_URL);
-            if (!hostRes.ok) throw new Error(`HTTP ${hostRes.status}`);
-            const hostData = await hostRes.json();
-            const target = (hostData.items || []).find(
-              (fb) => fb.name === programData.host
-            );
-            if (target) setHostId(target.id);
-          } catch (err) {
-            console.error("Error fetching foodbanks:", err);
+          const hostIndex = fbData.findIndex(fb => fb.name === programData.host);
+          if (hostIndex !== -1) {
+            fbLinks.push({ id: fbData[hostIndex].id, name: fbData[hostIndex].name });
+            let neighborIndex =
+              hostIndex > 0
+                ? hostIndex - 1
+                : hostIndex < fbData.length - 1
+                ? hostIndex + 1
+                : null;
+            if (neighborIndex !== null && neighborIndex !== hostIndex) {
+              fbLinks.push({ id: fbData[neighborIndex].id, name: fbData[neighborIndex].name });
+            }
           }
         }
+
+        // If less than 2, fill with extras
+        while (fbLinks.length < 2 && fbData.length > 0) {
+          for (let fb of fbData) {
+            if (!fbLinks.find(f => f.id === fb.id)) {
+              fbLinks.push({ id: fb.id, name: fb.name });
+              if (fbLinks.length === 2) break;
+            }
+          }
+        }
+
+        setFoodbanks(fbLinks);
+
+        // === Fetch sponsors (using ID and neighbor ID logic) ===
+        const sponsorRes = await fetch(SPONSORS_URL);
+        if (!sponsorRes.ok) throw new Error(`HTTP ${sponsorRes.status}`);
+        const allSponsors = (await sponsorRes.json()).items || [];
+
+        const currentId = parseInt(programData.id, 10);
+        const neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
+
+        const mainSponsor = allSponsors.find(s => s.id === currentId);
+        const neighborSponsor = allSponsors.find(s => s.id === neighborId);
+
+        const finalSponsors = [];
+        if (mainSponsor) finalSponsors.push(mainSponsor);
+        if (neighborSponsor) finalSponsors.push(neighborSponsor);
+
+        // Fill if still less than 2
+        while (finalSponsors.length < 2 && allSponsors.length > 0) {
+          for (let s of allSponsors) {
+            if (!finalSponsors.find(sp => sp.id === s.id)) {
+              finalSponsors.push(s);
+              if (finalSponsors.length === 2) break;
+            }
+          }
+        }
+
+        setSponsors(finalSponsors);
       } catch (err) {
-        console.error("Error fetching program:", err);
+        console.error("Error fetching program or related data:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProgramAndHost();
+    fetchProgram();
   }, [id]);
 
-  const handleHostClick = (e) => {
-    e.preventDefault();
-    if (!hostId) {
-      alert("Host foodbank not found yet. Please wait a moment.");
-      return;
-    }
-    navigate(`/foodbanks/${encodeURIComponent(program.host)}`, {
-      state: { id: hostId, name: program.host },
+  const handleNavigateFoodbank = (fb) => {
+    navigate(`/foodbanks/${encodeURIComponent(fb.name)}`, {
+      state: { id: fb.id, name: fb.name },
     });
   };
 
-  const handleSponsorClick = (e) => {
-    e.preventDefault();
-    navigate(`/sponsors/${encodeURIComponent(program.name)}`, {
-      state: { id: program.id, name: program.name },
+  const handleNavigateSponsor = (sp) => {
+    navigate(`/sponsors/${encodeURIComponent(sp.name)}`, {
+      state: { id: sp.id, name: sp.name },
     });
   };
 
@@ -81,7 +127,6 @@ const ProgramsInstancePage = () => {
 
       <main className="container my-5">
         <div className="row align-items-center">
-          {/* Image on the left */}
           <div className="col-lg-6 mb-4 text-center">
             {program.image ? (
               <img
@@ -95,23 +140,12 @@ const ProgramsInstancePage = () => {
             )}
           </div>
 
-          {/* Text content on the right, centered */}
           <div className="col-lg-6 text-center">
             <h3 className="fw-bold mb-4">Program Details</h3>
             <ul className="list-unstyled">
               <li><strong>Frequency:</strong> {program.frequency || "N/A"}</li>
               <li><strong>Eligibility:</strong> {program.eligibility || "Everybody"}</li>
               <li><strong>Cost:</strong> {program.cost || "N/A"}</li>
-              <li>
-                <strong>Host:</strong>{" "}
-                {program.host ? (
-                  <a href="#" onClick={handleHostClick}>
-                    {program.host}
-                  </a>
-                ) : (
-                  "N/A"
-                )}
-              </li>
               <li>
                 <strong>Sign Up / Learn More:</strong>{" "}
                 {program.sign_up_link ? (
@@ -126,20 +160,45 @@ const ProgramsInstancePage = () => {
           </div>
         </div>
 
-        {/* About section */}
         <section className="mt-5 text-center">
           <h3>About the Program</h3>
           <p className="mt-2">{program.about || "No description available."}</p>
         </section>
 
-        {/* Related sponsor */}
+        {/* Foodbanks */}
         <section className="mt-5 text-center">
-          <h3>Related Sponsor</h3>
-          <p className="mt-2">
-            <a href="#" onClick={handleSponsorClick}>
-              View Sponsor
-            </a>
-          </p>
+          <h3>Related Foodbanks</h3>
+          {foodbanks.map(fb => (
+            <p key={fb.id}>
+              <a
+                href="#"
+                onClick={e => {
+                  e.preventDefault();
+                  handleNavigateFoodbank(fb);
+                }}
+              >
+                {fb.name}
+              </a>
+            </p>
+          ))}
+        </section>
+
+        {/* Sponsors */}
+        <section className="mt-4 text-center">
+          <h3>Related Sponsors</h3>
+          {sponsors.map(sp => (
+            <p key={sp.id}>
+              <a
+                href="#"
+                onClick={e => {
+                  e.preventDefault();
+                  handleNavigateSponsor(sp);
+                }}
+              >
+                {sp.name}
+              </a>
+            </p>
+          ))}
         </section>
       </main>
 

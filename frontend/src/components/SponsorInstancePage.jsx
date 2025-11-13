@@ -6,41 +6,91 @@ import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
 import styles from "../styles/Sponsors.module.css";
 
+const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks?size=100&start=1";
+const PROGRAMS_URL = "https://api.foodbankconnect.me/v1/programs?size=100&start=1";
+
 const SponsorInstancePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = location.state || {};
   const [sponsor, setSponsor] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [foodbanks, setFoodbanks] = useState([]);
+  const [programs, setPrograms] = useState([]);
 
   useEffect(() => {
-    const fetchSponsor = async () => {
+    const fetchSponsorData = async () => {
       if (!id) {
         setLoading(false);
         return;
       }
-      try {
-        const res = await fetch(`https://api.foodbankconnect.me/v1/sponsors/${id}`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
 
-        // Use only API data, no local JSON
-        setSponsor(data);
+      try {
+        // Fetch sponsor info
+        const sponsorRes = await fetch(`https://api.foodbankconnect.me/v1/sponsors/${id}`);
+        if (!sponsorRes.ok) throw new Error(`HTTP ${sponsorRes.status}`);
+        const sponsorData = await sponsorRes.json();
+        setSponsor(sponsorData);
+
+        const currentId = parseInt(id, 10);
+        const neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
+
+        // --- Fetch all foodbanks ---
+        const fbRes = await fetch(FOODBANKS_URL);
+        const fbItems = (await fbRes.json()).items || [];
+
+        // Select the foodbank whose ID matches sponsor ID and one neighbor
+        let fbLinks = [];
+        const fbMatch = fbItems.find(fb => fb.id === currentId);
+        if (fbMatch) fbLinks.push(fbMatch);
+
+        const fbNeighbor = fbItems.find(fb => fb.id === neighborId && fb.id !== currentId);
+        if (fbNeighbor) fbLinks.push(fbNeighbor);
+
+        // Fill if fewer than 2
+        for (let fb of fbItems) {
+          if (fbLinks.length >= 2) break;
+          if (!fbLinks.find(f => f.id === fb.id)) fbLinks.push(fb);
+        }
+        setFoodbanks(fbLinks);
+
+        // --- Fetch all programs ---
+        const progRes = await fetch(PROGRAMS_URL);
+        const progItems = (await progRes.json()).items || [];
+
+        let progLinks = [];
+        const progMatch = progItems.find(p => p.id === currentId);
+        if (progMatch) progLinks.push(progMatch);
+
+        const progNeighbor = progItems.find(p => p.id === neighborId && p.id !== currentId);
+        if (progNeighbor) progLinks.push(progNeighbor);
+
+        for (let p of progItems) {
+          if (progLinks.length >= 2) break;
+          if (!progLinks.find(pr => pr.id === p.id)) progLinks.push(p);
+        }
+        setPrograms(progLinks);
+
       } catch (err) {
-        console.error("Error fetching sponsor:", err);
+        console.error("Error fetching sponsor or related data:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchSponsor();
+
+    fetchSponsorData();
   }, [id]);
 
-  const handleNavigate = (type) => {
-    if (!sponsor?.id) return;
+  const handleNavigate = (type, target) => {
+    if (!target) return;
     if (type === "foodbank") {
-      navigate(`/foodbanks/${sponsor.id}`, { state: { id: sponsor.id, name: sponsor.name } });
+      navigate(`/foodbanks/${encodeURIComponent(target.name)}`, {
+        state: { id: target.id, name: target.name },
+      });
     } else if (type === "program") {
-      navigate(`/programs/${sponsor.id}`, { state: { id: sponsor.id, name: sponsor.name } });
+      navigate(`/programs/${encodeURIComponent(target.name)}`, {
+        state: { id: target.id, name: target.name },
+      });
     }
   };
 
@@ -62,7 +112,7 @@ const SponsorInstancePage = () => {
           )}
         </div>
 
-        {/* About Section (centered) */}
+        {/* About Section */}
         <section className={`mb-4 text-center ${styles.about}`}>
           <h2>About</h2>
           <p>{sponsor.about}</p>
@@ -77,26 +127,38 @@ const SponsorInstancePage = () => {
             <li><strong>City:</strong> {sponsor.city}</li>
             <li><strong>State:</strong> {sponsor.state}</li>
             <li>
-              <strong>Past Involvement:</strong>{" "}
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate("foodbank");
-                }}
-              >
-                View Related Foodbank
-              </a>{" "}
-              |{" "}
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate("program");
-                }}
-              >
-                View Related Program
-              </a>
+              <strong>Related Foodbanks:</strong>{" "}
+              {foodbanks.map((fb, idx) => (
+                <span key={fb.id}>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavigate("foodbank", fb);
+                    }}
+                  >
+                    {fb.name}
+                  </a>
+                  {idx < foodbanks.length - 1 && " | "}
+                </span>
+              ))}
+            </li>
+            <li>
+              <strong>Related Programs:</strong>{" "}
+              {programs.map((p, idx) => (
+                <span key={p.id}>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavigate("program", p);
+                    }}
+                  >
+                    {p.name}
+                  </a>
+                  {idx < programs.length - 1 && " | "}
+                </span>
+              ))}
             </li>
             <li style={{ marginTop: "25px" }}>
               <strong>Website:</strong>{" "}

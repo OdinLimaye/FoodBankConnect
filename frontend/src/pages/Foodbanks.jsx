@@ -74,7 +74,10 @@ const Foodbanks = () => {
         {/* Foodbanks grid */}
         <div className="row g-4">
           {displayedFbs.map((bank) => (
-            <div key={bank.id} className="col-md-4">
+            <div
+              key={bank.id}
+              className="col-md-4 border rounded p-2"
+            >
               <FoodbankCard
                 id={bank.id}
                 name={bank.name}
