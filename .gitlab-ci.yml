@@ -171,10 +171,12 @@ backend_unit_tests:
     - pip install --upgrade pip
     - pip install -r "fbc-rest-api/requirements.txt"
     - pip install pytest
+    - mkdir -p "$REPORT_DIR"
+
   script:
-    - pytest -q --maxfail=1 --disable-warnings \
-        --junitxml "$REPORT_DIR/pytest-report.xml" \
-        tests/test_api_unit.py
+    - mkdir -p "$REPORT_DIR" && pytest -q --maxfail=1 --disable-warnings --junitxml "$REPORT_DIR/pytest-report.xml" tests/test_api_unit.py
+
+
   artifacts:
     when: always
     reports:
