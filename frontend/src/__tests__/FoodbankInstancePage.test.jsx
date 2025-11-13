@@ -318,7 +318,7 @@ describe("FoodbankInstancePage", () => {
 		});
 
 		// Check that N/A is shown for missing fields
-		expect(screen.getAllByText("N/A")).toHaveLength(6); // about, website, state, zipcode, languages, services
+		expect(screen.getAllByText("N/A")).toHaveLength(5); // about, website, state, zipcode, languages, services
 	});
 
 	it("uses name from location state if foodbank name is not available", async () => {

@@ -98,7 +98,7 @@ describe('Navbar Component', () => {
     
     // Check list items
     const listItems = document.querySelectorAll('.nav-item');
-    expect(listItems).toHaveLength(4); // About, Food Banks, Programs, Sponsors
+    expect(listItems).toHaveLength(5); // About, Food Banks, Programs, Sponsors, Search
   });
 
   test('logo has correct styling', () => {
@@ -138,7 +138,7 @@ describe('Navbar Component', () => {
     
     // Check list items
     const listItems = screen.getAllByRole('listitem');
-    expect(listItems).toHaveLength(4);
+    expect(listItems).toHaveLength(5);
   });
 
   // Optional: Test responsive behavior if you have toggle functionality
