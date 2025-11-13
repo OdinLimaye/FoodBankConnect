@@ -51,6 +51,13 @@ describe("FoodbankInstancePage", () => {
 		],
 	};
 
+	const mockSponsorsData = {
+		items: [
+			{ id: 123, name: "Test Sponsor" },
+			{ id: 122, name: "Neighbor Sponsor" },
+		],
+	};
+
 	beforeEach(() => {
 		mockedNavigate.mockClear();
 		global.fetch = jest.fn();
@@ -108,88 +115,126 @@ describe("FoodbankInstancePage", () => {
 		});
 	});
 
-	// it("renders foodbank data when fetch is successful", async () => {
-	// 	mockLocationState.mockReturnValue({ id: "123" });
-	// 	global.fetch.mockResolvedValueOnce({
-	// 		ok: true,
-	// 		json: async () => mockFoodbankData,
-	// 	});
+	it("renders foodbank data when fetch is successful", async () => {
+		mockLocationState.mockReturnValue({ id: "123" });
+		
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockFoodbankData,
+				});
+			}
+			if (url.includes('/programs')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockProgramsData,
+				});
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockSponsorsData,
+				});
+			}
+		});
 
-	// 	render(
-	// 		<Router>
-	// 			<FoodbankInstancePage />
-	// 		</Router>
-	// 	);
+		render(
+			<Router>
+				<FoodbankInstancePage />
+			</Router>
+		);
 
-	// 	await waitFor(() => {
-	// 		expect(
-	// 			screen.getByText("Food Bank - Test Food Bank")
-	// 		).toBeInTheDocument();
-	// 	});
+		await waitFor(() => {
+			expect(
+				screen.getByText("Food Bank - Test Food Bank")
+			).toBeInTheDocument();
+		});
 
-	// 	// Check all foodbank data is rendered
-	// 	expect(screen.getByText(/Details/)).toBeInTheDocument();
-	// 	expect(screen.getByText(/Test Food Bank/)).toBeInTheDocument();
-	// 	expect(
-	// 		screen.getByText(/This is a test food bank description./)
-	// 	).toBeInTheDocument();
-	// 	expect(screen.getByText(/Test City/)).toBeInTheDocument();
-	// 	expect(screen.getByText(/Test State/)).toBeInTheDocument();
-	// 	expect(screen.getByText(/12345/)).toBeInTheDocument();
-	// 	expect(screen.getByText(/English, Spanish/)).toBeInTheDocument();
-	// 	expect(
-	// 		screen.getByText(/Food Distribution, Emergency Meals/)
-	// 	).toBeInTheDocument();
+		// Check all foodbank data is rendered
+		expect(screen.getByText(/Details/)).toBeInTheDocument();
+		// Check the header specifically using testid (since it's not a real heading element)
+		expect(screen.getByTestId('header')).toHaveTextContent('Food Bank - Test Food Bank');
+		expect(
+			screen.getByText(/This is a test food bank description./)
+		).toBeInTheDocument();
+		expect(screen.getByText(/Test City/)).toBeInTheDocument();
+		expect(screen.getByText(/Test State/)).toBeInTheDocument();
+		expect(screen.getByText(/12345/)).toBeInTheDocument();
+		expect(screen.getByText(/English, Spanish/)).toBeInTheDocument();
+		expect(
+			screen.getByText(/Food Distribution, Emergency Meals/)
+		).toBeInTheDocument();
 
-	// 	// Check website link
-	// 	const websiteLink = screen.getByText("Official Website");
-	// 	expect(websiteLink).toHaveAttribute("href", "https://example.com");
-	// 	expect(websiteLink).toHaveAttribute("target", "_blank");
-	// });
+		// Check website link
+		const websiteLink = screen.getByText("Official Website");
+		expect(websiteLink).toHaveAttribute("href", "https://example.com");
+		expect(websiteLink).toHaveAttribute("target", "_blank");
+	});
 
-	// it("fetches and renders programs when foodbank data is available", async () => {
-	// 	mockLocationState.mockReturnValue({ id: "123" });
+	it("fetches and renders programs when foodbank data is available", async () => {
+		mockLocationState.mockReturnValue({ id: "123" });
 
-	// 	// Mock foodbank fetch
-	// 	global.fetch.mockResolvedValueOnce({
-	// 		ok: true,
-	// 		json: async () => mockFoodbankData,
-	// 	});
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockFoodbankData,
+				});
+			}
+			if (url.includes('/programs')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockProgramsData,
+				});
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockSponsorsData,
+				});
+			}
+		});
 
-	// 	// Mock programs fetch
-	// 	global.fetch.mockResolvedValueOnce({
-	// 		ok: true,
-	// 		json: async () => mockProgramsData,
-	// 	});
+		render(
+			<Router>
+				<FoodbankInstancePage />
+			</Router>
+		);
 
-	// 	render(
-	// 		<Router>
-	// 			<FoodbankInstancePage />
-	// 		</Router>
-	// 	);
+		// Wait for programs to be rendered (not just the loading state)
+		await waitFor(() => {
+			expect(screen.getByText("Summer Program")).toBeInTheDocument();
+		}, { timeout: 3000 });
 
-	// 	await waitFor(() => {
-	// 		expect(
-	// 			screen.getByText("Programs Hosted by This Food Bank")
-	// 		).toBeInTheDocument();
-	// 	});
-
-	// 	// Check that only programs with matching host are shown
-	// 	expect(screen.getByText("Summer Program")).toBeInTheDocument();
-	// 	expect(screen.getByText("Winter Program")).toBeInTheDocument();
-	// 	expect(screen.queryByText("Other Program")).not.toBeInTheDocument();
-	// });
+		// Check that programs with matching host are shown (limited to 2)
+		expect(screen.getByText("Summer Program")).toBeInTheDocument();
+		expect(screen.getByText("Winter Program")).toBeInTheDocument();
+		// Third program won't be shown because component limits to 2
+		expect(screen.queryByText("Other Program")).not.toBeInTheDocument();
+	});
 
 	it("shows loading state for programs", async () => {
 		mockLocationState.mockReturnValue({ id: "123" });
 
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => mockFoodbankData,
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockFoodbankData,
+				});
+			}
+			if (url.includes('/programs')) {
+				// Never resolve programs fetch
+				return new Promise(() => {});
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockSponsorsData,
+				});
+			}
 		});
-
-		// Mock programs fetch to never resolve
-		global.fetch.mockImplementationOnce(() => new Promise(() => {}));
 
 		render(
 			<Router>
@@ -202,17 +247,28 @@ describe("FoodbankInstancePage", () => {
 		});
 	});
 
-	it("shows message when no programs are found", async () => {
+	it("shows no programs when empty array is returned", async () => {
 		mockLocationState.mockReturnValue({ id: "123" });
 
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => mockFoodbankData,
-		});
-
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => ({ items: [] }),
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockFoodbankData,
+				});
+			}
+			if (url.includes('/programs')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => ({ items: [] }),
+				});
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockSponsorsData,
+				});
+			}
 		});
 
 		render(
@@ -222,23 +278,37 @@ describe("FoodbankInstancePage", () => {
 		);
 
 		await waitFor(() => {
-			expect(
-				screen.getByText("No hosted programs found for this food bank.")
-			).toBeInTheDocument();
+			expect(screen.getByText("Related Programs")).toBeInTheDocument();
 		});
+
+		// Component doesn't show any programs, just the section header
+		const programsSection = screen.getByText("Related Programs").closest('section');
+		const programLinks = programsSection.querySelectorAll('a');
+		expect(programLinks).toHaveLength(0);
 	});
 
 	it("navigates to program page when program is clicked", async () => {
 		mockLocationState.mockReturnValue({ id: "123" });
 
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => mockFoodbankData,
-		});
-
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => mockProgramsData,
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockFoodbankData,
+				});
+			}
+			if (url.includes('/programs')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockProgramsData,
+				});
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockSponsorsData,
+				});
+			}
 		});
 
 		render(
@@ -262,9 +332,25 @@ describe("FoodbankInstancePage", () => {
 	it("navigates to sponsor page when sponsor link is clicked", async () => {
 		mockLocationState.mockReturnValue({ id: "123" });
 
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => mockFoodbankData,
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockFoodbankData,
+				});
+			}
+			if (url.includes('/programs')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockProgramsData,
+				});
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockSponsorsData,
+				});
+			}
 		});
 
 		render(
@@ -274,16 +360,16 @@ describe("FoodbankInstancePage", () => {
 		);
 
 		await waitFor(() => {
-			expect(screen.getByText("View Sponsor")).toBeInTheDocument();
+			expect(screen.getByText("Test Sponsor")).toBeInTheDocument();
 		});
 
-		const sponsorLink = screen.getByText("View Sponsor");
+		const sponsorLink = screen.getByText("Test Sponsor");
 		fireEvent.click(sponsorLink);
 
 		expect(mockedNavigate).toHaveBeenCalledWith(
-			"/sponsors/Test%20Food%20Bank",
+			"/sponsors/Test%20Sponsor",
 			{
-				state: { id: "123", name: "Test Food Bank" },
+				state: { id: 123, name: "Test Sponsor" },
 			}
 		);
 	});
@@ -302,9 +388,26 @@ describe("FoodbankInstancePage", () => {
 		};
 
 		mockLocationState.mockReturnValue({ id: "123" });
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => minimalFoodbankData,
+		
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => minimalFoodbankData,
+				});
+			}
+			if (url.includes('/programs')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => ({ items: [] }),
+				});
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => ({ items: [] }),
+				});
+			}
 		});
 
 		render(
@@ -318,7 +421,8 @@ describe("FoodbankInstancePage", () => {
 		});
 
 		// Check that N/A is shown for missing fields
-		expect(screen.getAllByText("N/A")).toHaveLength(5); // about, website, state, zipcode, languages, services
+		// website, state, zipcode, languages, services = 5 N/A values
+		expect(screen.getAllByText("N/A")).toHaveLength(5);
 	});
 
 	it("uses name from location state if foodbank name is not available", async () => {
@@ -329,9 +433,26 @@ describe("FoodbankInstancePage", () => {
 		};
 
 		mockLocationState.mockReturnValue({ id: "123", name: "Location Name" });
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => foodbankWithoutName,
+		
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => foodbankWithoutName,
+				});
+			}
+			if (url.includes('/programs')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => ({ items: [] }),
+				});
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => ({ items: [] }),
+				});
+			}
 		});
 
 		render(
@@ -347,9 +468,26 @@ describe("FoodbankInstancePage", () => {
 
 	it("renders child components", async () => {
 		mockLocationState.mockReturnValue({ id: "123" });
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => mockFoodbankData,
+		
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockFoodbankData,
+				});
+			}
+			if (url.includes('/programs')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockProgramsData,
+				});
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockSponsorsData,
+				});
+			}
 		});
 
 		render(
@@ -369,12 +507,23 @@ describe("FoodbankInstancePage", () => {
 	it("handles programs fetch error gracefully", async () => {
 		mockLocationState.mockReturnValue({ id: "123" });
 
-		global.fetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => mockFoodbankData,
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/foodbanks/123')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockFoodbankData,
+				});
+			}
+			if (url.includes('/programs')) {
+				return Promise.reject(new Error("Programs fetch failed"));
+			}
+			if (url.includes('/sponsors')) {
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockSponsorsData,
+				});
+			}
 		});
-
-		global.fetch.mockRejectedValueOnce(new Error("Programs fetch failed"));
 
 		render(
 			<Router>
@@ -383,10 +532,13 @@ describe("FoodbankInstancePage", () => {
 		);
 
 		await waitFor(() => {
-			// Should not crash, should show no programs message
-			expect(
-				screen.getByText("No hosted programs found for this food bank.")
-			).toBeInTheDocument();
+			// Should not crash, should show Related Programs header
+			expect(screen.getByText("Related Programs")).toBeInTheDocument();
 		});
+
+		// No programs should be rendered after error
+		const programsSection = screen.getByText("Related Programs").closest('section');
+		const programLinks = programsSection.querySelectorAll('a');
+		expect(programLinks).toHaveLength(0);
 	});
 });

@@ -144,52 +144,109 @@ describe("SponsorInstancePage", () => {
 
 	it("handles navigation to foodbank page", async () => {
 		mockLocationState.mockReturnValue({ id: "123" });
-		global.fetch.mockResolvedValue({
-			ok: true,
-			json: async () => mockSponsorData,
-		});
+		
+		// Mock the sponsor fetch
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/sponsors/123')) {
+			return Promise.resolve({
+				ok: true,
+				json: async () => mockSponsorData,
+			});
+			}
+			// Mock foodbanks fetch
+			if (url.includes('/foodbanks')) {
+			return Promise.resolve({
+				ok: true,
+				json: async () => ({
+				items: [
+					{ id: 123, name: "Test Foodbank" },
+					{ id: 124, name: "Another Foodbank" }
+				]
+				}),
+			});
+			}
+			// Mock programs fetch
+			if (url.includes('/programs')) {
+			return Promise.resolve({
+				ok: true,
+				json: async () => ({
+				items: [
+					{ id: 123, name: "Test Program" }
+				]
+				}),
+			});
+		}
+	});
 
-		render(
-			<Router>
-				<SponsorInstancePage />
-			</Router>
-		);
+	render(
+		<Router>
+		<SponsorInstancePage />
+		</Router>
+	);
 
-		await waitFor(() => {
-			expect(screen.getByText("View Related Foodbank")).toBeInTheDocument();
-		});
+	// Wait for the foodbank name to appear (not "View Related Foodbank")
+	await waitFor(() => {
+		expect(screen.getByText("Test Foodbank")).toBeInTheDocument();
+	});
 
-		const foodbankLink = screen.getByText("View Related Foodbank");
-		fireEvent.click(foodbankLink);
+	const foodbankLink = screen.getByText("Test Foodbank");
+	fireEvent.click(foodbankLink);
 
-		expect(mockedNavigate).toHaveBeenCalledWith("/foodbanks/123", {
-			state: { id: "123", name: "Test Sponsor" },
-		});
+	expect(mockedNavigate).toHaveBeenCalledWith(
+		"/foodbanks/Test%20Foodbank",  // Note: name is encoded in URL
+		{
+		state: { id: 123, name: "Test Foodbank" },  // id is number, name is the foodbank name
+		}
+	);
 	});
 
 	it("handles navigation to program page", async () => {
 		mockLocationState.mockReturnValue({ id: "123" });
-		global.fetch.mockResolvedValue({
-			ok: true,
-			json: async () => mockSponsorData,
+		
+		global.fetch.mockImplementation((url) => {
+			if (url.includes('/sponsors/123')) {
+			return Promise.resolve({
+				ok: true,
+				json: async () => mockSponsorData,
+			});
+			}
+			if (url.includes('/foodbanks')) {
+			return Promise.resolve({
+				ok: true,
+				json: async () => ({ items: [] }),
+			});
+			}
+			if (url.includes('/programs')) {
+			return Promise.resolve({
+				ok: true,
+				json: async () => ({
+				items: [
+					{ id: 123, name: "Test Program" }
+				]
+				}),
+			});
+			}
 		});
 
 		render(
 			<Router>
-				<SponsorInstancePage />
+			<SponsorInstancePage />
 			</Router>
 		);
 
 		await waitFor(() => {
-			expect(screen.getByText("View Related Program")).toBeInTheDocument();
+			expect(screen.getByText("Test Program")).toBeInTheDocument();
 		});
 
-		const programLink = screen.getByText("View Related Program");
+		const programLink = screen.getByText("Test Program");
 		fireEvent.click(programLink);
 
-		expect(mockedNavigate).toHaveBeenCalledWith("/programs/123", {
-			state: { id: "123", name: "Test Sponsor" },
-		});
+		expect(mockedNavigate).toHaveBeenCalledWith(
+			"/programs/Test%20Program",
+			{
+			state: { id: 123, name: "Test Program" },
+			}
+		);
 	});
 
 	it("renders map iframe when map_link is provided", async () => {
