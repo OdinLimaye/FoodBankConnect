@@ -132,9 +132,9 @@ The frontend of our site uses React. We have our landing page, about page, and t
 
 ## 7. Toolchains & Development Workflow
 
-- **Languages:** HTML, JavaScript, CSS, Python, JSX, Docker, and Make
+- **Languages:** HTML, JavaScript, CSS, Python, JSX, Docker, SQL, and Make
 - **Frameworks:** Bootstrap CSS, Flask, and PostgreSQL
-- **Libraries:** We made use of the Bootstrap public library for CSS objects and formatting as well as the BeautifulSoup Python library for web scraping.
+- **Libraries:** We made use of the Bootstrap public library for CSS objects and formatting as well as the BeautifulSoup Python library for web scraping. We also used SQLAlchemy for modifying the database.
 - **Build tools:** We have a Makefile that condenses pushing and pulling, a .yml that runs pipelines to upload our source files to the AWS hosting site and run tests automatically, various Dockerfiles to maintain our Docker images for each part of the website, and a .gitignore that keeps our working space clean and free from clutter.
 - **Testing tools:** Our .yml runs all of our tests automatically. We have backend tests using Pytest and Postman as well as Frontend tests using Selenium and Jest.
 - **Version control:** We made use of GitLab for source control. We have a GitLab project/repository that contains the most up-to-date version of our site as well as all of our source code and media files. We occasionally forked the repository to preserve the website's state for grading purposes.
@@ -162,7 +162,7 @@ We have a .yml file set up to automatically upload the build files that React pr
 
 For the web scraping, we predominantly used ProPublica's API as a jumping-off point for more in-depth scraping for each instance. We used ProPublica to get the names of all of the foodbanks, programs, and charitable organizations. Then, we made use of Google's Custom Search API to query specifically about an individua instance. We then used the BeautifulSoup library to parse through a specific instance's website, checking for the existence of the /about and /aboutus subdomains in order to obtain descriptive text. Based on certain keywords, we inferred the type of programs, type of organization, urgency of foodbank, etc. and populated the corresponding JSON fields.
 
-Our database can be filled with the results of these scrapers in a few different ways. One, there is a stage in our .yml file that automatically runs the scrapers through a batch job on AWS. We mainly leave this disabled however since refilling the database on every push is unreasonable. We also can run the scrapers manually to have the database re-populate after a significant change is made and new data is needed.
+Our database can be filled with the results of these scrapers in a few different ways. One, there is a stage in our .yml file that automatically runs the scrapers in a separate step in the gitlab CI/CD pipeline. Originally we created a docker image and ran it in AWS, but that isn't neccessary as we already have it containerized in gitlab. We mainly leave this disabled however since clearing and refilling the database on every push is unreasonable. We also can run the scrapers manually to have the database re-populate after a significant change is made and new data is needed.
 
 ---
 
