@@ -89,25 +89,14 @@ const FoodbankInstancePage = () => {
       const allSponsors = (await response.json()).items || [];
 
       const currentId = parseInt(foodbank.id, 10);
-      const neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
+      const lowerId = currentId - 1;
 
-      // Get sponsor with same ID and neighbor
       const mainSponsor = allSponsors.find(s => s.id === currentId);
-      const neighborSponsor = allSponsors.find(s => s.id === neighborId);
+      const neighborSponsor = allSponsors.find(s => s.id === lowerId);
 
       const finalSponsors = [];
       if (mainSponsor) finalSponsors.push(mainSponsor);
       if (neighborSponsor) finalSponsors.push(neighborSponsor);
-
-      // If still less than 2, fill with extras
-      while (finalSponsors.length < 2 && allSponsors.length > 0) {
-        for (let s of allSponsors) {
-          if (!finalSponsors.find(sp => sp.id === s.id)) {
-            finalSponsors.push(s);
-            if (finalSponsors.length === 2) break;
-          }
-        }
-      }
 
       setSponsors(finalSponsors);
     } catch (err) {
@@ -119,6 +108,7 @@ const FoodbankInstancePage = () => {
 
   fetchSponsors();
 }, [foodbank]);
+
 
 
   const handleProgramClick = program => {

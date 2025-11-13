@@ -83,16 +83,6 @@ const ProgramsInstancePage = () => {
         if (mainSponsor) finalSponsors.push(mainSponsor);
         if (neighborSponsor) finalSponsors.push(neighborSponsor);
 
-        // Fill if still less than 2
-        while (finalSponsors.length < 2 && allSponsors.length > 0) {
-          for (let s of allSponsors) {
-            if (!finalSponsors.find(sp => sp.id === s.id)) {
-              finalSponsors.push(s);
-              if (finalSponsors.length === 2) break;
-            }
-          }
-        }
-
         setSponsors(finalSponsors);
       } catch (err) {
         console.error("Error fetching program or related data:", err);
