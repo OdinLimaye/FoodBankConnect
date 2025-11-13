@@ -271,11 +271,11 @@ apply_db:
     TRUNCATE: "1"
     DRY_RUN: "0"
     SCRAPERS_DIR: "$CI_PROJECT_DIR/fbc-load-db/scrapers"
-    DB_HOST: "fbc-psql-db.chyoag62glut.us-east-2.rds.amazonaws.com"
-    DB_PORT: "5432"
-    DB_NAME: "postgres"
-    DB_USER: "postgres"
-    DB_PASSWORD: "HardcoreHenry1!"
+    DB_HOST: $DB_HOST
+    DB_PORT: $DB_PORT
+    DB_NAME: $DB_NAME
+    DB_USER: $DB_USER
+    DB_PASSWORD: $DB_PASSWORD
     DB_SCHEMA: "app"
     PYTHONUNBUFFERED: "1"
     PYTHONIOENCODING: "utf-8"
