@@ -166,22 +166,21 @@ backend_unit_tests:
   stage: backend_test
   image: python:3.12-bullseye
   variables:
-    PYTHONPATH: "fbc-rest-api"
+    PYTHONPATH: "fbc-rest-api"  # <-- add this
   before_script:
-    # Ensure report directory exists
-    - mkdir -p "$REPORT_DIR"
     - pip install --upgrade pip
     - pip install -r "fbc-rest-api/requirements.txt"
     - pip install pytest
   script:
-    # Run pytest in one line to avoid YAML continuation issues
-    - pytest -q --maxfail=1 --disable-warnings --junitxml="$REPORT_DIR/pytest-report.xml" tests/test_api_unit.py
+    - pytest -q --maxfail=1 --disable-warnings \
+        --junitxml "$REPORT_DIR/pytest-report.xml" \
+        tests/test_api_unit.py
   artifacts:
     when: always
     reports:
-      junit: "$REPORT_DIR/pytest-report.xml"
+      junit: "$PYTEST_JUNIT_XML"
     paths:
-      - "$REPORT_DIR/pytest-report.xml"
+      - "$PYTEST_JUNIT_XML"
   rules:
     - when: on_success
     #- changes:
