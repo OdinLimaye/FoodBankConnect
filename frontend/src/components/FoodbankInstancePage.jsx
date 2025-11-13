@@ -88,15 +88,24 @@ const FoodbankInstancePage = () => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const allSponsors = (await response.json()).items || [];
 
-      const currentId = parseInt(foodbank.id, 10);
-      const lowerId = currentId - 1;
+      // Get current sponsor index
+      const currentIndex = allSponsors.findIndex(s => s.id === foodbank.id);
+      const lowerIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex + 1;
 
-      const mainSponsor = allSponsors.find(s => s.id === currentId);
-      const neighborSponsor = allSponsors.find(s => s.id === lowerId);
+      let finalSponsors = [];
 
-      const finalSponsors = [];
-      if (mainSponsor) finalSponsors.push(mainSponsor);
-      if (neighborSponsor) finalSponsors.push(neighborSponsor);
+      if (currentIndex >= 0) finalSponsors.push(allSponsors[currentIndex]);
+      if (lowerIndex >= 0 && lowerIndex < allSponsors.length) finalSponsors.push(allSponsors[lowerIndex]);
+
+      // Ensure exactly 2 sponsors
+      if (finalSponsors.length < 2) {
+        for (let s of allSponsors) {
+          if (!finalSponsors.includes(s)) {
+            finalSponsors.push(s);
+            if (finalSponsors.length === 2) break;
+          }
+        }
+      }
 
       setSponsors(finalSponsors);
     } catch (err) {
@@ -108,6 +117,7 @@ const FoodbankInstancePage = () => {
 
   fetchSponsors();
 }, [foodbank]);
+
 
 
 
