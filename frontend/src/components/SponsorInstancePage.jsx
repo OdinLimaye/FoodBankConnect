@@ -39,7 +39,7 @@ const SponsorInstancePage = () => {
         const fbRes = await fetch(FOODBANKS_URL);
         const fbItems = (await fbRes.json()).items || [];
 
-        // Select the foodbank whose ID matches sponsor ID and one neighbor
+        // Only main sponsor ID and neighbor
         let fbLinks = [];
         const fbMatch = fbItems.find(fb => fb.id === currentId);
         if (fbMatch) fbLinks.push(fbMatch);
@@ -47,11 +47,6 @@ const SponsorInstancePage = () => {
         const fbNeighbor = fbItems.find(fb => fb.id === neighborId && fb.id !== currentId);
         if (fbNeighbor) fbLinks.push(fbNeighbor);
 
-        // Fill if fewer than 2
-        for (let fb of fbItems) {
-          if (fbLinks.length >= 2) break;
-          if (!fbLinks.find(f => f.id === fb.id)) fbLinks.push(fb);
-        }
         setFoodbanks(fbLinks);
 
         // --- Fetch all programs ---
@@ -65,11 +60,8 @@ const SponsorInstancePage = () => {
         const progNeighbor = progItems.find(p => p.id === neighborId && p.id !== currentId);
         if (progNeighbor) progLinks.push(progNeighbor);
 
-        for (let p of progItems) {
-          if (progLinks.length >= 2) break;
-          if (!progLinks.find(pr => pr.id === p.id)) progLinks.push(p);
-        }
         setPrograms(progLinks);
+
 
       } catch (err) {
         console.error("Error fetching sponsor or related data:", err);

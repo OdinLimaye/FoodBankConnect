@@ -94,9 +94,22 @@ const SearchPage = () => {
         <div className={styles.results}>
           {loading && <p style={{ color: "#fff", opacity: 0.8 }}>Searching...</p>}
           {!loading && results.length === 0 && query && (
-            <p style={{ color: "#fff", opacity: 0.8 }}>No results found.</p>
+            <p style={{ color: "#808080bd", opacity: 0.8 }}>No results found.</p>
           )}
-
+          
+          {!loading && results.length > 0 && (
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "flex-start",
+                maxWidth: "750px",
+                color: "#808080bd",
+              }}
+            >
+              <p style={{ margin: 0 }}>Found {results.length} results</p>
+            </div>
+          )}
           {!loading &&
             results.map((r, i) => {
               const modelPath = r.model.toLowerCase();

@@ -16,7 +16,6 @@ const Programs = () => {
 
   const itemsPerPage = 20;
   const totalItems = 98; // Hardcoded total
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   useEffect(() => {
     async function fetchPrograms() {
@@ -45,6 +44,14 @@ const Programs = () => {
           (p) => p.program_type.toLowerCase() === filter.toLowerCase()
         );
 
+  const totalPages = Math.ceil(filteredPrograms.length / itemsPerPage) || 1;
+  useEffect(() => {
+    const newTotalPages = Math.ceil(filteredPrograms.length / itemsPerPage) || 1;
+    if (currentPage > newTotalPages) {
+      setCurrentPage(newTotalPages);
+    }
+  }, [filteredPrograms, currentPage]);
+
   const handleFilterClick = (program_type) => {
     setFilter(program_type);
   };
@@ -54,6 +61,9 @@ const Programs = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
   const displayedPrograms = filteredPrograms.slice(startIndex, endIndex);
+
+  const showEnd = startIndex + displayedPrograms.length;
+  const showStart = (displayedPrograms.length > 0 ? startIndex + 1 : startIndex);
 
   return (
     <div className="programs-page">
@@ -90,7 +100,9 @@ const Programs = () => {
       <main className="container my-5">
         {/* Top info and pagination */}
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <p className="mb-0">Showing {itemsPerPage} / 100 programs</p>
+          <p className="mb-0">
+            Showing {`${showStart} ${filteredPrograms.length > 0 ? `- ${showEnd}` : ""}`} / {filteredPrograms.length} programs
+          </p>
           <div>
             <button
               className="btn btn-primary me-2"
