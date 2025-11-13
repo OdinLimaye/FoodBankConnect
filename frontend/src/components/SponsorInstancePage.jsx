@@ -27,55 +27,48 @@ const SponsorInstancePage = () => {
       }
 
       try {
+        const currentId = parseInt(id, 10);
+
         // --- Fetch sponsor info ---
         const sponsorRes = await fetch(`${SPONSORS_URL}/${id}`);
         if (!sponsorRes.ok) throw new Error(`HTTP ${sponsorRes.status}`);
         const sponsorData = await sponsorRes.json();
         setSponsor(sponsorData);
 
-        const currentId = parseInt(id, 10);
-
         // --- Fetch all foodbanks ---
         const fbRes = await fetch(FOODBANKS_URL);
         const fbItems = (await fbRes.json()).items || [];
 
-        const fbIndex = fbItems.findIndex(fb => fb.id === currentId);
-        const fbNeighbor =
-          fbIndex < fbItems.length - 1 ? fbItems[fbIndex + 1] : fbItems[fbIndex - 1];
-        const fbLinks = [];
+        let fbLinks = [];
+        const currentIndex = fbItems.findIndex(fb => String(fb.id) === String(currentId));
 
-        if (fbIndex >= 0) fbLinks.push(fbItems[fbIndex]);
-        if (fbNeighbor) fbLinks.push(fbNeighbor);
-
-        // Fill if fewer than 2
-        for (const fb of fbItems) {
-          if (fbLinks.length >= 2) break;
-          if (!fbLinks.includes(fb)) fbLinks.push(fb);
+        if (currentIndex >= 0) {
+          fbLinks.push(fbItems[currentIndex]);
+          const neighborIndex =
+            currentIndex < fbItems.length - 1 ? currentIndex + 1 : currentIndex - 1;
+          if (neighborIndex >= 0) fbLinks.push(fbItems[neighborIndex]);
+        } else {
+          fbLinks = fbItems.slice(0, 2);
         }
-
         setFoodbanks(fbLinks);
 
         // --- Fetch all programs ---
         const progRes = await fetch(PROGRAMS_URL);
         const progItems = (await progRes.json()).items || [];
 
-        const progIndex = progItems.findIndex(p => p.id === currentId);
-        const progNeighbor =
-          progIndex < progItems.length - 1
-            ? progItems[progIndex + 1]
-            : progItems[progIndex - 1];
-        const progLinks = [];
+        let progLinks = [];
+        const progIndex = progItems.findIndex(p => String(p.id) === String(currentId));
 
-        if (progIndex >= 0) progLinks.push(progItems[progIndex]);
-        if (progNeighbor) progLinks.push(progNeighbor);
-
-        // Fill if fewer than 2
-        for (const p of progItems) {
-          if (progLinks.length >= 2) break;
-          if (!progLinks.includes(p)) progLinks.push(p);
+        if (progIndex >= 0) {
+          progLinks.push(progItems[progIndex]);
+          const progNeighborIndex =
+            progIndex < progItems.length - 1 ? progIndex + 1 : progIndex - 1;
+          if (progNeighborIndex >= 0) progLinks.push(progItems[progNeighborIndex]);
+        } else {
+          progLinks = progItems.slice(0, 2);
         }
-
         setPrograms(progLinks);
+
       } catch (err) {
         console.error("Error fetching sponsor or related data:", err);
       } finally {
@@ -137,10 +130,7 @@ const SponsorInstancePage = () => {
                 <span key={fb.id}>
                   <a
                     href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigate("foodbank", fb);
-                    }}
+                    onClick={(e) => { e.preventDefault(); handleNavigate("foodbank", fb); }}
                   >
                     {fb.name}
                   </a>
@@ -154,10 +144,7 @@ const SponsorInstancePage = () => {
                 <span key={p.id}>
                   <a
                     href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigate("program", p);
-                    }}
+                    onClick={(e) => { e.preventDefault(); handleNavigate("program", p); }}
                   >
                     {p.name}
                   </a>
