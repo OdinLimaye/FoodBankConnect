@@ -183,11 +183,12 @@ backend_unit_tests:
     paths:
       - "$REPORT_DIR/pytest-report.xml"
   rules:
-    - changes:
-        - fbc-rest-api/**/*
-        - tests/test_api_unit.py
-      when: on_success
-    - when: never
+    - when: on_success
+    #- changes:
+    #    - fbc-rest-api/**/*
+    #    - tests/test_api_unit.py
+    #  when: on_success
+    #- when: never
 
 
 postman_tests:
