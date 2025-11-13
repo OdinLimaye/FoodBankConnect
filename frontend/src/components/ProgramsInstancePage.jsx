@@ -27,12 +27,13 @@ const ProgramsInstancePage = () => {
       }
 
       try {
+        // Fetch this program
         const res = await fetch(`${BASE_URL}/${id}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const programData = await res.json();
         setProgram(programData);
 
-        // Fetch all foodbanks
+        // === Fetch related foodbanks ===
         const fbRes = await fetch(FOODBANKS_URL);
         if (!fbRes.ok) throw new Error(`HTTP ${fbRes.status}`);
         const fbData = (await fbRes.json()).items || [];
@@ -43,14 +44,19 @@ const ProgramsInstancePage = () => {
           const hostIndex = fbData.findIndex(fb => fb.name === programData.host);
           if (hostIndex !== -1) {
             fbLinks.push({ id: fbData[hostIndex].id, name: fbData[hostIndex].name });
-            let neighborIndex = hostIndex > 0 ? hostIndex - 1 : hostIndex < fbData.length - 1 ? hostIndex + 1 : null;
+            let neighborIndex =
+              hostIndex > 0
+                ? hostIndex - 1
+                : hostIndex < fbData.length - 1
+                ? hostIndex + 1
+                : null;
             if (neighborIndex !== null && neighborIndex !== hostIndex) {
               fbLinks.push({ id: fbData[neighborIndex].id, name: fbData[neighborIndex].name });
             }
           }
         }
 
-        // If less than 2 links, fill from start
+        // If less than 2, fill with extras
         while (fbLinks.length < 2 && fbData.length > 0) {
           for (let fb of fbData) {
             if (!fbLinks.find(f => f.id === fb.id)) {
@@ -62,37 +68,32 @@ const ProgramsInstancePage = () => {
 
         setFoodbanks(fbLinks);
 
-        // Fetch all sponsors
+        // === Fetch sponsors (using ID and neighbor ID logic) ===
         const sponsorRes = await fetch(SPONSORS_URL);
         if (!sponsorRes.ok) throw new Error(`HTTP ${sponsorRes.status}`);
-        const sponsorData = (await sponsorRes.json()).items || [];
+        const allSponsors = (await sponsorRes.json()).items || [];
 
-        // Sponsors related to this program + neighbor
-        let sponsorLinks = sponsorData.filter(s => s.name === programData.name);
-        if (sponsorLinks.length === 0 && sponsorData.length > 0) {
-          sponsorLinks.push(sponsorData[0]);
-        }
-        // Add neighbor if needed
-        if (sponsorLinks.length === 1) {
-          const idx = sponsorData.findIndex(s => s.id === sponsorLinks[0].id);
-          let neighborIdx = idx > 0 ? idx - 1 : idx < sponsorData.length - 1 ? idx + 1 : null;
-          if (neighborIdx !== null && neighborIdx !== idx) {
-            sponsorLinks.push(sponsorData[neighborIdx]);
-          }
-        }
+        const currentId = parseInt(programData.id, 10);
+        const neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
 
-        // Fill up to 2 sponsors
-        while (sponsorLinks.length < 2 && sponsorData.length > 0) {
-          for (let s of sponsorData) {
-            if (!sponsorLinks.find(sp => sp.id === s.id)) {
-              sponsorLinks.push(s);
-              if (sponsorLinks.length === 2) break;
+        const mainSponsor = allSponsors.find(s => s.id === currentId);
+        const neighborSponsor = allSponsors.find(s => s.id === neighborId);
+
+        const finalSponsors = [];
+        if (mainSponsor) finalSponsors.push(mainSponsor);
+        if (neighborSponsor) finalSponsors.push(neighborSponsor);
+
+        // Fill if still less than 2
+        while (finalSponsors.length < 2 && allSponsors.length > 0) {
+          for (let s of allSponsors) {
+            if (!finalSponsors.find(sp => sp.id === s.id)) {
+              finalSponsors.push(s);
+              if (finalSponsors.length === 2) break;
             }
           }
         }
 
-        setSponsors(sponsorLinks);
-
+        setSponsors(finalSponsors);
       } catch (err) {
         console.error("Error fetching program or related data:", err);
       } finally {
@@ -104,11 +105,15 @@ const ProgramsInstancePage = () => {
   }, [id]);
 
   const handleNavigateFoodbank = (fb) => {
-    navigate(`/foodbanks/${encodeURIComponent(fb.name)}`, { state: { id: fb.id, name: fb.name } });
+    navigate(`/foodbanks/${encodeURIComponent(fb.name)}`, {
+      state: { id: fb.id, name: fb.name },
+    });
   };
 
   const handleNavigateSponsor = (sp) => {
-    navigate(`/sponsors/${encodeURIComponent(sp.name)}`, { state: { id: sp.id, name: sp.name } });
+    navigate(`/sponsors/${encodeURIComponent(sp.name)}`, {
+      state: { id: sp.id, name: sp.name },
+    });
   };
 
   if (loading) return <div className="container my-5">Loading program details...</div>;
@@ -130,7 +135,9 @@ const ProgramsInstancePage = () => {
                 alt={program.name}
                 style={{ maxHeight: "400px", objectFit: "cover" }}
               />
-            ) : <div className="text-muted">No image available</div>}
+            ) : (
+              <div className="text-muted">No image available</div>
+            )}
           </div>
 
           <div className="col-lg-6 text-center">
@@ -139,10 +146,15 @@ const ProgramsInstancePage = () => {
               <li><strong>Frequency:</strong> {program.frequency || "N/A"}</li>
               <li><strong>Eligibility:</strong> {program.eligibility || "Everybody"}</li>
               <li><strong>Cost:</strong> {program.cost || "N/A"}</li>
-              <li><strong>Sign Up / Learn More:</strong>{" "}
+              <li>
+                <strong>Sign Up / Learn More:</strong>{" "}
                 {program.sign_up_link ? (
-                  <a href={program.sign_up_link} target="_blank" rel="noreferrer">Sign Up Page</a>
-                ) : "N/A"}
+                  <a href={program.sign_up_link} target="_blank" rel="noreferrer">
+                    Sign Up Page
+                  </a>
+                ) : (
+                  "N/A"
+                )}
               </li>
             </ul>
           </div>
@@ -158,7 +170,13 @@ const ProgramsInstancePage = () => {
           <h3>Related Foodbanks</h3>
           {foodbanks.map(fb => (
             <p key={fb.id}>
-              <a href="#" onClick={e => { e.preventDefault(); handleNavigateFoodbank(fb); }}>
+              <a
+                href="#"
+                onClick={e => {
+                  e.preventDefault();
+                  handleNavigateFoodbank(fb);
+                }}
+              >
                 {fb.name}
               </a>
             </p>
@@ -170,7 +188,13 @@ const ProgramsInstancePage = () => {
           <h3>Related Sponsors</h3>
           {sponsors.map(sp => (
             <p key={sp.id}>
-              <a href="#" onClick={e => { e.preventDefault(); handleNavigateSponsor(sp); }}>
+              <a
+                href="#"
+                onClick={e => {
+                  e.preventDefault();
+                  handleNavigateSponsor(sp);
+                }}
+              >
                 {sp.name}
               </a>
             </p>

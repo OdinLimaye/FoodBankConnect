@@ -80,42 +80,46 @@ const FoodbankInstancePage = () => {
   }, [foodbank]);
 
   useEffect(() => {
-    const fetchSponsors = async () => {
-      if (!foodbank?.name) return;
+  const fetchSponsors = async () => {
+    if (!foodbank?.id) return;
 
-      try {
-        const response = await fetch(SPONSORS_URL);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const allSponsors = (await response.json()).items || [];
+    try {
+      const response = await fetch(SPONSORS_URL);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const allSponsors = (await response.json()).items || [];
 
-        const related = allSponsors.filter(s => s.name === foodbank.name);
+      const currentId = parseInt(foodbank.id, 10);
+      const neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
 
-        // Guarantee exactly 2 sponsors
-        let finalSponsors = [];
-        if (related.length >= 2) {
-          finalSponsors = related.slice(0, 2);
-        } else if (related.length === 1) {
-          const idx = allSponsors.findIndex(s => s.id === related[0].id);
-          const neighbor =
-            idx > 0 ? allSponsors[idx - 1] :
-            idx < allSponsors.length - 1 ? allSponsors[idx + 1] : null;
-          finalSponsors = [related[0]];
-          if (neighbor) finalSponsors.push(neighbor);
-        } else {
-          // No directly related sponsors, pick 2 from the start
-          finalSponsors = allSponsors.slice(0, 2);
+      // Get sponsor with same ID and neighbor
+      const mainSponsor = allSponsors.find(s => s.id === currentId);
+      const neighborSponsor = allSponsors.find(s => s.id === neighborId);
+
+      const finalSponsors = [];
+      if (mainSponsor) finalSponsors.push(mainSponsor);
+      if (neighborSponsor) finalSponsors.push(neighborSponsor);
+
+      // If still less than 2, fill with extras
+      while (finalSponsors.length < 2 && allSponsors.length > 0) {
+        for (let s of allSponsors) {
+          if (!finalSponsors.find(sp => sp.id === s.id)) {
+            finalSponsors.push(s);
+            if (finalSponsors.length === 2) break;
+          }
         }
-
-        setSponsors(finalSponsors);
-      } catch (err) {
-        console.error("Error fetching sponsors:", err);
-      } finally {
-        setSponsorsLoading(false);
       }
-    };
 
-    fetchSponsors();
-  }, [foodbank]);
+      setSponsors(finalSponsors);
+    } catch (err) {
+      console.error("Error fetching sponsors:", err);
+    } finally {
+      setSponsorsLoading(false);
+    }
+  };
+
+  fetchSponsors();
+}, [foodbank]);
+
 
   const handleProgramClick = program => {
     navigate(`/programs/${encodeURIComponent(program.name)}`, {

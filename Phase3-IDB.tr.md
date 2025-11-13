@@ -160,18 +160,18 @@ We have a .yml file set up to automatically upload the build files that React pr
 
 ## 10. Database and Scraping
 
-For the database, (Fill in)
-
 For the web scraping, we predominantly used ProPublica's API as a jumping-off point for more in-depth scraping for each instance. We used ProPublica to get the names of all of the foodbanks, programs, and charitable organizations. Then, we made use of Google's Custom Search API to query specifically about an individua instance. We then used the BeautifulSoup library to parse through a specific instance's website, checking for the existence of the /about and /aboutus subdomains in order to obtain descriptive text. Based on certain keywords, we inferred the type of programs, type of organization, urgency of foodbank, etc. and populated the corresponding JSON fields.
+
+Our database can be filled with the results of these scrapers in a few different ways. One, there is a stage in our .yml file that automatically runs the scrapers through a batch job on AWS. We mainly leave this disabled however since refilling the database on every push is unreasonable. We also can run the scrapers manually to have the database re-populate after a significant change is made and new data is needed.
 
 ---
 
 ## 11. Paging
 
-(Fill in)
+For paging, we mainly handle various page sizes with our backend API's GET endpoint that uses ranges. This range-based endpoint allows us to get chunks of instances in our chose page size, which is 20. We then display the number of instances being shown on the model page's grid along with the total number of instances, obtained from using the full range on the GET endpoint. For filtering, we dynamically display the number of cards showing that meet the filtering requirements.
 
 ---
 
 ## 12. Filtering and Searching
 
-(Fill in)
+Filtering and searching are both performed primarily by endpoints in the backend. Our frontend lays out the UI and then calls the backend endpoints with queries and parameters matching the user input to the browser. For filtering, certain attributes have dropdown menus with pre-set values, but for attributes like cities and ZIP codes, we allow the user to type in the full value themselves. For searching, we have a separate search bar that will navigate to a search results page after clicking "enter" on the page. Highlighted results are then displayed that match the user's search phrase.

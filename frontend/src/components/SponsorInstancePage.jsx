@@ -33,22 +33,21 @@ const SponsorInstancePage = () => {
         setSponsor(sponsorData);
 
         const currentId = parseInt(id, 10);
+        const neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
 
         // --- Fetch all foodbanks ---
         const fbRes = await fetch(FOODBANKS_URL);
         const fbItems = (await fbRes.json()).items || [];
 
+        // Select the foodbank whose ID matches sponsor ID and one neighbor
         let fbLinks = [];
-        // First: match sponsor ID if exists
         const fbMatch = fbItems.find(fb => fb.id === currentId);
         if (fbMatch) fbLinks.push(fbMatch);
 
-        // Second: neighbor (ID-1 unless ID=1, then ID+1)
-        let neighborId = currentId > 1 ? currentId - 1 : currentId + 1;
         const fbNeighbor = fbItems.find(fb => fb.id === neighborId && fb.id !== currentId);
         if (fbNeighbor) fbLinks.push(fbNeighbor);
 
-        // Fill up to 2
+        // Fill if fewer than 2
         for (let fb of fbItems) {
           if (fbLinks.length >= 2) break;
           if (!fbLinks.find(f => f.id === fb.id)) fbLinks.push(fb);
@@ -60,15 +59,12 @@ const SponsorInstancePage = () => {
         const progItems = (await progRes.json()).items || [];
 
         let progLinks = [];
-        // First: match sponsor ID if exists
         const progMatch = progItems.find(p => p.id === currentId);
         if (progMatch) progLinks.push(progMatch);
 
-        // Second: neighbor (ID-1 unless ID=1, then ID+1)
         const progNeighbor = progItems.find(p => p.id === neighborId && p.id !== currentId);
         if (progNeighbor) progLinks.push(progNeighbor);
 
-        // Fill up to 2
         for (let p of progItems) {
           if (progLinks.length >= 2) break;
           if (!progLinks.find(pr => pr.id === p.id)) progLinks.push(p);
@@ -88,9 +84,13 @@ const SponsorInstancePage = () => {
   const handleNavigate = (type, target) => {
     if (!target) return;
     if (type === "foodbank") {
-      navigate(`/foodbanks/${encodeURIComponent(target.name)}`, { state: { id: target.id, name: target.name } });
+      navigate(`/foodbanks/${encodeURIComponent(target.name)}`, {
+        state: { id: target.id, name: target.name },
+      });
     } else if (type === "program") {
-      navigate(`/programs/${encodeURIComponent(target.name)}`, { state: { id: target.id, name: target.name } });
+      navigate(`/programs/${encodeURIComponent(target.name)}`, {
+        state: { id: target.id, name: target.name },
+      });
     }
   };
 
@@ -130,7 +130,13 @@ const SponsorInstancePage = () => {
               <strong>Related Foodbanks:</strong>{" "}
               {foodbanks.map((fb, idx) => (
                 <span key={fb.id}>
-                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigate("foodbank", fb); }}>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavigate("foodbank", fb);
+                    }}
+                  >
                     {fb.name}
                   </a>
                   {idx < foodbanks.length - 1 && " | "}
@@ -141,7 +147,13 @@ const SponsorInstancePage = () => {
               <strong>Related Programs:</strong>{" "}
               {programs.map((p, idx) => (
                 <span key={p.id}>
-                  <a href="#" onClick={(e) => { e.preventDefault(); handleNavigate("program", p); }}>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavigate("program", p);
+                    }}
+                  >
                     {p.name}
                   </a>
                   {idx < programs.length - 1 && " | "}
@@ -150,7 +162,9 @@ const SponsorInstancePage = () => {
             </li>
             <li style={{ marginTop: "25px" }}>
               <strong>Website:</strong>{" "}
-              <a href={sponsor.sponsor_link} target="_blank" rel="noreferrer">Official Website</a>
+              <a href={sponsor.sponsor_link} target="_blank" rel="noreferrer">
+                Official Website
+              </a>
             </li>
             <li><strong>Media / Logo Alt:</strong> {sponsor.alt}</li>
             <li><strong>Employee Identification Number:</strong> {sponsor.ein}</li>
