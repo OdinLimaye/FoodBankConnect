@@ -8,6 +8,7 @@ import "../styles/CardStyles.css";
 
 const BASE_URL = "https://dp3d297dp9.execute-api.us-east-2.amazonaws.com/v1/sponsors";
 const ITEMS_PER_PAGE = 21;
+const ALL_ENTRIES = 100; //temporary hardocded value
 
 const STATES = [
   "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA",
@@ -41,7 +42,7 @@ const Sponsors = () => {
       setLoading(true);
 
       const params = new URLSearchParams({
-        size: ITEMS_PER_PAGE,
+        size: ALL_ENTRIES,
         ...(startCursor && { start: startCursor }),
         ...(filters.name && { name: filters.name }),
         ...(filters.affiliation && { affiliation: filters.affiliation }),
