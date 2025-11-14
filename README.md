@@ -152,7 +152,8 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 ---  
 
 ## Phase Three
-- **Git SHA:**  
+- **Git SHA:**
+677ca445cf7ce3a75b9c2da959a05293d803e482
 - **Project Leader: Mahika Dawar**  
   - Responsibilities: Dividing tasks between group members, implement searching/filtering, and front end styling improvements.
 - **GitLab Pipelines:**
