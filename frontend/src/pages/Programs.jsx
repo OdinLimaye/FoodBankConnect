@@ -118,94 +118,96 @@ const Programs = () => {
         subText="Explore how you can participate or benefit from local programs."
       />
 
-      {error && (
-        <div className="container my-5 text-warning">
-          Failed to load live data: {error}
-        </div>
-      )}
-
-      {/* FILTERS */}
-      <div className="container mb-4">
-        <div className="d-flex flex-wrap gap-3">
-          <select name="frequency" value={filters.frequency} onChange={handleFilterChange} className="form-select w-auto">
-            <option value="">All Frequencies</option>
-            <option value="Weekly">Weekly</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Yearly">Yearly</option>
-          </select>
-
-          <select name="eligibility" value={filters.eligibility} onChange={handleFilterChange} className="form-select w-auto">
-            <option value="">All Eligibility</option>
-            <option value="Everybody">Everybody</option>
-            <option value="Families">Families</option>
-            <option value="Seniors">Seniors</option>
-          </select>
-
-          <select name="cost" value={filters.cost} onChange={handleFilterChange} className="form-select w-auto">
-            <option value="">All Costs</option>
-            <option value="Free">Free</option>
-            <option value="Paid">Paid</option>
-          </select>
-
-          <select name="program_type" value={filters.program_type} onChange={handleFilterChange} className="form-select w-auto">
-            <option value="">All Program Types</option>
-            <option value="Food Distribution">Food Distribution</option>
-            <option value="Volunteer">Volunteer</option>
-            <option value="Education">Education</option>
-            <option value="Service">Service</option>
-          </select>
-
-          {/* HOST FILTER */}
-          <select name="host" value={filters.host} onChange={handleFilterChange} className="form-select w-auto">
-            <option value="">All Hosts</option>
-            {allHosts.map((h) => (
-              <option key={h} value={h}>{h}</option>
-            ))}
-          </select>
-
-          <button className="btn btn-primary" onClick={handleApplyFilters}>
-            Apply
-          </button>
-          <button className="btn btn-secondary" onClick={handleClearFilters}>
-            Clear
-          </button>
-        </div>
-      </div>
-
-      {/* PROGRAM CARDS */}
       <main className="container my-5">
-        <p className="mb-0">
-          Showing {`${showStart} ${programs.length > 0 ? `- ${showEnd}` : ""}`} / {programs.length} programs
-        </p>
-        <div className="card-grid">
-          {programs.length > 0 ? (
-            displayedPrograms.map((p) => (
-              <ProgramCard
-                key={p.id}
-                id={p.id}
-                name={p.name}
-                program_type={p.program_type}
-                freq={p.frequency}
-                host={p.host}
-                eligibility={p.eligibility}
-                cost={p.cost}
-              />
-            ))
-          ) : (
-            <p className="text-center mt-5">No programs found matching your criteria.</p>
-          )}
+        {error && (
+          <div className="container my-5 text-warning">
+            Failed to load live data: {error}
+          </div>
+        )}
+
+        {/* FILTERS */}
+        <div className="container mb-4">
+          <div className="d-flex flex-wrap gap-3">
+            <select name="frequency" value={filters.frequency} onChange={handleFilterChange} className="form-select w-auto">
+              <option value="">All Frequencies</option>
+              <option value="Weekly">Weekly</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Yearly">Yearly</option>
+            </select>
+
+            <select name="eligibility" value={filters.eligibility} onChange={handleFilterChange} className="form-select w-auto">
+              <option value="">All Eligibility</option>
+              <option value="Everybody">Everybody</option>
+              <option value="Families">Families</option>
+              <option value="Seniors">Seniors</option>
+            </select>
+
+            <select name="cost" value={filters.cost} onChange={handleFilterChange} className="form-select w-auto">
+              <option value="">All Costs</option>
+              <option value="Free">Free</option>
+              <option value="Paid">Paid</option>
+            </select>
+
+            <select name="program_type" value={filters.program_type} onChange={handleFilterChange} className="form-select w-auto">
+              <option value="">All Program Types</option>
+              <option value="Food Distribution">Food Distribution</option>
+              <option value="Volunteer">Volunteer</option>
+              <option value="Education">Education</option>
+              <option value="Service">Service</option>
+            </select>
+
+            {/* HOST FILTER */}
+            <select name="host" value={filters.host} onChange={handleFilterChange} className="form-select w-auto">
+              <option value="">All Hosts</option>
+              {allHosts.map((h) => (
+                <option key={h} value={h}>{h}</option>
+              ))}
+            </select>
+
+            <button className="btn btn-primary" onClick={handleApplyFilters}>
+              Apply
+            </button>
+            <button className="btn btn-secondary" onClick={handleClearFilters}>
+              Clear
+            </button>
+          </div>
         </div>
 
-        {/* Pagination */}
-        <div className="d-flex justify-content-center mt-4 gap-2">
-          <button className="btn btn-secondary" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-            Previous
-          </button>
-          <p>Page {currentPage} / {totalPages}</p>
-          <button className="btn btn-secondary" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-            Next
-          </button>
-        </div>
+        {/* PROGRAM CARDS */}
+        <main className="container my-5">
+          <p className="mb-0">
+            Showing {`${showStart} ${programs.length > 0 ? `- ${showEnd}` : ""}`} / {programs.length} programs
+          </p>
+          <div className="card-grid">
+            {programs.length > 0 ? (
+              displayedPrograms.map((p) => (
+                <ProgramCard
+                  key={p.id}
+                  id={p.id}
+                  name={p.name}
+                  program_type={p.program_type}
+                  freq={p.frequency}
+                  host={p.host}
+                  eligibility={p.eligibility}
+                  cost={p.cost}
+                />
+              ))
+            ) : (
+              <p className="text-center mt-5">No programs found matching your criteria.</p>
+            )}
+          </div>
+
+          {/* Pagination */}
+          <div className="d-flex justify-content-center mt-4 gap-2">
+            <button className="btn btn-secondary" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <p>Page {currentPage} / {totalPages}</p>
+            <button className="btn btn-secondary" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
+              Next
+            </button>
+          </div>
+        </main>
       </main>
 
       <Footer />

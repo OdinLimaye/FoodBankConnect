@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import FoodbankCard from "../components/FoodbankCard";
 
 const BASE_URL = "https://dp3d297dp9.execute-api.us-east-2.amazonaws.com/v1/foodbanks";
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 21;
 const MAX_ITEMS = 100; // fetch all matching instances per filter
 
 const Foodbanks = () => {
@@ -92,7 +92,7 @@ const Foodbanks = () => {
         {/* Filters */}
         <div className="d-flex flex-wrap gap-2 mb-4 align-items-center">
           {/* City filter */}
-          <select name="city" value={filters.city} onChange={handleFilterChange}>
+          <select name="city" value={filters.city} onChange={handleFilterChange} className="form-select w-auto">
             <option value="">Cities</option>
             <option value="Commerce">Commerce</option>
             <option value="Louisville">Louisville</option>
@@ -117,7 +117,7 @@ const Foodbanks = () => {
           </select>
 
           {/* State filter */}
-          <select name="state" value={filters.state} onChange={handleFilterChange}>
+          <select name="state" value={filters.state} onChange={handleFilterChange} className="form-select w-auto">
             <option value="">States</option>
             {["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"].map((s) => (
               <option key={s} value={s}>{s}</option>
@@ -131,10 +131,11 @@ const Foodbanks = () => {
             placeholder="Zipcode"
             value={filters.zipcode}
             onChange={handleFilterChange}
+            className="form-control w-auto"
           />
 
           {/* Urgency filter */}
-          <select name="urgency" value={filters.urgency} onChange={handleFilterChange}>
+          <select name="urgency" value={filters.urgency} onChange={handleFilterChange} className="form-select w-auto">
             <option value="">Urgency Levels</option>
             <option value="High">High</option>
             <option value="Medium">Medium</option>
@@ -142,7 +143,7 @@ const Foodbanks = () => {
           </select>
 
           {/* Eligibility filter */}
-          <select name="eligibility" value={filters.eligibility} onChange={handleFilterChange}>
+          <select name="eligibility" value={filters.eligibility} onChange={handleFilterChange} className="form-select w-auto">
             <option value="">Eligibility</option>
             <option value="Everybody">Everybody</option>
             <option value="Families">Families</option>
@@ -150,7 +151,7 @@ const Foodbanks = () => {
           </select>
 
           {/* Languages filter */}
-          <select name="languages" value={filters.languages} onChange={handleFilterChange}>
+          <select name="languages" value={filters.languages} onChange={handleFilterChange} className="form-select w-auto">
             <option value="">Languages</option>
             <option value="English">English</option>
             <option value="Spanish">Spanish</option>
@@ -159,7 +160,7 @@ const Foodbanks = () => {
           <button className="btn btn-primary" onClick={handleApplyFilters}>
             Apply
           </button>
-          <button className="btn btn-outline-secondary btn-sm" onClick={handleClearFilters}>
+          <button className="btn btn-secondary btn" onClick={handleClearFilters}>
             Clear
           </button>
         </div>
