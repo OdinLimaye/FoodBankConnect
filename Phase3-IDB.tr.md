@@ -55,10 +55,11 @@ This site helps solve the problem that many low-income and underserved communiti
 
 **Foodbanks**
 
-* `GET /v1/foodbanks?` — returns a specified range of the list of foodbanks.
+* `GET /v1/foodbanks` — returns a specified range of the list of foodbanks.
 
   * Query params: `size` (int), `start` (int)
-  * Example: `https://api.foodbankconnect.me/v1/foodbanks?size=10&start=1`
+  * Filtering params: `city` (String), `state` (String), `zipcode` (String), `urgency` (String), `eligibility` (String), `languages` (String)
+  * Example: `https://api.foodbankconnect.me/v1/foodbanks?size=10&start=1&state=TX&urgency=High`
 
 * `GET /v1/foodbanks/<id>` — returns a single foodbank instance.
 
@@ -70,7 +71,8 @@ This site helps solve the problem that many low-income and underserved communiti
 * `GET /v1/programs` — returns a specified range of the list of programs.
 
   * Query params: `size` (int), `start` (int)
-  * Example: `https://api.foodbankconnect.me/v1/programs?size=10&start=1`
+  * Filtering params: `frequency` (String), `eligibility` (String), `cost` (String), `program_type` (String), `host` (String)
+  * Example: `https://api.foodbankconnect.me/v1/programs?size=10&start=2&frequency=Monthly&program_type=Food%20Distribution`
 
 * `GET /v1/programs/<id>` — returns a single program instance.
 
@@ -82,7 +84,8 @@ This site helps solve the problem that many low-income and underserved communiti
 * `GET /v1/sponsors` — returns a specified range of the list of sponsors.
 
   * Query params: `size` (int), `start` (int)
-  * Example: `https://api.foodbankconnect.me/v1/sponsors?size=10&start=1`
+   * Filtering params: `name` (String), `affiliation` (String), `contribution` (String), `city` (String), `state` (String)
+  * Example: `https://api.foodbankconnect.me/v1/sponsors?size=10&start=2&state=CA&contribution=High`
 
 * `GET /v1/sponsors/<id>` — returns a single sponsor instance.
 
@@ -95,10 +98,6 @@ This site helps solve the problem that many low-income and underserved communiti
 
   * Query params: `q` (String)
   * Example: `https://api.foodbankconnect.me/v1/search?q=houston`
-
-**Filtering**
-(Fill in)
-
 
 ---
 

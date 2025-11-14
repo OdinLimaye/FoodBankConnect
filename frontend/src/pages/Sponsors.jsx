@@ -3,147 +3,184 @@ import Navbar from "../components/Navbar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SponsorCard from "../components/SponsorCard";
-import "../styles/Sponsors.css"; // ensure responsive + map styles
-import "../styles/CardStyles.css"; // shared glassmorphism + gradient styles
+import "../styles/Sponsors.css";
+import "../styles/CardStyles.css";
 
-const sponsorsListStatic = [
-  {
-    id: "1",
-    name: "Trader Joe's",
-    image: "/images/trader-joes.png",
-    alt: "Trader Joe's Logo",
-    affiliation: "Private Corporation",
-    city: "Austin",
-    state: "TX",
-    sponsor_link: "https://www.traderjoes.com/home/about-us",
-    map_link:
-      "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d187102.43328912946!2d-97.83191852982272!3d30.277193772584845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1strader%20joe's!5e0!3m2!1sen!2sus!4v1760831297709!5m2!1sen!2sus",
-  },
-  // Add more static entries if needed
+const BASE_URL = "https://dp3d297dp9.execute-api.us-east-2.amazonaws.com/v1/sponsors";
+const ITEMS_PER_PAGE = 21;
+const ALL_ENTRIES = 100; //temporary hardocded value
+
+const STATES = [
+  "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA",
+  "KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ",
+  "NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT",
+  "VA","WA","WV","WI","WY"
 ];
-
-const BASE_URL = "https://api.foodbankconnect.me/v1/sponsors";
 
 const Sponsors = () => {
   const [sponsors, setSponsors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
 
-  const itemsPerPage = 20;
-  const totalItems = 100; // Hardcoded total
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const [filters, setFilters] = useState({
+    name: "",
+    affiliation: "",
+    contribution: "",
+    city: "",
+    state: "",
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [applyFilters, setApplyFilters] = useState(0);
+
+  // Store full dropdown options so they don't disappear
+  const [allNames, setAllNames] = useState([]);
+  const [allAffiliations, setAllAffiliations] = useState([]);
+  const [allContributions, setAllContributions] = useState([]);
+
+  const fetchSponsors = async (startCursor = null) => {
+    try {
+      setLoading(true);
+
+      const params = new URLSearchParams({
+        size: ALL_ENTRIES,
+        ...(startCursor && { start: startCursor }),
+        ...(filters.name && { name: filters.name }),
+        ...(filters.affiliation && { affiliation: filters.affiliation }),
+        ...(filters.contribution && { contribution: filters.contribution }),
+        ...(filters.city && { city: filters.city }),
+        ...(filters.state && { state: filters.state }),
+      });
+
+      const res = await fetch(`${BASE_URL}?${params.toString()}`);
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+      const data = await res.json();
+
+      setSponsors(data.items || []);
+
+      // Populate dropdowns only once
+      if (allNames.length === 0) setAllNames(Array.from(new Set(data.items.map(s => s.name))).sort());
+      if (allAffiliations.length === 0) setAllAffiliations(Array.from(new Set(data.items.map(s => s.affiliation))).sort());
+      if (allContributions.length === 0) setAllContributions(Array.from(new Set(data.items.map(s => s.contribution))).sort());
+
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+      setSponsors([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchSponsors() {
-      try {
-        setLoading(true);
-        const start = (currentPage - 1) * itemsPerPage + 1;
-        const res = await fetch(`${BASE_URL}?size=${totalItems}&start=${start}`);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const data = await res.json();
-        setSponsors(data.items || []);
-      } catch (err) {
-        console.error(
-          "Failed to fetch sponsors, using static list as fallback:",
-          err
-        );
-        setSponsors(sponsorsListStatic);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
+    fetchSponsors(null);
+  }, [applyFilters]);
 
-    fetchSponsors();
-  }, []);
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
 
-  if (loading) {
-    return (
-      <div className="container my-5 text-center">
-        <div className="loader" />
-        <p className="text-muted mt-3">Loading sponsors...</p>
-      </div>
-    );
-  }
+  const handleApplyFilters = () => setApplyFilters(prev => prev + 1);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = currentPage * itemsPerPage;
+  const handleClearFilters = () => {
+    setFilters({
+      name: "",
+      affiliation: "",
+      contribution: "",
+      city: "",
+      state: "",
+    });
+    setApplyFilters((prev) => prev + 1);
+  };
+
+  if (loading) return <div className="text-center my-5">Loading...</div>;
+
+  const totalPages = Math.ceil(sponsors.length / ITEMS_PER_PAGE);
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
   const displayedSponsors = sponsors.slice(startIndex, endIndex);
+
+  const showEnd = startIndex + displayedSponsors.length;
+  const showStart = (displayedSponsors.length > 0 ? startIndex + 1 : startIndex);
 
   return (
     <div className="sponsors-page">
       <Navbar />
       <Header headerText="Sponsors & Donors" />
-
       <main className="container my-5">
-        {error && (
-          <div className="text-danger mb-3">
-            Failed to load live data, showing static list instead. Error: {error}
-          </div>
-        )}
+        {error && <div className="container my-5 text-warning">Failed to load: {error}</div>}
 
-        {/* Top info and pagination */}
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <p className="mb-0 text-muted">
-            Showing {`${startIndex + 1} - ${startIndex + displayedSponsors.length}`} / {sponsors.length} sponsor{sponsors.length !== 1 && "s"}
+        {/* Filters */}
+        <div className="container mb-4">
+          <div className="d-flex flex-wrap gap-3">
+
+            {/* Name filter */}
+            <select name="name" value={filters.name} onChange={handleFilterChange} className="form-select w-auto">
+              <option value="">All Names</option>
+              {allNames.map(name => <option key={name} value={name}>{name}</option>)}
+            </select>
+
+            {/* Affiliation filter */}
+            <select name="affiliation" value={filters.affiliation} onChange={handleFilterChange} className="form-select w-auto">
+              <option value="">All Affiliations</option>
+              {allAffiliations.map(aff => <option key={aff} value={aff}>{aff}</option>)}
+            </select>
+
+            {/* Contribution filter */}
+            <select name="contribution" value={filters.contribution} onChange={handleFilterChange} className="form-select w-auto">
+              <option value="">All Contributions</option>
+              {allContributions.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+
+            {/* City filter */}
+            <input type="text" name="city" placeholder="City" value={filters.city} onChange={handleFilterChange} className="form-control w-auto" />
+
+            {/* State filter */}
+            <select name="state" value={filters.state} onChange={handleFilterChange} className="form-select w-auto" style={{ maxWidth: "100px" }}>
+              <option value="">States</option>
+              {STATES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+
+            <button className="btn btn-primary" onClick={handleApplyFilters}>Apply</button>
+            <button className="btn btn-secondary" onClick={handleClearFilters}>Clear</button>
+          </div>
+        </div>
+
+        {/* Sponsor Grid */}
+        <main className="container my-5">
+          <p className="mb-0">
+            Showing {`${showStart} ${sponsors.length > 0 ? `- ${showEnd}` : ""}`} / {sponsors.length} programs
           </p>
-          <div>
-            <button
-              className="btn btn-primary me-2"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-            >
+          <div className="card-grid">
+            {sponsors.length > 0 ? displayedSponsors.map(s => (
+              <SponsorCard
+                key={s.id}
+                id={s.id}
+                sponsor_img={s.image}
+                sponsor_alt={s.alt || `${s.name} Logo`}
+                name={s.name}
+                affiliation={s.affiliation}
+                contribution={s.contribution}
+                city={s.city}
+                state={s.state}
+              />
+            )) : (
+              <div className="text-center text-muted my-5">No sponsors found matching your filters.</div>
+            )}
+          </div>
+        </main>
+
+        {/* Pagination */}
+        <div className="d-flex justify-content-center mt-4 gap-2">
+            <button className="btn btn-secondary" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
               Previous
             </button>
-            <span>
-              Page {currentPage} / {totalPages}
-            </span>
-            <button
-              className="btn btn-primary ms-2"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
+            <p>Page {currentPage} / {totalPages}</p>
+            <button className="btn btn-secondary" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
               Next
             </button>
-          </div>
-        </div>
-
-        {/* Sponsor grid */}
-        <div className="card-grid">
-          {displayedSponsors.map((sponsor, idx) => (
-            <SponsorCard
-              key={idx}
-              id={sponsor.id}
-              sponsor_img={sponsor.image}
-              sponsor_alt={sponsor.alt || sponsor.name + " Logo"}
-              name={sponsor.name}
-              affiliation={sponsor.affiliation}
-              city={sponsor.city}
-              state={sponsor.state}
-            />
-          ))}
-        </div>
-
-        {/* Bottom pagination */}
-        <div className="d-flex justify-content-center align-items-center mt-4">
-          <button
-            className="btn btn-primary me-2"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            Previous
-          </button>
-          <span>
-            Page {currentPage} / {totalPages}
-          </span>
-          <button
-            className="btn btn-primary ms-2"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            Next
-          </button>
         </div>
       </main>
 

@@ -115,13 +115,13 @@ const Home = () => {
                             </Link>
                           </td>
                           <td>
-                            <Link to="/sponsors" className={styles["sponsors-btn"]}>
-                              <strong>View Sponsors</strong>
+                            <Link to="/programs" className={styles["programs-btn"]}>
+                              <strong>View Programs</strong>
                             </Link>
                           </td>
                           <td>
-                            <Link to="/programs" className={styles["programs-btn"]}>
-                              <strong>View Programs</strong>
+                            <Link to="/sponsors" className={styles["sponsors-btn"]}>
+                              <strong>View Sponsors</strong>
                             </Link>
                           </td>
                           <td>
