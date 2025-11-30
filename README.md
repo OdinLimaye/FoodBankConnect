@@ -1,7 +1,7 @@
 # Project Proposal  
 
-- **Forked Repo:**
-https://gitlab.com/christinedominic/cs373-fall-2025-55085_07
+- **Presentation:**
+https://docs.google.com/presentation/d/1ruJ8bWkt8uQz2HoRa2WQWwctdXBaxicm-VMmOxOb3hI/edit?usp=sharing
 
 - **Docker Scraper Repo:**
 https://gitlab.com/dafrancc/fbc-load-db
@@ -10,7 +10,7 @@ https://gitlab.com/dafrancc/fbc-load-db
 https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/food-bank-api-v2
 
 - **Current Rubric:**
-https://docs.google.com/document/d/18aoNGugISszpRDWHiMF9u9QAbScI5wahBJe-YHjtmkc/edit?usp=sharing
+https://docs.google.com/document/d/1Us9fLqK4yjSNnjGO9ahn2McB4sL44ceLfuv3otRBo3A/edit?usp=sharing
 
 - **Canvas / Slack group number:**  
   55085_07  
@@ -179,19 +179,25 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 ---  
 
 ## Phase Four
-- **Git SHA:**  
+- **Git SHA:**
 - **Project Leader:**  
-  - Responsibilities:  
-- **GitLab Pipelines:**  
+  - Responsibilities:
+- **GitLab Pipelines:**
+https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07/-/pipelines  
+- **Backend API Link:**
+https://api.foodbankconnect.me/v1/
 - **Website:**  
+https://foodbankconnect.me
+- **Postman (API Docs Link):**
+https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/food-bank-api-v2  
 
 ### Time Tracking
 | Member            | Estimated Hours | Actual Hours |  
 |-------------------|-----------------|--------------|  
-| Odin Limaye       |                 |              |  
+| Odin Limaye       | 6               |              |  
 | Francisco Vivas   |                 |              |  
 | Christine Dominic |                 |              |  
 | Mahika Dawar      |                 |              |  
 | Jose Lopez        |                 |              |  
 
-**Comments:**  
+**Comments:** None
