@@ -6,7 +6,7 @@ import random
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-MAX_RESULTS = 100
+MAX_RESULTS = 175
 
 ABOUT_KEYWORDS = [
     "about",
@@ -130,7 +130,7 @@ def extract_about_from_url(url: str) -> str:
                     text = sib.get_text(" ", strip=True)
                     if len(text) > 40:
                         collected.append(text)
-                    if len(" ".join(collected)) > 300:
+                    if len(" ".join(collected)) > 1000:
                         break
                 if collected:
                     return " ".join(collected)
@@ -297,8 +297,8 @@ def scrape(q="food bank", state=None, max_results=MAX_RESULTS):
             # -------------------------------
             # HARD CAP ON ABOUT FIELD
             # -------------------------------
-            if about and len(about) > 300:
-                about = about[:300].rstrip() + "…"
+            if about and len(about) > 1000:
+                about = about[:1000].rstrip() + "…"
 
 
             services_list = infer_services(about)
