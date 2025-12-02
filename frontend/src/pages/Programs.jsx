@@ -15,8 +15,8 @@ const SORT_MAPPINGS = {"Name Asc." : "name",
                       "Host desc." : "-host",
                       "Frequency Asc." : "frequency",
                       "Frequency desc." : "-frequency",
-                      "Service Type Asc.":"servicetype",
-                      "Service Type desc.":"-servicetype",
+                      "Service Type Asc.":"program_type",
+                      "Service Type desc.":"-program_type",
                       "Eligibility Asc.":"eligibility",
                       "Eligibility desc.":"-eligibility"}
 
