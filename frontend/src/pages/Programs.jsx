@@ -191,9 +191,7 @@ const Programs = () => {
 
             <select name="eligibility" value={filters.eligibility} onChange={handleFilterChange} className="form-select w-auto">
               <option value="">All Eligibility</option>
-              <option value="Everybody">Everybody</option>
-              <option value="Families">Families</option>
-              <option value="Seniors">Seniors</option>
+              <option value="Everybody">Open</option>
             </select>
 
             <select name="cost" value={filters.cost} onChange={handleFilterChange} className="form-select w-auto">
