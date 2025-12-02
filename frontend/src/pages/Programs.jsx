@@ -16,7 +16,9 @@ const SORT_MAPPINGS = {"Name Asc." : "name",
                       "Frequency Asc." : "frequency",
                       "Frequency desc." : "-frequency",
                       "Service Type Asc.":"servicetype",
-                      "Service Type desc.":"-servicetype"}
+                      "Service Type desc.":"-servicetype",
+                      "Eligibility Asc.":"eligibility",
+                      "Eligibility desc.":"-eligibility"}
 
 const Programs = () => {
   const [programs, setPrograms] = useState([]);
@@ -230,6 +232,7 @@ const Programs = () => {
               <button type="btn" class={getButtonClass(`Host`)} onClick={() => handleSort(`Host`)}>Host {renderArrow(`Host`)}</button>
               <button type="btn" class={getButtonClass(`Frequency`)} onClick={() => handleSort(`Frequency`)}>Frequency {renderArrow(`Frequency`)}</button>
               <button type="btn" class={getButtonClass(`Service Type`)} onClick={() => handleSort(`Service Type`)}>Service Type {renderArrow(`Service Type`)}</button>
+              <button type="btn" class={getButtonClass(`Eligibility`)} onClick={() => handleSort(`Eligibility`)}>Eligibility {renderArrow(`Eligibility`)}</button>            
             </div>
           </div>
         </div>
