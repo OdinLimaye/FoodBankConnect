@@ -17,9 +17,18 @@ const STATES = [
   "VA","WA","WV","WI","WY"
 ];
 
+const SORT_MAPPINGS = {"Name Asc." : "name",
+                      "Name desc." : "-name", 
+                      "Contribution Asc." : "contribution",
+                      "Contribution desc." : "-contribution",
+                      "Affiliation Asc." : "affiliation",
+                      "Affiliation desc." : "-affiliation"}
+
+
 const Sponsors = () => {
   const [sponsors, setSponsors] = useState([]);
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [filters, setFilters] = useState({
@@ -37,9 +46,50 @@ const Sponsors = () => {
   const [allAffiliations, setAllAffiliations] = useState([]);
   const [allContributions, setAllContributions] = useState([]);
 
-  const fetchSponsors = async (startCursor = null) => {
+  //states for sort buttons
+  const [activeSort, setActiveSort] = useState(null); // tracks which button is active
+  const [sortDirection, setSortDirection] = useState(null); // 'asc', 'desc', or null
+
+  const getSortValue = () => {
+    if (!activeSort || !sortDirection) return null;
+    
+    const key = `${activeSort} ${sortDirection === 'asc' ? 'Asc.' : 'desc.'}`;
+    return SORT_MAPPINGS[key];
+  };
+
+  const renderArrow = (attribute) => {
+    if (activeSort !== attribute || !sortDirection) return null;
+    return sortDirection === 'asc' ? ' ↑' : ' ↓';
+  };
+
+  const getButtonClass = (attribute) => {
+    return activeSort === attribute && sortDirection
+      ? "btn btn-primary"
+      : "btn btn-outline-primary";
+  };
+
+  const handleSort = (attribute) => {
+    if (activeSort === attribute) {
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortDirection(null);
+        setActiveSort(null);
+      }
+    } else {
+      setActiveSort(attribute);
+      setSortDirection('asc');
+    }
+  };
+
+  useEffect(() => {
+    const sortValue = getSortValue();
+    fetchSponsors(null, {sortVal: sortValue || ""})
+  }, [activeSort, sortDirection]);
+
+  const fetchSponsors = async (startCursor = null, {sortVal} = {sortVal: ""}) => {
     try {
-      setLoading(true);
+      //setLoading(true);
 
       const params = new URLSearchParams({
         size: ALL_ENTRIES,
@@ -49,6 +99,7 @@ const Sponsors = () => {
         ...(filters.contribution && { contribution: filters.contribution }),
         ...(filters.city && { city: filters.city }),
         ...(filters.state && { state: filters.state }),
+        sort: sortVal
       });
 
       const res = await fetch(`${BASE_URL}?${params.toString()}`);
@@ -68,7 +119,8 @@ const Sponsors = () => {
       setError(err.message);
       setSponsors([]);
     } finally {
-      setLoading(false);
+      //setLoading(false);
+      setInitialLoading(false); 
     }
   };
 
@@ -92,10 +144,11 @@ const Sponsors = () => {
       state: "",
     });
     setApplyFilters((prev) => prev + 1);
+    setSortDirection(null);
+    setActiveSort(null);
   };
 
-  if (loading) return <div className="text-center my-5">Loading...</div>;
-
+  if (initialLoading) return <div className="text-center my-5">Loading...</div>;
   const totalPages = Math.ceil(sponsors.length / ITEMS_PER_PAGE);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -112,7 +165,7 @@ const Sponsors = () => {
       <main className="container my-5">
         {error && <div className="container my-5 text-warning">Failed to load: {error}</div>}
 
-        {/* Filters */}
+        {/* Filters and Sorting*/}
         <div className="container mb-4">
           <div className="d-flex flex-wrap gap-3">
 
@@ -146,29 +199,40 @@ const Sponsors = () => {
             <button className="btn btn-primary" onClick={handleApplyFilters}>Apply</button>
             <button className="btn btn-secondary" onClick={handleClearFilters}>Clear</button>
           </div>
+          {/* Sorting Buttons */}
+          <div style={{textAlign:"center", margin:"2em"}}>
+            <div className="btn-group" role="group" style={{textAlign:"center"}}>
+              <button type="btn" class={getButtonClass(`Name`)} onClick={() => handleSort(`Name`)}>Name {renderArrow(`Name`)}</button>
+              <button type="btn" class={getButtonClass(`Contribution`)} onClick={() => handleSort(`Contribution`)}>Contribution {renderArrow(`Contribution`)}</button>
+              <button type="btn" class={getButtonClass(`Affiliation`)} onClick={() => handleSort(`Affiliation`)}>Affiliation {renderArrow(`Affiliation`)}</button>
+            </div>
+          </div>
+
         </div>
 
         {/* Sponsor Grid */}
         <main className="container my-5">
-          <p className="mb-0">
-            Showing {`${showStart} ${sponsors.length > 0 ? `- ${showEnd}` : ""}`} / {sponsors.length} programs
-          </p>
-          <div className="card-grid">
-            {sponsors.length > 0 ? displayedSponsors.map(s => (
-              <SponsorCard
-                key={s.id}
-                id={s.id}
-                sponsor_img={s.image}
-                sponsor_alt={s.alt || `${s.name} Logo`}
-                name={s.name}
-                affiliation={s.affiliation}
-                contribution={s.contribution}
-                city={s.city}
-                state={s.state}
-              />
-            )) : (
-              <div className="text-center text-muted my-5">No sponsors found matching your filters.</div>
-            )}
+          <div>
+            <p className="mb-0">
+              Showing {`${showStart} ${sponsors.length > 0 ? `- ${showEnd}` : ""}`} / {sponsors.length} programs
+            </p>
+            <div className="card-grid">
+              {sponsors.length > 0 ? displayedSponsors.map(s => (
+                <SponsorCard
+                  key={s.id}
+                  id={s.id}
+                  sponsor_img={s.image}
+                  sponsor_alt={s.alt || `${s.name} Logo`}
+                  name={s.name}
+                  affiliation={s.affiliation}
+                  contribution={s.contribution}
+                  city={s.city}
+                  state={s.state}
+                />
+              )) : (
+                <div className="text-center text-muted my-5">No sponsors found matching your filters.</div>
+              )}
+            </div>
           </div>
         </main>
 
