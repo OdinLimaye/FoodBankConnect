@@ -9,6 +9,15 @@ const BASE_URL = "https://dp3d297dp9.execute-api.us-east-2.amazonaws.com/v1/prog
 const ITEMS_PER_PAGE = 21;
 const ALL_ENTRIES = 100; //temporary hardocded value
 
+const SORT_MAPPINGS = {"Name Asc." : "name",
+                      "Name desc." : "-name", 
+                      "Host Asc." : "host",
+                      "Host desc." : "-host",
+                      "Frequency Asc." : "frequency",
+                      "Frequency desc." : "-frequency",
+                      "Service Type Asc.":"servicetype",
+                      "Service Type desc.":"-servicetype"}
+
 const Programs = () => {
   const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,8 +36,48 @@ const Programs = () => {
   const [applyFilters, setApplyFilters] = useState(0);
   const [allHosts, setAllHosts] = useState([]); // store unique hosts
 
+  const [activeSort, setActiveSort] = useState(null); // tracks which button is active
+  const [sortDirection, setSortDirection] = useState(null); // 'asc', 'desc', or null
+
+  const getSortValue = () => {
+    if (!activeSort || !sortDirection) return null;
+    
+    const key = `${activeSort} ${sortDirection === 'asc' ? 'Asc.' : 'desc.'}`;
+    return SORT_MAPPINGS[key];
+  };
+
+  const renderArrow = (attribute) => {
+    if (activeSort !== attribute || !sortDirection) return null;
+    return sortDirection === 'asc' ? ' ↑' : ' ↓';
+  };
+
+  const getButtonClass = (attribute) => {
+    return activeSort === attribute && sortDirection
+      ? "btn btn-primary"
+      : "btn btn-outline-primary";
+  };
+
+  const handleSort = (attribute) => {
+    if (activeSort === attribute) {
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortDirection(null);
+        setActiveSort(null);
+      }
+    } else {
+      setActiveSort(attribute);
+      setSortDirection('asc');
+    }
+  };
+
+  useEffect(() => {
+    const sortValue = getSortValue();
+    fetchPrograms(null, {sortVal: sortValue || ""})
+  }, [activeSort, sortDirection]);  
+
   // Fetch programs from backend
-  const fetchPrograms = async (startCursor = null) => {
+  const fetchPrograms = async (startCursor = null, {sortVal} = {sortVal: ""}) => {
     try {
       setLoading(true);
 
@@ -40,6 +89,7 @@ const Programs = () => {
         ...(filters.cost && { cost: filters.cost }),
         ...(filters.program_type && { program_type: filters.program_type }),
         ...(filters.host && { host: filters.host }),
+        sort: sortVal
       });
 
       const fullURL = `${BASE_URL}?${params.toString()}`;
@@ -89,6 +139,8 @@ const Programs = () => {
     });
     setApplyFilters(prev => prev + 1);
     setCurrentPage(1)
+    setSortDirection(null);
+    setActiveSort(null);
   };
 
   useEffect(() => {
@@ -170,6 +222,15 @@ const Programs = () => {
             <button className="btn btn-secondary" onClick={handleClearFilters}>
               Clear
             </button>
+          </div>
+          {/* Sorting Buttons */}
+          <div style={{textAlign:"center", margin:"2em"}}>
+            <div className="btn-group" role="group" style={{textAlign:"center"}}>
+              <button type="btn" class={getButtonClass(`Name`)} onClick={() => handleSort(`Name`)}>Name {renderArrow(`Name`)}</button>
+              <button type="btn" class={getButtonClass(`Host`)} onClick={() => handleSort(`Host`)}>Host {renderArrow(`Host`)}</button>
+              <button type="btn" class={getButtonClass(`Frequency`)} onClick={() => handleSort(`Frequency`)}>Frequency {renderArrow(`Frequency`)}</button>
+              <button type="btn" class={getButtonClass(`Service Type`)} onClick={() => handleSort(`Service Type`)}>Service Type {renderArrow(`Service Type`)}</button>
+            </div>
           </div>
         </div>
 

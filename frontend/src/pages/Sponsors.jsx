@@ -22,13 +22,16 @@ const SORT_MAPPINGS = {"Name Asc." : "name",
                       "Contribution Asc." : "contribution",
                       "Contribution desc." : "-contribution",
                       "Affiliation Asc." : "affiliation",
-                      "Affiliation desc." : "-affiliation"}
+                      "Affiliation desc." : "-affiliation",
+                      "City Asc.":"city",
+                      "City desc.":"-city",
+                      "State Asc.":"state",
+                      "State desc.":"-state"}
 
 
 const Sponsors = () => {
   const [sponsors, setSponsors] = useState([]);
-  //const [loading, setLoading] = useState(true);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [filters, setFilters] = useState({
@@ -89,7 +92,7 @@ const Sponsors = () => {
 
   const fetchSponsors = async (startCursor = null, {sortVal} = {sortVal: ""}) => {
     try {
-      //setLoading(true);
+      setLoading(true);
 
       const params = new URLSearchParams({
         size: ALL_ENTRIES,
@@ -119,8 +122,7 @@ const Sponsors = () => {
       setError(err.message);
       setSponsors([]);
     } finally {
-      //setLoading(false);
-      setInitialLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -144,11 +146,12 @@ const Sponsors = () => {
       state: "",
     });
     setApplyFilters((prev) => prev + 1);
+    setCurrentPage(1)
     setSortDirection(null);
     setActiveSort(null);
   };
 
-  if (initialLoading) return <div className="text-center my-5">Loading...</div>;
+  if (loading) return <div className="text-center my-5">Loading...</div>;
   const totalPages = Math.ceil(sponsors.length / ITEMS_PER_PAGE);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -205,6 +208,8 @@ const Sponsors = () => {
               <button type="btn" class={getButtonClass(`Name`)} onClick={() => handleSort(`Name`)}>Name {renderArrow(`Name`)}</button>
               <button type="btn" class={getButtonClass(`Contribution`)} onClick={() => handleSort(`Contribution`)}>Contribution {renderArrow(`Contribution`)}</button>
               <button type="btn" class={getButtonClass(`Affiliation`)} onClick={() => handleSort(`Affiliation`)}>Affiliation {renderArrow(`Affiliation`)}</button>
+              <button type="btn" class={getButtonClass(`City`)} onClick={() => handleSort(`City`)}>City {renderArrow(`City`)}</button>
+              <button type="btn" class={getButtonClass(`State`)} onClick={() => handleSort(`State`)}>State {renderArrow(`State`)}</button>
             </div>
           </div>
 

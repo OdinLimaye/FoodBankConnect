@@ -8,6 +8,17 @@ const BASE_URL = "https://dp3d297dp9.execute-api.us-east-2.amazonaws.com/v1/food
 const ITEMS_PER_PAGE = 21;
 const MAX_ITEMS = 100; // fetch all matching instances per filter
 
+const SORT_MAPPINGS = {"Name Asc." : "name",
+                      "Name desc." : "-name", 
+                      "City Asc." : "city",
+                      "City desc." : "-city",
+                      "Zip Code Asc." : "zipcode", 
+                      "Zip Code desc." : "-zipcode",
+                      "Urgency Asc.":"urgency",  
+                      "Urgency desc.":"-urgency",
+                      "Eligibility Asc.":"eligibility",
+                      "Eligibility desc.":"-eligibility"}
+
 const Foodbanks = () => {
   const [foodbanks, setFoodbanks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +33,47 @@ const Foodbanks = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [applyFilters, setApplyFilters] = useState(0);
 
-  const fetchFoodBanks = async () => {
+  const [activeSort, setActiveSort] = useState(null); // tracks which button is active
+  const [sortDirection, setSortDirection] = useState(null); // 'asc', 'desc', or null
+
+  const getSortValue = () => {
+    if (!activeSort || !sortDirection) return null;
+    
+    const key = `${activeSort} ${sortDirection === 'asc' ? 'Asc.' : 'desc.'}`;
+    return SORT_MAPPINGS[key];
+  };
+
+  const renderArrow = (attribute) => {
+    if (activeSort !== attribute || !sortDirection) return null;
+    return sortDirection === 'asc' ? ' ↑' : ' ↓';
+  };
+
+  const getButtonClass = (attribute) => {
+    return activeSort === attribute && sortDirection
+      ? "btn btn-primary"
+      : "btn btn-outline-primary";
+  };
+
+  const handleSort = (attribute) => {
+    if (activeSort === attribute) {
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortDirection(null);
+        setActiveSort(null);
+      }
+    } else {
+      setActiveSort(attribute);
+      setSortDirection('asc');
+    }
+  };
+
+  useEffect(() => {
+    const sortValue = getSortValue();
+    fetchFoodBanks({sortVal: sortValue || ""})
+  }, [activeSort, sortDirection]);  
+
+  const fetchFoodBanks = async ({sortVal} = {sortVal: ""}) => {
     try {
       setLoading(true);
 
@@ -34,6 +85,7 @@ const Foodbanks = () => {
         ...(filters.urgency && { urgency: filters.urgency }),
         ...(filters.eligibility && { eligibility: filters.eligibility }),
         ...(filters.languages && { languages: filters.languages }),
+        sort: sortVal
       });
 
       const fullURL = `${BASE_URL}?${params.toString()}`;
@@ -74,6 +126,9 @@ const Foodbanks = () => {
       languages: "",
     });
     setApplyFilters((prev) => prev + 1);
+    setCurrentPage(1)
+    setSortDirection(null);
+    setActiveSort(null);
   };
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -163,6 +218,16 @@ const Foodbanks = () => {
           <button className="btn btn-secondary btn" onClick={handleClearFilters}>
             Clear
           </button>
+        </div>
+        {/* Sorting Buttons */}
+        <div style={{textAlign:"center", margin:"2em"}}>
+          <div className="btn-group" role="group" style={{textAlign:"center"}}>
+            <button type="btn" class={getButtonClass(`Name`)} onClick={() => handleSort(`Name`)}>Name {renderArrow(`Name`)}</button>
+            <button type="btn" class={getButtonClass(`City`)} onClick={() => handleSort(`City`)}>City {renderArrow(`City`)}</button>
+            <button type="btn" class={getButtonClass(`Zip Code`)} onClick={() => handleSort(`Zip Code`)}>Zip Code {renderArrow(`Zip Code`)}</button>
+            <button type="btn" class={getButtonClass(`Urgency`)} onClick={() => handleSort(`Urgency`)}>Urgency {renderArrow(`Urgency`)}</button>
+            <button type="btn" class={getButtonClass(`Eligibility`)} onClick={() => handleSort(`Eligibility`)}>Eligibility {renderArrow(`Eligibility`)}</button>
+          </div>
         </div>
 
         {/* Showing X–Y / total */}
