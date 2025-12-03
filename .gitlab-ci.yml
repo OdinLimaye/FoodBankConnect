@@ -263,12 +263,12 @@ jest_tests:
     - npm test -- --watchAll=false
   rules:
     - when: never
-    #- changes:
+    # - changes:
     #    - frontend/src/__tests__/**/*
     #    - frontend/package.json
     #    - frontend/package-lock.json
     #  when: on_success
-    #- when: never
+    # - when: never
 
 # ------------------------------
 # DB apply: run your loader directly (no Docker-in-Docker, no ECR/Batch)
