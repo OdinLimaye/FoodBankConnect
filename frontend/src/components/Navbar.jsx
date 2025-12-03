@@ -48,6 +48,18 @@ const Navbar = () => {
 							</NavLink>
 						</li>
 
+						<li className="nav-item">
+							<NavLink className="nav-link" to="/visualizations">
+								Visualizations
+							</NavLink>
+						</li>
+
+						<li className="nav-item">
+							<NavLink className="nav-link" to="/provider-visualizations">
+								Provider Visualizations
+							</NavLink>
+						</li>
+
 						{/* 🔍 Search form (added here) */}
 						<li className="nav-item ms-3">
 							<form className="d-flex" onSubmit={handleSearch}>
