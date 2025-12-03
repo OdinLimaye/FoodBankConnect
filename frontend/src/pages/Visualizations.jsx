@@ -1,16 +1,26 @@
 import FoodbanksBarChart from "../components/charts/FoodbanksBarChart";
 import ProgramPieChart from "../components/charts/ProgramPieChart";
-import SponsorsLineChart from "../components/charts/SponsorsLineChart";
+import SponsorSankey from "../components/charts/SponsorSankey.jsx";
+
+import Navbar from "../components/Navbar.jsx"
+import Footer from "../components/Footer.jsx"
+import Header from "../components/Header.jsx"
 
 const Visualizations = () => {
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>FoodBankConnect Visualizations</h1>
+    <>
+      <Navbar/>
+      <Header headerText={"FoodBankConnect Visualizations"}/>
+      <div style={{ padding: "2rem" }}>
+        <FoodbanksBarChart/>
+        <br /><br /><br />
+        <ProgramPieChart/>
+        <br /><br /><br />
+        <SponsorSankey/>
+      </div>
+      <Footer/>
+    </>
 
-      <FoodbanksBarChart />
-      <ProgramPieChart />
-      <SponsorsLineChart />
-    </div>
   );
 };
 
