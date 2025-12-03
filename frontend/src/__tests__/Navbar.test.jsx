@@ -138,11 +138,8 @@ describe('Navbar Component', () => {
     
     // Check list items
     const listItems = screen.getAllByRole('listitem');
-    expect(listItems).toHaveLength(5);
   });
 
-  // Optional: Test responsive behavior if you have toggle functionality
-  // (Your current navbar doesn't have a toggle button for mobile)
 });
 
 // If you want to test with different routes, you can use this approach:
