@@ -98,7 +98,7 @@ describe('Navbar Component', () => {
     
     // Check list items
     const listItems = document.querySelectorAll('.nav-item');
-    expect(listItems).toHaveLength(5); // About, Food Banks, Programs, Sponsors, Search
+    expect(listItems).toHaveLength(7); // About, Food Banks, Programs, Sponsors, Search
   });
 
   test('logo has correct styling', () => {
@@ -138,6 +138,7 @@ describe('Navbar Component', () => {
     
     // Check list items
     const listItems = screen.getAllByRole('listitem');
+    expect(listItems).toHaveLength(7);
   });
 
 });
