@@ -1,10 +1,17 @@
+import ItemsByCategoryBar from "../components/charts/ItemsByCategoryBar";
+import RequestStatusPie from "../components/charts/RequestStatusPie";
+import RequestsOverTimeLine from "../components/charts/RequestsOverTimeLine";
+
 const ProviderVisualizations = () => {
-	return (
-		<div>
-			<h1>Provider D3 Visualizations</h1>
-			{/* add their site D3 graphs here */}
-		</div>
-	);
+  return (
+    <div style={{ padding: "2rem" }}>
+      <h1>Project Pencil ATX Visualizations</h1>
+
+      <ItemsByCategoryBar />
+      <RequestStatusPie />
+      <RequestsOverTimeLine />
+    </div>
+  );
 };
 
 export default ProviderVisualizations;
