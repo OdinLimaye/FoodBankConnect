@@ -194,7 +194,7 @@ const Foodbanks = () => {
             <option value="">Urgency Levels</option>
             <option value="High">High</option>
             <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
+            <option value="Low">Low</option> 
           </select>
 
           {/* Eligibility filter */}

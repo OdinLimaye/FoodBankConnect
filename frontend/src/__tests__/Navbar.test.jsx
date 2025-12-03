@@ -98,7 +98,7 @@ describe('Navbar Component', () => {
     
     // Check list items
     const listItems = document.querySelectorAll('.nav-item');
-    expect(listItems).toHaveLength(5); // About, Food Banks, Programs, Sponsors, Search
+    expect(listItems).toHaveLength(7); // About, Food Banks, Programs, Sponsors, Search
   });
 
   test('logo has correct styling', () => {
@@ -138,11 +138,9 @@ describe('Navbar Component', () => {
     
     // Check list items
     const listItems = screen.getAllByRole('listitem');
-    expect(listItems).toHaveLength(5);
+    expect(listItems).toHaveLength(7);
   });
 
-  // Optional: Test responsive behavior if you have toggle functionality
-  // (Your current navbar doesn't have a toggle button for mobile)
 });
 
 // If you want to test with different routes, you can use this approach:
