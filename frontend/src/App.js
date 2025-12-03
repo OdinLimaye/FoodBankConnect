@@ -9,6 +9,8 @@ import SponsorInstancePage from "./components/SponsorInstancePage";
 import ProgramsInstancePage from "./components/ProgramsInstancePage";
 import FoodbankInstancePage from "./components/FoodbankInstancePage";
 import SearchPage from "./pages/SearchPage";
+import Visualizations from "./pages/Visualizations";
+import ProviderVisualizations from "./pages/ProviderVisualizations";
 
 function App() {
 	return (
@@ -23,6 +25,8 @@ function App() {
 				<Route path="/sponsors" element={<Sponsors />} />
 				<Route path="/sponsors/:name" element={<SponsorInstancePage />} />
 				<Route path="/search" element={<SearchPage />} />
+				<Route path="/visualizations" element={<Visualizations />} />
+				<Route path="/provider-visualizations" element={<ProviderVisualizations />} />
 			</Routes>
 		</Router>
 	);
