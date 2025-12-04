@@ -155,7 +155,7 @@ const About = () => {
                     break;
                   case "Mahika":
                     bio = "I'm a Junior at UT Austin majoring in Computer Science, and minoring in Applied Statistical Modeling. I enjoy trying new recipes, dancing, and playing pickleball outside of class!";
-                    responsibilities = "I worked on building the instance pages mostly, as well as tweaking the CSS to clean up the website so it had a sleeker look. In this phase, I mostly worked on the front-end.";
+                    responsibilities = "I worked on the search functionality and building the instance pages mostly. I consistently worked ont he front end to tweak the CSS to give the website a sleeker look. I also helped create the visualizations.";
                     break;
                   case "Jose":
                     bio = "I'm a Junior at UT Austin and I'm majoring in Computer Science. In my freetime, I enjoy watching shows or movies, listening to music, and play video games.";
