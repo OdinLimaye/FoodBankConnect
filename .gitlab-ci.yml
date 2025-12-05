@@ -262,13 +262,12 @@ jest_tests:
     - npm ci
     - npm test -- --watchAll=false
   rules:
+    - changes:
+        - frontend/src/__tests__/**/*
+        - frontend/package.json
+        - frontend/package-lock.json
+      when: on_success
     - when: never
-    # - changes:
-    #    - frontend/src/__tests__/**/*
-    #    - frontend/package.json
-    #    - frontend/package-lock.json
-    #  when: on_success
-    # - when: never
 
 apply_db:
   stage: backend_release

@@ -6,7 +6,7 @@ import FoodbankCard from "../components/FoodbankCard";
 
 const BASE_URL = "https://dp3d297dp9.execute-api.us-east-2.amazonaws.com/v1/foodbanks";
 const ITEMS_PER_PAGE = 21;
-const MAX_ITEMS = 100; // fetch all matching instances per filter
+const MAX_ITEMS = 175; // fetch all matching instances per filter
 
 const SORT_MAPPINGS = {"Name Asc." : "name",
                       "Name desc." : "-name", 
