@@ -52,7 +52,7 @@ DATABASE_URL = os.getenv(
 )
 
 DB_SCHEMA = os.getenv("DB_SCHEMA", "app")
-MAX_PAGE_SIZE = int(os.getenv("MAX_REQUESTS", "50"))
+MAX_PAGE_SIZE = 100000000
 REQUEST_LOG_LEVEL = os.getenv("REQUEST_LOG_LEVEL", "INFO").upper()
 
 ALLOWED_TYPES: Dict[str, str] = {
