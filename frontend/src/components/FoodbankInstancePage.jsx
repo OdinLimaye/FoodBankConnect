@@ -6,8 +6,8 @@ import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
 
 const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks";
-const PROGRAMS_URL = "https://api.foodbankconnect.me/v1/programs?size=100&start=1";
-const SPONSORS_URL = "https://api.foodbankconnect.me/v1/sponsors?size=100&start=1";
+const PROGRAMS_URL = "https://api.foodbankconnect.me/v1/programs?size=175&start=1";
+const SPONSORS_URL = "https://api.foodbankconnect.me/v1/sponsors?size=175&start=1";
 
 const FoodbankInstancePage = () => {
   const location = useLocation();

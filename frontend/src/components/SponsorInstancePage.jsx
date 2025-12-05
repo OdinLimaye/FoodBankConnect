@@ -6,8 +6,8 @@ import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
 import styles from "../styles/Sponsors.module.css";
 
-const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks?size=100&start=1";
-const PROGRAMS_URL = "https://api.foodbankconnect.me/v1/programs?size=100&start=1";
+const FOODBANKS_URL = "https://api.foodbankconnect.me/v1/foodbanks?size=175&start=1";
+const PROGRAMS_URL = "https://api.foodbankconnect.me/v1/programs?size=175&start=1";
 const SPONSORS_URL = "https://api.foodbankconnect.me/v1/sponsors";
 
 const SponsorInstancePage = () => {
