@@ -313,7 +313,8 @@ apply_db:
       echo "Running database apply using fbc-load-db/main.py..."
       python fbc-load-db/main.py
   rules:
-    - when: always
+    - when: never
+    # - when: always
     # - if: '$CI_COMMIT_BRANCH == "main"'
     #   when: on_success
     # - when: manual
