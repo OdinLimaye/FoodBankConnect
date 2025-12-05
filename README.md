@@ -196,7 +196,7 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 |-------------------|-----------------|--------------|  
 | Odin Limaye       | 6               | 7            |  
 | Francisco Vivas   | 5               | 5            |  
-| Christine Dominic |                 |              |  
+| Christine Dominic | 3               | 4            |  
 | Mahika Dawar      | 6               | 6            |  
 | Jose Lopez        | 5               | 10           |  
 
