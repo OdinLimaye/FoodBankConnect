@@ -155,7 +155,7 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 - **Git SHA:**
 677ca445cf7ce3a75b9c2da959a05293d803e482
 - **Project Leader: Mahika Dawar**  
-  - Responsibilities: Dividing tasks between group members, implement searching/filtering, and front end styling improvements.
+  - Responsibilities: Dividing tasks between group members, implement searching/filtering, and working on front end styling improvements.
 - **GitLab Pipelines:**
 https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07/-/pipelines  
 - **Backend API Link:**
@@ -180,8 +180,8 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 
 ## Phase Four
 - **Git SHA:**
-- **Project Leader:**  
-  - Responsibilities:
+- **Project Leader: Jose Lopez**  
+  - Responsibilities: Dividing tasks between group members, implementing sorting, and working on visualizations
 - **GitLab Pipelines:**
 https://gitlab.com/OdinLimaye/cs373-fall-2025-55085_07/-/pipelines  
 - **Backend API Link:**
@@ -194,10 +194,10 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 ### Time Tracking
 | Member            | Estimated Hours | Actual Hours |  
 |-------------------|-----------------|--------------|  
-| Odin Limaye       | 6               |              |  
+| Odin Limaye       | 6               | 7            |  
 | Francisco Vivas   |                 |              |  
 | Christine Dominic |                 |              |  
-| Mahika Dawar      | 6               |   6          |  
-| Jose Lopez        | 5               |   10         |  
+| Mahika Dawar      | 6               | 6            |  
+| Jose Lopez        | 5               | 10           |  
 
 **Comments:** None

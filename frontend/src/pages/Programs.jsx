@@ -7,7 +7,7 @@ import ProgramCard from "../components/ProgramsCard";
 
 const BASE_URL = "https://dp3d297dp9.execute-api.us-east-2.amazonaws.com/v1/programs";
 const ITEMS_PER_PAGE = 21;
-const ALL_ENTRIES = 175; //temporary hardocded value
+const ALL_ENTRIES = 100;
 
 const SORT_MAPPINGS = {"Name Asc." : "name",
                       "Name desc." : "-name", 

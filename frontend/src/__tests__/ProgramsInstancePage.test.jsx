@@ -514,7 +514,7 @@ describe('ProgramInstancePage', () => {
 
     await waitFor(() => {
       const image = screen.getByAltText('Summer Food Program Logo');
-      expect(image).toHaveStyle({
+      expect(image).toHaveStyle({ 
         maxHeight: '400px',
         objectFit: 'cover'
       });
