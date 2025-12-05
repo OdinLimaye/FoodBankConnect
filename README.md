@@ -180,6 +180,7 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 
 ## Phase Four
 - **Git SHA:**
+6fc6273bdb674976e86d173ee2d6a2b85f2b1f79
 - **Project Leader: Jose Lopez**  
   - Responsibilities: Dividing tasks between group members, implementing sorting, and working on visualizations.
 - **GitLab Pipelines:**
