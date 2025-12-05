@@ -10,7 +10,9 @@ const OrgStateChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-		const BASE_URL = 'https://api.projectpencilatx.me/organizations';
+        const CORS_PROXY = 'https://corsproxy.io/?';
+        const BASE_URL = 'https://api.projectpencilatx.me/organizations';
+        const USED_URL = CORS_PROXY + encodeURIComponent(BASE_URL);  
         let allOrgs = [];
         let page = 1;
         const PAGE_SIZE = 20;
@@ -18,7 +20,7 @@ const OrgStateChart = () => {
 
         while (hasMore) {
           const offset = PAGE_SIZE * (page - 1);
-          const url = `${BASE_URL}?limit=${PAGE_SIZE}&offset=${offset}`;
+          const url = `${USED_URL}?limit=${PAGE_SIZE}&offset=${offset}`;
           
           const myHeaders = new Headers();
           myHeaders.append("Accept", "application/json");

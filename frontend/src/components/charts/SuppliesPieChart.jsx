@@ -14,11 +14,12 @@ const SuppliesPieChart = () => {
         let page = 1;
         const PAGE_SIZE = 24;
         let hasMore = true;
-
+        const CORS_PROXY = 'https://corsproxy.io/?';
         const BASE_URL = 'https://api.projectpencilatx.me/supplies';
+        const USED_URL = CORS_PROXY + encodeURIComponent(BASE_URL);   
         while (hasMore) {
           const offset = PAGE_SIZE * (page - 1);
-          const url = `${BASE_URL}?limit=${PAGE_SIZE}&offset=${offset}`;
+          const url = `${USED_URL}?limit=${PAGE_SIZE}&offset=${offset}`;
           
           const myHeaders = new Headers();
           myHeaders.append("Accept", "application/json");
@@ -223,9 +224,6 @@ const SuppliesPieChart = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-8">
       <svg ref={svgRef}></svg>
-      <div className="mt-4 text-sm text-gray-600">
-        Total supplies: {d3.sum(data, d => d.count)} | Unique types: {data.length}
-      </div>
     </div>
   );
 };
