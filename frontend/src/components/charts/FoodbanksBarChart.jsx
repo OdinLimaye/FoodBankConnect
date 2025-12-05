@@ -39,7 +39,6 @@ const FoodbankChart = () => {
           stateCounts[state] = result.items ? result.items.length : 0;
         }
 
-        // Convert to array and sort by count (descending)
         const sortedData = Object.entries(stateCounts)
           .map(([state, count]) => ({ state, count }))
           .sort((a, b) => b.count - a.count);
@@ -62,7 +61,6 @@ const FoodbankChart = () => {
     const width = 1000 - margin.left - margin.right;
     const height = 500 - margin.top - margin.bottom;
 
-    // Clear previous chart
     d3.select(svgRef.current).selectAll('*').remove();
 
     const svg = d3.select(svgRef.current)
@@ -71,30 +69,25 @@ const FoodbankChart = () => {
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // X scale
     const x = d3.scaleBand()
       .domain(data.map(d => d.state))
       .range([0, width])
       .padding(0.2);
 
-    // Y scale
     const y = d3.scaleLinear()
       .domain([0, d3.max(data, d => d.count)])
       .nice()
       .range([height, 0]);
 
-    // X axis
     svg.append('g')
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(x))
       .selectAll('text')
       .style('font-size', '10px');
 
-    // Y axis
     svg.append('g')
       .call(d3.axisLeft(y));
 
-    // Bars
     svg.selectAll('.bar')
       .data(data)
       .enter()
@@ -106,7 +99,6 @@ const FoodbankChart = () => {
       .attr('height', d => height - y(d.count))
       .attr('fill', '#4CAF50');
 
-    // Add count labels on top of bars (only if count > 0)
     svg.selectAll('.label')
       .data(data.filter(d => d.count > 0))
       .enter()
@@ -119,7 +111,6 @@ const FoodbankChart = () => {
       .style('font-weight', 'bold')
       .text(d => d.count);
 
-    // Title
     svg.append('text')
       .attr('x', width / 2)
       .attr('y', -10)
@@ -128,7 +119,6 @@ const FoodbankChart = () => {
       .style('font-weight', 'bold')
       .text('Foodbanks by State');
 
-    // Y axis label
     svg.append('text')
       .attr('transform', 'rotate(-90)')
       .attr('y', -45)

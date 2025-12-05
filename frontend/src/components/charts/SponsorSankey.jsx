@@ -30,7 +30,6 @@ const SponsorSankey = () => {
           throw new Error('Invalid data format');
         }
 
-        // Categorize sponsors
         const nonProfits = [];
         const privateCorp = [];
 
@@ -46,12 +45,6 @@ const SponsorSankey = () => {
           }
         });
 
-        // Debug: log some affiliations to see the format
-        console.log('Sample affiliations:', result.items.slice(0, 5).map(i => i.affiliation));
-        console.log('Non Profits found:', nonProfits.length);
-        console.log('Private Corps found:', privateCorp.length);
-
-        // Count contributions for each category
         const nonProfitContributions = { High: 0, Medium: 0, Low: 0 };
         const privateCorpContributions = { High: 0, Medium: 0, Low: 0 };
 
@@ -99,21 +92,18 @@ const SponsorSankey = () => {
     const height = 600;
     const margin = { top: 40, right: 200, bottom: 40, left: 200 };
 
-    // Clear previous chart
     d3.select(svgRef.current).selectAll('*').remove();
 
     const svg = d3.select(svgRef.current)
       .attr('width', width)
       .attr('height', height);
 
-    // Create base nodes
     const baseNodes = [
       { id: 'All Sponsors', x: margin.left, y: height / 2 },
       { id: 'Non Profits', x: width / 2 - 100, y: height / 3 },
       { id: 'Private Corps', x: width / 2 - 100, y: 2 * height / 3 }
     ];
 
-    // Only add contribution level nodes if they have data
     const contributionNodes = [];
     let npY = height / 6;
     let pcY = 2 * height / 3;
@@ -145,7 +135,6 @@ const SponsorSankey = () => {
 
     const nodes = [...baseNodes, ...contributionNodes];
 
-    // Create links with actual data values
     const links = [
       { source: 'All Sponsors', target: 'Non Profits', value: data.nonProfitsCount },
       { source: 'All Sponsors', target: 'Private Corps', value: data.privateCorpCount },
@@ -155,14 +144,12 @@ const SponsorSankey = () => {
       { source: 'Private Corps', target: 'PC High', value: data.privateCorpContributions.High },
       { source: 'Private Corps', target: 'PC Medium', value: data.privateCorpContributions.Medium },
       { source: 'Private Corps', target: 'PC Low', value: data.privateCorpContributions.Low }
-    ].filter(link => link.value > 0); // Only include links with actual data
+    ].filter(link => link.value > 0); 
 
-    // Color scale
     const color = d3.scaleOrdinal()
       .domain(['All Sponsors', 'Non Profits', 'Private Corps'])
       .range(['#4CAF50', '#2196F3', '#FF9800']);
 
-    // Draw links (flows)
     const linkWidth = d3.scaleLinear()
       .domain([0, d3.max(links, d => d.value)])
       .range([2, 80]);
@@ -185,12 +172,10 @@ const SponsorSankey = () => {
         .attr('opacity', 0.5);
     });
 
-    // Draw nodes
     nodes.forEach(node => {
       const nodeGroup = svg.append('g')
         .attr('transform', `translate(${node.x},${node.y})`);
 
-      // Node rectangle
       nodeGroup.append('rect')
         .attr('x', -60)
         .attr('y', -20)
@@ -203,7 +188,6 @@ const SponsorSankey = () => {
         .attr('stroke-width', 2)
         .attr('rx', 5);
 
-      // Node label
       nodeGroup.append('text')
         .attr('text-anchor', 'middle')
         .attr('dy', '0.35em')
@@ -212,7 +196,6 @@ const SponsorSankey = () => {
         .style('fill', 'white')
         .text(node.id.replace('NP ', '').replace('PC ', ''));
 
-      // Add count below node
       let count = 0;
       if (node.id === 'All Sponsors') count = data.totalSponsors;
       else if (node.id === 'Non Profits') count = data.nonProfitsCount;
@@ -234,7 +217,6 @@ const SponsorSankey = () => {
       }
     });
 
-    // Title
     svg.append('text')
       .attr('x', width / 2)
       .attr('y', 25)

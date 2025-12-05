@@ -28,7 +28,6 @@ const ProgramPieChart = () => {
         
         const result = await response.json();
         
-        // Count frequencies from the returned items
         const frequencyCounts = {
           weekly: 0,
           monthly: 0,
@@ -43,10 +42,9 @@ const ProgramPieChart = () => {
           });
         }
 
-        // Convert to array for D3
         const chartData = Object.entries(frequencyCounts)
           .map(([frequency, count]) => ({ frequency, count }))
-          .filter(d => d.count > 0); // Only include frequencies with data
+          .filter(d => d.count > 0);  
 
         setData(chartData);
         setLoading(false);
@@ -66,7 +64,6 @@ const ProgramPieChart = () => {
     const height = 600;
     const radius = Math.min(width, height) / 2 - 40;
 
-    // Clear previous chart
     d3.select(svgRef.current).selectAll('*').remove();
 
     const svg = d3.select(svgRef.current)
@@ -75,44 +72,36 @@ const ProgramPieChart = () => {
       .append('g')
       .attr('transform', `translate(${width / 2},${height / 2})`);
 
-    // Color scale
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.frequency))
       .range(['#FF6384', '#36A2EB', '#FFCE56']);
 
-    // Calculate total for percentages
     const total = d3.sum(data, d => d.count);
 
-    // Pie generator
     const pie = d3.pie()
       .value(d => d.count)
       .sort(null);
 
-    // Arc generator
     const arc = d3.arc()
       .innerRadius(0)
       .outerRadius(radius);
 
-    // Arc for labels (positioned outside)
     const labelArc = d3.arc()
       .innerRadius(radius * 0.6)
       .outerRadius(radius * 0.6);
 
-    // Create pie slices
     const arcs = svg.selectAll('.arc')
       .data(pie(data))
       .enter()
       .append('g')
       .attr('class', 'arc');
 
-    // Draw slices
     arcs.append('path')
       .attr('d', arc)
       .attr('fill', d => color(d.data.frequency))
       .attr('stroke', 'white')
       .attr('stroke-width', 2);
 
-    // Add labels with frequency name, count, and percentage
     arcs.append('text')
       .attr('transform', d => `translate(${labelArc.centroid(d)})`)
       .attr('text-anchor', 'middle')
@@ -123,19 +112,16 @@ const ProgramPieChart = () => {
         const percentage = ((d.data.count / total) * 100).toFixed(1);
         const text = d3.select(this);
         
-        // Add frequency name
         text.append('tspan')
           .attr('x', 0)
           .attr('dy', '-0.6em')
           .text(d.data.frequency.charAt(0).toUpperCase() + d.data.frequency.slice(1));
         
-        // Add count
         text.append('tspan')
           .attr('x', 0)
           .attr('dy', '1.2em')
           .text(d.data.count);
         
-        // Add percentage
         text.append('tspan')
           .attr('x', 0)
           .attr('dy', '1.2em')
@@ -143,7 +129,6 @@ const ProgramPieChart = () => {
           .text(`(${percentage}%)`);
       });
 
-    // Title
     svg.append('text')
       .attr('y', -height / 2 + 30)
       .attr('text-anchor', 'middle')
