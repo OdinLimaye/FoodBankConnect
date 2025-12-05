@@ -195,7 +195,7 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 | Member            | Estimated Hours | Actual Hours |  
 |-------------------|-----------------|--------------|  
 | Odin Limaye       | 6               | 7            |  
-| Francisco Vivas   |                 |              |  
+| Francisco Vivas   | 5               | 5            |  
 | Christine Dominic |                 |              |  
 | Mahika Dawar      | 6               | 6            |  
 | Jose Lopez        | 5               | 10           |  
