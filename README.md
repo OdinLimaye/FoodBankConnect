@@ -198,6 +198,6 @@ https://www.postman.com/downing-group-7/dafrancc-s-workspace/collection/uhwer5y/
 | Francisco Vivas   |                 |              |  
 | Christine Dominic |                 |              |  
 | Mahika Dawar      | 6               |   6          |  
-| Jose Lopez        | 5               |              |  
+| Jose Lopez        | 5               |   10         |  
 
 **Comments:** None
