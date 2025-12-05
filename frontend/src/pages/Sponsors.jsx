@@ -8,7 +8,7 @@ import "../styles/CardStyles.css";
 
 const BASE_URL = "https://dp3d297dp9.execute-api.us-east-2.amazonaws.com/v1/sponsors";
 const ITEMS_PER_PAGE = 21;
-const ALL_ENTRIES = 100;
+const ALL_ENTRIES = 175;
 
 const STATES = [
   "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA",
