@@ -18,7 +18,7 @@ const ProviderVisualizations = () => {
         <br /><br /><br />
         <OrgsBarChart/>
       </div>
-      <Footer/>
+      <Footer/> 
     </>
 
   );
