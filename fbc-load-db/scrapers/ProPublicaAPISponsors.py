@@ -29,7 +29,7 @@ FOOD_RELATED_KEYWORDS = [
     "food insecurity"
 ]
 
-GOOGLE_API_KEY = "AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE"
+GOOGLE_API_KEY = "deprecated"
 GOOGLE_CX = "47dcfe213c7274b68"
 
 ABOUT_KEYWORDS = [
