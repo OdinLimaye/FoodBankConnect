@@ -1,8 +1,5 @@
 # Project Proposal  
 
-- **Presentation:**
-https://docs.google.com/presentation/d/1ruJ8bWkt8uQz2HoRa2WQWwctdXBaxicm-VMmOxOb3hI/edit?usp=sharing
-
 - **Docker Scraper Repo:**
 https://gitlab.com/dafrancc/fbc-load-db
 
