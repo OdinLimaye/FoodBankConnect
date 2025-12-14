@@ -37,7 +37,7 @@ def google_search_raw(query: str):
     params = {
         "q": query,
         "cx": "47dcfe213c7274b68",
-        "key": "AIzaSyCaX5owOlwzJq59MYdCl6lV5BKt3W3K-KE",
+        "key": "deprecated",
         "num": 3
     }
     resp = requests.get("https://www.googleapis.com/customsearch/v1", params=params)
